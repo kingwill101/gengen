@@ -12,7 +12,15 @@ class Template {
 
   final context = liquid.Context.create();
 
-  Template(this.template, this.child, this.data);
+  liquid.Root contentRoot;
+
+  Template(this.template,
+      {this.child,
+      this.data = const {},
+      this.contentRoot = const ContentRoot()});
+
+  Template.r(this.template, this.child, this.data,
+      {this.contentRoot = const ContentRoot()});
 
   Future<String> render() async {
     context.variables.addAll(data);
@@ -23,19 +31,19 @@ class Template {
     }
 
     return liquid.Template.parse(
-            context, liquid.Source(null, template, ContentRoot()))
+            context, liquid.Source(null, template, contentRoot))
         .render(context);
   }
 
   Future<String> parse(String content) {
     return liquid.Template.parse(
-            context, liquid.Source(null, content, ContentRoot()))
+            context, liquid.Source(null, content, contentRoot))
         .render(context);
   }
 }
 
 class ContentRoot implements liquid.Root {
-  ContentRoot();
+  const ContentRoot();
 
   @override
   Future<liquid.Source> resolve(String relPath) async {

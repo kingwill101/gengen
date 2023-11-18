@@ -4,7 +4,7 @@ import 'dart:io';
 
 import 'package:args/command_runner.dart';
 import 'package:path/path.dart';
-import 'package:untitled/generator/generator.dart';
+import 'package:gengen/generator/generator.dart';
 
 class BuildCommand extends Command {
   @override
@@ -20,7 +20,8 @@ class BuildCommand extends Command {
 
   @override
   FutureOr? run() {
-    print("Starting build");
+
+    print(" Starting build");
 
     Directory.current =
         argResults?["working-dir"] as String? ?? joinAll([current]);
