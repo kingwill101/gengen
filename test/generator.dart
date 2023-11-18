@@ -1,8 +1,8 @@
 import 'dart:io';
 
+import 'package:gengen/generator/page.dart';
+import 'package:gengen/generator/posts/post.dart';
 import 'package:test/test.dart';
-import 'package:untitled/generator/generator.dart';
-import 'package:untitled/markdown/mardown.dart';
 
 void main() {
   test("generators", () {
@@ -11,6 +11,5 @@ void main() {
 
     PageGenerator pageGenerator = PageGenerator("", Directory.current);
     assert(pageGenerator.extensions.isNotEmpty);
-
   });
 }

@@ -1,4 +1,4 @@
-name: untitled
+name: gengen
 description: A sample command-line application.
 version: 1.0.0
 # repository: https://github.com/my_org/my_repo
@@ -15,6 +15,8 @@ dependencies:
   yaml: ^3.1.2
   toml: ^0.14.0
   args: ^2.4.2
+  more: ^4.0.1
+  console: ^4.1.0
 
 dev_dependencies:
   lints: ^3.0.0
