@@ -4,11 +4,10 @@ import 'package:console/console.dart';
 import 'package:gengen/generator/generator.dart';
 import 'package:gengen/generator/handlers.dart';
 import 'package:gengen/generator/pipeline.dart';
-import 'package:gengen/liquid/template.dart';
+import 'package:gengen/generator/posts/handlers.dart';
 import 'package:gengen/markdown/mardown.dart';
 import 'package:gengen/models.dart';
 import 'package:gengen/utilities.dart';
-import 'package:markdown/markdown.dart';
 import 'package:path/path.dart';
 import 'package:toml/toml.dart';
 
@@ -92,7 +91,7 @@ class PostGenerator extends Generator<Post> {
       var directoryFrontMatter = getDirectoryFrontMatter(path);
 
       var post = Post.fromYaml(contentFrontMatter, path, markdown.content ?? "",
-          directoryFrontMatter ?? {});
+          directoryFrontMatter ?? {}, destination);
       collection.add(post);
     }
     return this;
@@ -100,36 +99,12 @@ class PostGenerator extends Generator<Post> {
 
   @override
   Future<PostGenerator> write() async {
+    Console.setTextColor(Color.WHITE.id, bright: true);
+
     for (var item in collection) {
-      if (destination == null) {
-        continue;
-      }
+      Pipeline<Post> pipeline = Pipeline(item, [LiquidWriter(), HtmlWriter()]);
 
-      Console.setTextColor(Color.WHITE.id, bright: true);
-      Template(item.content).render().then((content) {
-        var fileDestination = joinAll(
-            [destination!.path, withoutExtension(item.source), "index.html"]);
-
-        var file = File(fileDestination);
-        file
-            .create(recursive: true)
-            .then((file) => file.writeAsString(markdownToHtml(content)))
-            .then((value) {
-          Console.setTextColor(Color.GREEN.id, bright: true);
-
-          print("written ${item.source} -> $fileDestination");
-        });
-      }).catchError((err) {
-        Console.setTextColor(Color.RED.id, bright: true);
-
-        print("Unable to write content\n");
-        print(" source - ${item.source}");
-        Console.setTextColor(Color.WHITE.id, bright: true);
-
-        print(" ---CONTENT---");
-        print(item.content);
-        print(" ---\\CONTENT---");
-      });
+      pipeline.handle();
     }
     return this;
   }

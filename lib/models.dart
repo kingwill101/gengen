@@ -1,3 +1,5 @@
+import 'dart:io';
+
 class Post {
   String? author;
   String? title;
@@ -6,6 +8,7 @@ class Post {
   String? permalink;
   late bool draft;
   late List<dynamic> tags;
+  Directory? destination;
 
   final Map<String, dynamic> dirConfig;
 
@@ -14,7 +17,7 @@ class Post {
   late String content;
 
   Post.fromYaml(Map<String, dynamic> frontMatter, this.source, this.content,
-      [this.dirConfig = const {}]) {
+      [this.dirConfig = const {}, this.destination]) {
     author = frontMatter["author"] ?? "";
     title = frontMatter["title"] ?? "";
     description = frontMatter["description"] ?? "";
