@@ -13,7 +13,9 @@ class Base {
   late String content;
   Map<String, dynamic> frontMatter;
 
-  Map<String, dynamic> config() {
+  Map<String, dynamic> get config => _config();
+
+  Map<String, dynamic> _config() {
     Map<String, dynamic> config = Map.from(dirConfig);
 
     frontMatter.forEach((key, value) {
@@ -35,24 +37,31 @@ class Base {
 
 extension PermalinkExtension on Base {
   String permalink() {
-    if (config().isEmpty || !config().containsKey("permalink")) {
+
+    if (config.isEmpty || !config.containsKey("permalink")) {
       return buildPermalink();
     }
 
-    String permalink = config()["permalink"];
+    String permalink = config["permalink"];
 
     var structures = PermalinkStructure.map();
     if (structures.containsKey(permalink)) {
       return buildPermalink(structures[permalink]!);
     }
 
-    return buildPermalink(permalink);
+    return normalize(buildPermalink(permalink));
   }
 
   String buildPermalink([String permalink = PermalinkStructure.none]) {
-    Map<String, dynamic> config = this.config();
+    Map<String, dynamic> config = this.config;
 
-    String normalizedTitle = ((config['title'] as String?) ?? '')
+    String? title = config['title'];
+
+    if (title == null || title.isEmpty) {
+      title = withoutExtension(basename(source));
+    }
+
+    String normalizedTitle = slugify(title)
         .toLowerCase()
         .replaceAll(' ', '-')
         .replaceAll(RegExp(r'[^\w-]'), '');
@@ -65,6 +74,8 @@ extension PermalinkExtension on Base {
             ':categories', tags.isNotEmpty ? tags.join('/') : 'uncategorized')
         .replaceAll(':slugified_categories', slugifyList(tags))
         .replaceAll(':title', normalizedTitle)
+        .replaceAll(':path', relative(dirname(source), from: current))
+        .replaceAll(':basename', withoutExtension(basename(source)))
         .replaceAll(':output_ext', '.html');
 
     if (config.containsKey('date') && config['date'] != null) {
@@ -120,6 +131,7 @@ class PermalinkStructure {
   static const String weekdate =
       ":categories/:year/W:week/:short_day/:title:output_ext";
   static const String none = ":categories/:title:output_ext";
+  static const String post = ":path/:basename:output_ext";
 
   static Map<String, String> map() {
     return {
@@ -127,6 +139,7 @@ class PermalinkStructure {
       "pretty": PermalinkStructure.pretty,
       "ordinal": PermalinkStructure.ordinal,
       "weekdate": PermalinkStructure.weekdate,
+      "post": PermalinkStructure.post,
       "none": PermalinkStructure.none,
     };
   }

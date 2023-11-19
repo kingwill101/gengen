@@ -2,31 +2,30 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:console/console.dart';
-import 'package:gengen/generator/pipeline.dart';
 import 'package:gengen/liquid/template.dart';
 import 'package:gengen/models.dart';
+import 'package:gengen/pipeline/pipeline.dart';
 import 'package:markdown/markdown.dart';
-import 'package:path/path.dart';
 
-class HtmlWriter extends Handle<Post> {
+class HtmlWriter extends Handle<Base> {
   @override
-  void handle(Post data, HandleFunc<Post> next) {
+  void handle(Base data, HandleFunc<Base> next) {
 
-    var file = File(data.permalink());
+    var file = File(data.link());
     file
         .create(recursive: true)
         .then((file) => file.writeAsString(markdownToHtml(data.content)))
         .then((value) {
       Console.setTextColor(Color.GREEN.id, bright: true);
 
-      print("written ${data.source} -> ${data.permalink()}");
+      print("written ${data.source} -> ${data.link()}");
     });
   }
 }
 
-class LiquidWriter extends Handle<Post> {
+class LiquidWriter<T> extends Handle<Base> {
   @override
-  Future<void> handle(Post data, HandleFunc<Post> next) async {
+  Future<void> handle(Base data, HandleFunc<Base> next) async {
     try {
       data.content = await Template(data.content).render();
     } catch (e) {

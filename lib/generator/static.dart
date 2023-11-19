@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:console/console.dart';
 import 'package:gengen/generator/generator.dart';
-import 'package:gengen/generator/pipeline.dart';
+import 'package:gengen/pipeline/pipeline.dart';
 import 'package:gengen/models.dart';
 
 import 'handlers.dart';

@@ -1,6 +1,6 @@
 import 'package:markdown/markdown.dart';
 import 'package:test/test.dart';
-import 'package:gengen/markdown/mardown.dart';
+import 'package:gengen/content/content.dart';
 
 void main() {
   test("front matter", () {
@@ -14,10 +14,10 @@ description: "An overview of the effects of dancehall and the jamaican culture"
 ---
 this is the content
     ''';
-    MarkdownContent? content = markdownContent(source);
+    Content? content = toContent(source);
 
     assert(content != null);
-    assert(content?.frontmatter != null);
+    assert(content?.frontMatter != null);
     assert(content?.content != null);
 
     String c = markdownToHtml(content!.content!);

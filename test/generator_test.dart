@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:gengen/generator/page.dart';
+import 'package:gengen/generator/page/page.dart';
 import 'package:gengen/generator/posts/post.dart';
 import 'package:test/test.dart';
 

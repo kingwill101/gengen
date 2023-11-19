@@ -1,5 +1,5 @@
 import 'package:gengen/generator/generator.dart';
-import 'package:gengen/generator/pipeline.dart';
+import 'package:gengen/pipeline/pipeline.dart';
 
 class CollectHandler<T> extends Handle<Generator<T>> {
   @override
