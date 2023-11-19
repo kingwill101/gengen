@@ -18,6 +18,13 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Cache
+        id: cache
+        uses: actions/cache@v3
+        with:
+          path: bin/main.exe
+          key: ${{ runner.os }}-cache
+
       # Note: This workflow uses the latest stable version of the Dart SDK.
       # You can specify other versions if desired, see documentation here:
       # https://github.com/dart-lang/setup-dart/blob/main/README.md
@@ -43,3 +50,7 @@ jobs:
 
       - name: compile
         run: dart compile exe bin/main.dart
+
+      - name: run
+        run: ./bin/main.exe
+
