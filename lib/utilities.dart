@@ -12,3 +12,14 @@ Future<String?> readFile(String path) async {
 
   return file.readAsString();
 }
+
+String slugify(String text) {
+  return text
+      .toLowerCase()
+      .replaceAll(RegExp(r'\s+'), '-')
+      .replaceAll(RegExp(r'[^\w-]'), '');
+}
+
+String slugifyList(List<String> items) {
+  return items.map((item) => slugify(item)).join('/');
+}

@@ -11,17 +11,15 @@ import 'package:path/path.dart';
 class HtmlWriter extends Handle<Post> {
   @override
   void handle(Post data, HandleFunc<Post> next) {
-    var fileDestination = joinAll(
-        [data.destination!.path, withoutExtension(data.source), "index.html"]);
 
-    var file = File(fileDestination);
+    var file = File(data.permalink());
     file
         .create(recursive: true)
         .then((file) => file.writeAsString(markdownToHtml(data.content)))
         .then((value) {
       Console.setTextColor(Color.GREEN.id, bright: true);
 
-      print("written ${data.source} -> $fileDestination");
+      print("written ${data.source} -> ${data.permalink()}");
     });
   }
 }
