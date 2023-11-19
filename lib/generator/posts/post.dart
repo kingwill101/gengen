@@ -5,7 +5,6 @@ import 'package:gengen/content/content.dart';
 import 'package:gengen/generator/generator.dart';
 import 'package:gengen/generator/handlers.dart';
 import 'package:gengen/generator/shared/handlers.dart';
-import 'package:gengen/generator/shared/handlers.dart';
 import 'package:gengen/models.dart';
 import 'package:gengen/pipeline/pipeline.dart';
 import 'package:gengen/utilities.dart';

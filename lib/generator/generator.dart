@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:gengen/generator/page/page.dart';
 import 'package:gengen/generator/posts/post.dart';
+import 'package:gengen/generator/static.dart';
 import 'package:gengen/pipeline/pipeline.dart';
 import 'package:path/path.dart';
 

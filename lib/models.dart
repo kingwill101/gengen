@@ -28,7 +28,7 @@ class Base {
   }
 
   Base.fromYaml(this.frontMatter, this.source, this.content,
-      [this.dirConfig = const {}, this.destination]) {}
+      [this.dirConfig = const {}, this.destination]);
 
   String link() {
     return joinAll([destination!.path, permalink()]);
@@ -37,7 +37,6 @@ class Base {
 
 extension PermalinkExtension on Base {
   String permalink() {
-
     if (config.isEmpty || !config.containsKey("permalink")) {
       return buildPermalink();
     }

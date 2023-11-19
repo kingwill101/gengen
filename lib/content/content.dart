@@ -24,7 +24,7 @@ Content? toContent(String content) {
 }
 
 class Content {
-  String? _frontMatter;
+  final String? _frontMatter;
   String? content;
 
   Content(this._frontMatter, this.content);
