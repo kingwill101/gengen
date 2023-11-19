@@ -18,27 +18,27 @@ void main() {
 
     test('Date Permalink Structure', () {
       String permalink = post.buildPermalink(PermalinkStructure.date);
-      expect(permalink, '/dart/programming/2023/01/15/test-post.html');
+      expect(permalink, 'dart/programming/2023/01/15/test-post.html');
     });
 
     test('Pretty Permalink Structure', () {
       String permalink = post.buildPermalink(PermalinkStructure.pretty);
-      expect(permalink, '/dart/programming/2023/01/15/test-post/');
+      expect(permalink, 'dart/programming/2023/01/15/test-post/');
     });
 
     test('Ordinal Permalink Structure', () {
       String permalink = post.buildPermalink(PermalinkStructure.ordinal);
-      expect(permalink, '/dart/programming/2023/015/test-post.html');
+      expect(permalink, 'dart/programming/2023/015/test-post.html');
     });
 
     test('Weekdate Permalink Structure', () {
       String permalink = post.buildPermalink(PermalinkStructure.weekdate);
-      expect(permalink, '/dart/programming/2023/W02/Sun/test-post.html');
+      expect(permalink, 'dart/programming/2023/W02/Sun/test-post.html');
     });
 
     test('None Permalink Structure', () {
       String permalink = post.buildPermalink(PermalinkStructure.none);
-      expect(permalink, '/dart/programming/test-post.html');
+      expect(permalink, 'dart/programming/test-post.html');
     });
   });
 }
