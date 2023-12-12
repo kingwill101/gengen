@@ -1,9 +1,5 @@
 typedef HandleFunc<T> = void Function(T);
 
-abstract class Handle<T> {
-  void handle(T data, HandleFunc<T> next);
-}
-
 class Pipeline<T> {
   final List<Handle<T>> handlers;
   final T? data;
@@ -13,17 +9,19 @@ class Pipeline<T> {
     this.handlers = const [],
   ]);
 
-  Pipeline add(Handle<T> handle) {
+  Pipeline<T> add(Handle<T> handle) {
     handlers.add(handle);
+
     return this;
   }
 
-  Pipeline addAll(List<Handle<T>> handles) {
+  Pipeline<T> addAll(List<Handle<T>> handles) {
     handlers.addAll(handles);
+
     return this;
   }
 
-  Future<void> handle() async {
+  void handle() {
     if (data != null) {
       _processHandler(data as T);
     }
@@ -40,4 +38,8 @@ class Pipeline<T> {
       });
     }
   }
+}
+
+abstract class Handle<T> {
+  void handle(T data, HandleFunc<T> next);
 }

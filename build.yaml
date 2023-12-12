@@ -1,0 +1,17 @@
+targets:
+  $default:
+    sources:
+      - "$package$"
+      - "lib/$lib$"
+      - "bundle/**"
+
+    builders:
+      gengen:bundle_file_builder:
+        enabled: true
+builders:
+  bundle_file_builder:
+    import: "package:gengen/file_bundler.dart"
+    builder_factories: ["bundleFileBuilder"]
+    build_extensions: {".dart": ["bundle/bundle_data.dart"]}
+    auto_apply: dependents
+    build_to: source

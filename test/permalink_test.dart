@@ -1,4 +1,6 @@
-import 'package:gengen/models.dart';
+
+import 'package:gengen/models/permalink_structure.dart';
+import 'package:gengen/models/post.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -10,7 +12,7 @@ void main() {
         'author': 'John Doe',
         'title': 'Test Post',
         'date': '2023-01-15',
-        'tags': ['dart', 'programming']
+        'tags': ['dart', 'programming'],
       };
 
       post = Post.fromYaml(frontMatter, 'source', 'content');

@@ -1,6 +1,6 @@
+import 'package:gengen/content/tokenizer.dart';
 import 'package:markdown/markdown.dart';
 import 'package:test/test.dart';
-import 'package:gengen/content/content.dart';
 
 void main() {
   test("front matter", () {
@@ -16,11 +16,7 @@ this is the content
     ''';
     Content? content = toContent(source);
 
-    assert(content != null);
-    assert(content?.frontMatter != null);
-    assert(content?.content != null);
-
-    String c = markdownToHtml(content!.content!);
+    String c = markdownToHtml(content.content);
     assert(c.isNotEmpty);
   });
 }
