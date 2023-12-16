@@ -37,6 +37,7 @@ extension PermalinkExtension on Base {
     String permalink = config["permalink"] as String? ?? "";
 
     var structures = PermalinkStructure.map();
+
     if (structures.containsKey(permalink)) {
       return buildPermalink(structures[permalink]!);
     }
@@ -68,10 +69,10 @@ extension PermalinkExtension on Base {
         )
         .replaceAll(':slugified_categories', slugifyList(tags))
         .replaceAll(':title', normalizedTitle)
-        .replaceAll(':path', p.relative(p.dirname(name), from: p.current))
+        .replaceAll(':path', p.relative(p.dirname(source), from: site?.root ?? p.current))
         .replaceAll(
           ':basename',
-          normalize(p.withoutExtension(p.basename(name))),
+          normalize(p.withoutExtension(p.basename(source))),
         )
         .replaceAll(':output_ext', '.html');
 

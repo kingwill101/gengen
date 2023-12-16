@@ -23,7 +23,7 @@ class PostReader {
       if (!matcher.hasMatch(entry)) continue;
 
       var path = site.inSourceDir(join(dir, entry));
-      var doc = Post(path, site);
+      var doc = Post(path, site: site);
       docs.add(doc);
     }
 

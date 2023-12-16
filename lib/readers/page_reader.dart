@@ -10,9 +10,9 @@ class PageReader {
 
   List<Base> read(List<String> files) {
     for (var file in files) {
-      unfilteredContent.add(Page(file, site));
+      unfilteredContent.add(Page(file, site: site));
     }
-    
+
     return unfilteredContent;
   }
 }

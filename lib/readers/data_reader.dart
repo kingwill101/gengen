@@ -18,7 +18,7 @@ class DataReader {
       if (FileStat.statSync(file).type == FileSystemEntityType.directory) {
         continue;
       }
-      unfilteredContent.add(ThemeAsset(file, site));
+      unfilteredContent.add(ThemeAsset(file, site: site));
     }
     
     return unfilteredContent;

@@ -10,7 +10,7 @@ class StaticReader {
 
   List<Base> read(List<String> files) {
     for (var file in files) {
-      unfilteredContent.add(Static(file, site));
+      unfilteredContent.add(Static(file, site:site));
     }
     
     return unfilteredContent;

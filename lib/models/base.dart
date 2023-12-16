@@ -2,24 +2,26 @@ import 'dart:core';
 import 'dart:io';
 
 import 'package:gengen/content/tokenizer.dart';
+import 'package:gengen/drops/document_drop.dart';
 import 'package:gengen/logging.dart';
 import 'package:gengen/models/permalink_structure.dart';
-import 'package:gengen/models/url.dart';
-import 'package:gengen/renderer.dart';
+import 'package:gengen/renderer/renderer.dart';
 import 'package:gengen/site.dart';
 import 'package:gengen/utilities.dart';
 import 'package:more/collection.dart';
 import 'package:path/path.dart' as p;
+import 'package:path/path.dart';
 
 class Base {
-  late Site _site;
+  final Site? site;
 
   final Set<String> sassExtensions = const {".sass", ".scss"};
   final Set<String> htmlExtensions = const {'.html', '.xhtml', '.htm'};
   final Set<String> markdownExtensions = const {'.md', '.markdown'};
 
-  bool isPost = true;
-
+  bool isPost = false;
+  bool isPage = false;
+  bool isStatic = false;
   Directory? destination;
 
   Map<String, dynamic> dirConfig = const {};
@@ -34,17 +36,16 @@ class Base {
 
   Map<String, dynamic> get config => _config();
 
-  Renderer get renderer => Renderer(this);
+  late Renderer renderer;
 
   String get ext => p.extension(source);
-
-  Site get site => _site;
 
   bool get isSass => sassExtensions.contains(ext);
 
   bool get isHtml => htmlExtensions.contains(ext);
 
-  bool get isMarkdown => markdownExtensions.contains(ext);
+  bool get isMarkdown =>
+      markdownExtensions.contains(ext) || containsMarkdown(content);
 
   bool get hasLiquid => containsLiquid(content);
 
@@ -52,45 +53,75 @@ class Base {
 
   String get layout => config["layout"] as String? ?? "";
 
-  Base.fromYaml(
-    this.frontMatter,
-    this.source,
-    this.content, [
+  bool get isIndex => withoutExtension(basename(name)) == 'index';
+
+  Base(
+    this.source, {
+    this.site,
+    this.name = "",
+    this.frontMatter = const {},
     this.dirConfig = const {},
     this.destination,
-  ]);
-
-  Base(this.source, this._site, [this.name = ""]) {
+  }) {
     read();
   }
 
-  String link([Directory? dst]) {
-    if (dst != null) {
-      destination = dst;
-
-      return p.joinAll([dst.path, permalink()]);
-    }
-
-    return p.joinAll([destination!.path, permalink()]);
+  String link() {
+    return permalink();
   }
 
   void read() {
     String fileContent = readFileSafe(source);
     var loadedContent = toContent(fileContent);
+
+    //config from _index.md located in the same directory
     dirConfig = getDirectoryFrontMatter(source) ?? {};
+
+    //config found in post/page front matter
     frontMatter = loadedContent.frontMatter;
+
     content = loadedContent.content;
-    name = source.removePrefix(site.config.source + p.separator);
+    name = source.removePrefix(site!.config.source + p.separator);
+    renderer = Renderer(this);
   }
 
-  void write(Directory destination) {
-    var file = File(link(destination));
-    file
-        .create(recursive: true)
-        .then((file) async => file.writeAsString(await renderer.render()))
-        .then((value) {
+  String get destinationPath {
+    var destiny = destination ?? site!.destination;
 
-      log.info("written $relativePath -> ${p.relative(link())}");
+    if (isPost && !isIndex) {
+      name = setExtension("index", ext);
+    }
+
+    return destiny.path;
+  }
+
+  void copyWrite() {
+    File(!isSass ? filePath : setExtension(filePath, ".css"))
+        .create(recursive: true)
+        .then((file) async {
+      if (isSass) {
+        return file.writeAsString(await renderer.render());
+      }
+
+      return File(source).copy(file.path);
+    }).then((value) {
+      log.info("written $source -> ${value.path}");
+    });
+  }
+
+  String get filePath => join(destinationPath, link());
+
+  void write() {
+    if (isStatic) return copyWrite();
+
+    var file = File(filePath);
+
+    file.create(recursive: true).then((file) async {
+      return isPost || isPage
+          ? file.writeAsString(await renderer.render())
+          : file.writeAsString(content);
+    }).then((value) {
+      log.info("written $relativePath -> ${link()}");
     });
   }
 
@@ -101,6 +132,10 @@ class Base {
       config[key] = value;
     });
 
+    // global default
+    // directory configs has _index.md
+    // page default
+
     frontMatter.forEach((key, value) {
       config[key] = value;
     });
@@ -109,34 +144,28 @@ class Base {
   }
 
   String get relativePath {
-    return p.relative(source, from: site.config.source);
+    return p.relative(source, from: site?.config.source);
   }
 
-  Map<String, dynamic> get data => {
-        "page": {
-          ...config,
-          "debug":{
-            "source": source,
-            "name": name,
-          },
+  Map<String, dynamic> _data() {
+    var d = {
+      "page": {
+        ...config,
+        'content': renderer.content,
+        'permalink': link(),
+        "debug": {
+          "source": source,
+          "name": name,
         },
-      };
+      },
+    };
+
+    return d;
+  }
+
+  Map<String, dynamic> get data => _data();
 
   late String template;
 
-  String get url {
-    return URL(
-      template: template,
-      placeholders: urlPlaceholders,
-      permalink: permalink(),
-    ).toString();
-  }
-
-  Map<String, dynamic> get urlPlaceholders {
-    return {
-      // 'path': dir,
-      'basename': name,
-      'output_ext': ext,
-    };
-  }
+  DocumentDrop get to_liquid => DocumentDrop(this);
 }
