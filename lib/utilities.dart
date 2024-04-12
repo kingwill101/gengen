@@ -2,6 +2,10 @@ import 'dart:io';
 
 import 'package:gengen/content/tokenizer.dart';
 import 'package:gengen/logging.dart';
+import 'package:gengen/site.dart';
+import 'package:html/dom.dart' as dom;
+import 'package:html/parser.dart' as html_parser;
+import 'package:html_unescape/html_unescape.dart';
 import 'package:path/path.dart';
 import 'package:toml/toml.dart';
 import 'package:yaml_magic/yaml_magic.dart';
@@ -26,22 +30,35 @@ String slugifyList(List<String> items) {
   return items.map((item) => slugify(item)).join('/');
 }
 
-Map<String, dynamic>? getDirectoryFrontMatter(String path) {
-  var dir = dirname(path);
-
-  var index = File(join(dir, "_index.md"));
-
+Map<String, dynamic> getDirectoryFrontMatter(String path) {
+  var index = File(join(path, "_index.md"));
   if (!index.existsSync()) {
     return {};
   }
-
   var content = index.readAsStringSync();
-
   var markdown = toContent(content);
-
   var matter = markdown.frontMatter;
 
   return matter;
+}
+
+Map<String, dynamic> walkDirectoriesAndGetFrontMatters(String basePath) {
+  var segments = split(basePath);
+  var mergedMatter = <String, dynamic>{};
+
+  for (int i = 0; i < segments.length; i++) {
+    var currentPath = joinAll(segments.sublist(0, i + 1));
+    var matter = getDirectoryFrontMatter(currentPath);
+    mergedMatter = {...mergedMatter, ...matter};
+  }
+
+  return mergedMatter;
+}
+
+String cleanUpContent(String htmlContent) {
+  var unescape = HtmlUnescape();
+
+  return unescape.convert(htmlContent).replaceAll('\u00A0', ' ');
 }
 
 Map<String, dynamic> parseYaml(String front) {
@@ -50,12 +67,12 @@ Map<String, dynamic> parseYaml(String front) {
 
 Map<String, dynamic> getFrontMatter(String matter) {
   Map<String, dynamic> frontMatter = <String, dynamic>{};
-  try {
-    frontMatter = parseYaml(matter);
-  } catch (exc) {
+
+  frontMatter = parseYaml(matter);
+
+  if (matter.isNotEmpty && frontMatter.isEmpty) {
     try {
-      frontMatter = TomlDocument.parse(matter) as Map<String, dynamic>? ??
-          <String, dynamic>{};
+      frontMatter = TomlDocument.parse(matter).toMap();
     } catch (e) {
       return {};
     }
