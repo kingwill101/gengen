@@ -17,6 +17,20 @@ class Site extends Path {
   final List<Base> _pages = [];
   final List<Base> _static = [];
 
+  static Site? _instance;
+
+
+  static void init({
+    Map<String, dynamic> overrides = const <String, dynamic>{},
+  }) {
+    Site.__internal(overrides: overrides);
+  }
+
+  static Site get instance {
+    _instance ??= Site.__internal();
+
+    return _instance!;
+  }
   late Theme theme;
 
   List<Base> get pages => _pages;
