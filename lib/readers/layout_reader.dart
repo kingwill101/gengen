@@ -6,29 +6,29 @@ import 'package:gengen/site.dart';
 import 'package:path/path.dart';
 
 class LayoutReader {
-  Site site;
+
   var layouts = <String, Layout>{};
 
-  LayoutReader(this.site);
+  LayoutReader();
 
   Map<String, Layout> read() {
     layoutEntries().forEach((layoutFile) {
-      var name = site.relativeToRoot(withoutExtension(layoutFile));
+      var name = Site.instance.relativeToRoot(withoutExtension(layoutFile));
       layouts[name] =
-          Layout(site, layoutFile, name, ext: extension(layoutFile));
+          Layout(layoutFile, name, ext: extension(layoutFile));
     });
 
     themeLayoutEntries().forEach((layoutFile) {
-      var name =  site.theme.relativeToRoot(withoutExtension(layoutFile));
+      var name =  Site.instance.theme.relativeToRoot(withoutExtension(layoutFile));
       layouts[name] =
-          Layout(site, layoutFile, name, ext: extension(layoutFile));
+          Layout(layoutFile, name, ext: extension(layoutFile));
     });
 
     return layouts;
   }
 
   List<String> layoutEntries() {
-    var directory = Directory(site.layoutsPath);
+    var directory = Directory(Site.instance.layoutsPath);
     if (!directory.existsSync()) {
       return [];
     }
@@ -43,11 +43,11 @@ class LayoutReader {
       }
     }
 
-    return EntryFilter(site).filter(entries);
+    return EntryFilter().filter(entries);
   }
 
   List<String> themeLayoutEntries() {
-    var directory = Directory(site.theme.layoutsPath);
+    var directory = Directory(Site.instance.theme.layoutsPath);
     if (!directory.existsSync()) {
       return [];
     }
@@ -62,7 +62,7 @@ class LayoutReader {
       }
     }
 
-    return EntryFilter(site).filter(entries);
+    return EntryFilter().filter(entries);
   }
 
 }

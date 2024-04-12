@@ -4,10 +4,9 @@ import 'package:gengen/site.dart';
 import 'package:path/path.dart';
 
 class PostReader {
-  final Site site;
   List<Base> unfilteredContent = [];
 
-  PostReader(this.site);
+  PostReader();
 
   List<Base> readPosts(String dir) {
     var docs = readContent(dir, RegExp(r'^[a-zA-Z0-9\-_]*'));
@@ -17,13 +16,15 @@ class PostReader {
   }
 
   List<Base> readContent(String dir, RegExp matcher) {
-    var entries = site.reader.getEntries(dir);
+    var entries = Site.instance.reader.getEntries(dir);
     var docs = <Base>[];
     for (var entry in entries) {
       if (!matcher.hasMatch(entry)) continue;
 
-      var path = site.inSourceDir(join(dir, entry));
-      var doc = Post(path, site: site);
+      var path = Site.instance.inSourceDir(join(dir, entry));
+      var doc = Post(
+        path,
+      );
       docs.add(doc);
     }
 
