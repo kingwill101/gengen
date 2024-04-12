@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:gengen/layout.dart';
@@ -6,6 +7,7 @@ import 'package:gengen/path.dart';
 import 'package:gengen/reader.dart';
 import 'package:gengen/theme.dart';
 import 'package:path/path.dart';
+import 'package:rxdart/rxdart.dart';
 
 class Site extends Path {
   late Reader _reader;
@@ -94,7 +96,7 @@ class Site extends Path {
     while (!theme.loaded) {
       sleep(const Duration(milliseconds: 10));
     }
-    _reader = Reader(this);
+    _reader = Reader();
     include = Set.from(config.get<List<String>>("include") ?? []);
     exclude = Set.from(config.get<List<String>>("exclude") ?? []);
   }
@@ -102,9 +104,8 @@ class Site extends Path {
   Reader get reader => _reader;
 
   void reset() {
-    var dir = Directory(destination);
-    if (dir.existsSync()) {
-      dir.deleteSync(recursive: true);
+    if (destination.existsSync()) {
+      destination.deleteSync(recursive: true);
     }
   }
 
@@ -113,29 +114,45 @@ class Site extends Path {
     write();
   }
 
-  String get destination => config.destination;
+  Directory get destination => Directory(config.destination);
 
   String workingDir() {
-    String wkdir = config.source;
+    String workDir = config.source;
+    if (isRelative(workDir)) return joinAll([current, workDir]);
 
-    if (isRelative(wkdir)) {
-      wkdir = joinAll([current, wkdir]);
-    }
-
-    return wkdir;
+    return workDir;
   }
 
   void write() {
-    Directory dst = Directory(config.destination);
-    var content = List<Base>.from([...posts, ...pages, ...staticFiles]);
-    for (var element in content) {
-      element.write(dst);
+    for (var element in [
+      ...staticFiles,
+      ...posts,
+      ...pages,
+    ]) {
+      element.write();
+    }
+  }
+
+  void watch() {
+    for (var value in [
+      ...staticFiles,
+      ...posts,
+      ...pages,
+    ]) {
+      value.watch();
+    }
+
+    for (var value in layouts.values) {
+      value.watch();
     }
   }
 
   String inSourceDir(String path) => join(config.source, path);
 
   String relativeToSource(String path) => relative(path, from: config.source);
+
+  String relativeToDestination(String path) =>
+      relative(path, from: destination.path);
 
   @override
   String get root => workingDir();
