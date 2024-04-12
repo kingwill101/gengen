@@ -47,6 +47,28 @@ class Site extends Path {
 
     return _instance!;
   }
+
+// Create a broadcast StreamController
+  final StreamController<String> _fileChangeController =
+      StreamController.broadcast();
+
+// Getter for the stream
+  Stream<String> get fileChangeStream =>
+      _fileChangeController.stream.debounceTime(
+        Duration(
+          milliseconds: 500,
+        ),
+      );
+
+  void dispose() {
+    _fileChangeController.close();
+  }
+
+// Method to add a file change event
+  void notifyFileChange(String filePath) {
+    _fileChangeController.sink.add(filePath);
+  }
+
   late Theme theme;
 
   List<Base> get pages => _pages;
