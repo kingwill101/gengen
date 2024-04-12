@@ -9,9 +9,9 @@ class Configuration {
     read(cfg);
   }
 
-  Configuration();
+  const Configuration();
 
-  Map<String, dynamic> _config = {..._defaults};
+  static Map<String, dynamic> _config = {..._defaults};
 
   static final Map<String, dynamic> _defaults = {
     "title": "My GenGen Site",
@@ -20,6 +20,7 @@ class Configuration {
     "source": current,
     "destination": joinAll([current, 'public']),
     "post_dir": "_posts",
+    "draft_dir": "_draft",
     "themes_dir": "_themes",
     "layout_dir": "_layouts",
     "sass_dir": "_sass",
@@ -30,12 +31,10 @@ class Configuration {
     "block_list": <String>[],
     "markdown_extensions": <String>[],
     'permalink': "date",
-    'show_drafts': false,
+    'publish_drafts': false,
     "config": ["config.yaml"],
     "output": {"posts_dir": "posts"},
   };
-
-  static const List<String> defaultExcludes = ['node_modules', ''];
 
   T? get<T>(
     String key, {
@@ -109,7 +108,8 @@ class Configuration {
     }
   }
 
-  void read([Map<String, dynamic> overrides = const {}]) {
+  void read([Map<String, dynamic> configOverride = const {}]) {
+    var overrides = {...configOverride};
     List<String> resolvedFiles = [];
 
     bool hasConfig = overrides.containsKey("config");
