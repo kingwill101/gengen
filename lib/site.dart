@@ -19,6 +19,22 @@ class Site extends Path {
 
   static Site? _instance;
 
+  Site.__internal({Map<String, dynamic> overrides = const {}}) {
+    super.configuration.read(overrides);
+    reset();
+    theme = Theme.load(
+      config.get<String>("theme")!,
+      themePath: themesDir,
+      config: super.configuration,
+    );
+
+    while (!theme.loaded) {
+      sleep(const Duration(milliseconds: 10));
+    }
+    _reader = Reader();
+    include = Set.from(config.get<List<String>>("include") ?? []);
+    exclude = Set.from(config.get<List<String>>("exclude") ?? []);
+  }
 
   static void init({
     Map<String, dynamic> overrides = const <String, dynamic>{},
