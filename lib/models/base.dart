@@ -80,9 +80,17 @@ class Base with WatcherMixin {
 
   bool get isIndex => withoutExtension(basename(name)) == 'index';
 
+  DateTime get date {
+    if (!config.containsKey("date")) {
+      return DateTime.fromMicrosecondsSinceEpoch(0);
+    }
+    var date = DateTime.parse(config["date"] as String);
+
+    return date;
+  }
+
   Base(
     this.source, {
-    this.site,
     this.name = "",
     this.frontMatter = const {},
     this.dirConfig = const {},

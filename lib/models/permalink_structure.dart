@@ -2,8 +2,10 @@ import 'dart:core';
 
 import 'package:gengen/logging.dart';
 import 'package:gengen/models/base.dart';
+import 'package:gengen/site.dart';
 import 'package:gengen/utilities.dart';
 import 'package:intl/intl.dart';
+import 'package:more/collection.dart';
 import 'package:path/path.dart' as p;
 
 class PermalinkStructure {
@@ -34,15 +36,21 @@ extension PermalinkExtension on Base {
       return buildPermalink();
     }
 
-    String permalink = config["permalink"] as String? ?? "";
+    String entryPermalink = config["permalink"] as String? ?? "";
+
+    //If permalink doesn't include partition then it should be
+    //an hard coded path
+    if (entryPermalink.isNotEmpty && !entryPermalink.contains(':')) {
+      return entryPermalink.removePrefix('/');
+    }
 
     var structures = PermalinkStructure.map();
 
-    if (structures.containsKey(permalink)) {
-      return buildPermalink(structures[permalink]!);
+    if (structures.containsKey(entryPermalink)) {
+      return buildPermalink(structures[entryPermalink]!);
     }
 
-    return p.normalize(buildPermalink(permalink));
+    return p.normalize(buildPermalink(entryPermalink));
   }
 
   String buildPermalink([String permalink = PermalinkStructure.none]) {
@@ -56,8 +64,9 @@ extension PermalinkExtension on Base {
 
     String normalizedTitle = normalize(title);
 
-    List<String> tags =
-        config.containsKey("tags") ? List<String>.from(config['tags'] as List) : <String>[];
+    List<String> tags = config.containsKey("tags")
+        ? List<String>.from(config['tags'] as List)
+        : <String>[];
 
     String categories = tags.isNotEmpty ? tags.join("/") : "";
     categories = !isPost ? categories : "uncategorized";
@@ -69,7 +78,8 @@ extension PermalinkExtension on Base {
         )
         .replaceAll(':slugified_categories', slugifyList(tags))
         .replaceAll(':title', normalizedTitle)
-        .replaceAll(':path', p.relative(p.dirname(source), from: site?.root ?? p.current))
+        .replaceAll(
+            ':path', p.relative(p.dirname(source), from: Site.instance.root))
         .replaceAll(
           ':basename',
           normalize(p.withoutExtension(p.basename(source))),
