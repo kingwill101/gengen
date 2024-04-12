@@ -1,19 +1,18 @@
 import 'package:gengen/content/tokenizer.dart';
 import 'package:gengen/site.dart';
 import 'package:gengen/utilities.dart';
+import 'package:gengen/watcher.dart';
 import 'package:path/path.dart';
 
-class Layout {
+class Layout with WatcherMixin {
   String content;
   Map<String, dynamic> data = {};
   String ext;
   String name;
   String path;
-  Site site;
   String relativePath;
 
   Layout(
-    this.site,
     this.path,
     this.name, {
     this.content = "",
@@ -38,4 +37,13 @@ class Layout {
   String toString() {
     return "<$runtimeType @path=$path>";
   }
+
+  @override
+  void onFileChange() {
+    parse();
+    Site.instance.notifyFileChange(path);
+  }
+
+  @override
+  String get source => path;
 }
