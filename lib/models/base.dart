@@ -19,6 +19,22 @@ class Base with WatcherMixin {
   final Set<String> markdownExtensions = const {'.md', '.markdown'};
 
   bool isPost = false;
+  void handleAlias(File value) {
+    if (!value.existsSync()) return;
+    if (config.containsKey("aliases") && config["aliases"] is List) {
+      for (var alias in config["aliases"] as List) {
+        try {
+          var dest = File(p.join(destinationPath,
+              p.setExtension(alias as String, p.extension(filePath))));
+          dest.createSync(recursive: true);
+          dest.writeAsStringSync(value.readAsStringSync());
+        } on Exception catch (_, e) {
+          log.warning("Failed to create alias '$alias': $e");
+        }
+      }
+    }
+  }
+
   bool isPage = false;
   bool isStatic = false;
   Directory? destination;
@@ -113,31 +129,24 @@ class Base with WatcherMixin {
   void write() {
     if (isStatic) return copyWrite();
 
-    var file = File(filePath);
-
+    File file = File(filePath);
     file.create(recursive: true).then((file) async {
-      return isPost || isPage
-          ? file.writeAsString(await renderer.render())
-          : file.writeAsString(content);
+      var fileContent = isPost || isPage ? await renderer.render() : content;
+      return file.writeAsString(fileContent);
     }).then((value) {
       log.info("written $relativePath -> ${link()}");
+      //only call when path is null to prevent
+      handleAlias(value);
     });
   }
 
   Map<String, dynamic> _config() {
     Map<String, dynamic> config = Map.from(dirConfig);
-
-    defaultMatter.forEach((key, value) {
-      config[key] = value;
-    });
-
-    // global default
-    // directory configs has _index.md
-    // page default
-
-    frontMatter.forEach((key, value) {
-      config[key] = value;
-    });
+    for (var element in [defaultMatter, dirConfig, frontMatter]) {
+      element.forEach((key, value) {
+        config[key] = value;
+      });
+    }
 
     return config;
   }
