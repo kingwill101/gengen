@@ -88,7 +88,7 @@ class Site extends Path {
     theme = Theme.load(
       config.get<String>("theme")!,
       themePath: themesDir,
-      config: configuration,
+      config: super.configuration,
     );
 
     while (!theme.loaded) {

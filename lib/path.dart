@@ -3,13 +3,13 @@ import 'package:gengen/logging.dart';
 import 'package:path/path.dart';
 
 abstract class Path {
-  final Configuration configuration;
+  late Configuration configuration;
 
   Configuration get config => configuration;
 
   late String root;
 
-  Path(this.configuration);
+  Path([this.configuration = const Configuration()]);
 
   String pathFor(String folder) {
     String folderPath = join(root, folder);
