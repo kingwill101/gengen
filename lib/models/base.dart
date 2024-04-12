@@ -5,7 +5,7 @@ import 'package:gengen/content/tokenizer.dart';
 import 'package:gengen/drops/document_drop.dart';
 import 'package:gengen/logging.dart';
 import 'package:gengen/models/permalink_structure.dart';
-import 'package:gengen/renderer/renderer.dart';
+import 'package:gengen/renderer.dart';
 import 'package:gengen/site.dart';
 import 'package:gengen/utilities.dart';
 import 'package:gengen/watcher.dart';
@@ -19,6 +19,15 @@ class Base with WatcherMixin {
   final Set<String> markdownExtensions = const {'.md', '.markdown'};
 
   bool isPost = false;
+
+  bool isDraft() {
+    if (config.containsKey("draft") && config["draft"] is bool) {
+      return config["draft"] as bool;
+    }
+
+    return false;
+  }
+
   void handleAlias(File value) {
     if (!value.existsSync()) return;
     if (config.containsKey("aliases") && config["aliases"] is List) {
@@ -42,6 +51,7 @@ class Base with WatcherMixin {
   Map<String, dynamic> dirConfig = const {};
 
   late String name;
+  @override
   late String source;
   late String content;
 
@@ -86,24 +96,30 @@ class Base with WatcherMixin {
   }
 
   void read() {
+    metadata["last_modified"] =
+        FileStat.statSync(source).modified.millisecondsSinceEpoch;
+    metadata["size"] = FileStat.statSync(source).size;
+
     String fileContent = readFileSafe(source);
     var loadedContent = toContent(fileContent);
 
-    //config from _index.md located in the same directory
-    dirConfig = getDirectoryFrontMatter(source) ?? {};
+    //config from _index.md located in directory hierarchy
+    //starting in _posts
+    dirConfig = walkDirectoriesAndGetFrontMatters(
+        Site.instance.relativeToSource(source));
 
     //config found in post/page front matter
     frontMatter = loadedContent.frontMatter;
 
-    content = loadedContent.content;
-    name = source.removePrefix(site!.config.source + p.separator);
+    content = cleanUpContent(loadedContent.content);
+    name = source.removePrefix(Site.instance.config.source + p.separator);
     renderer = Renderer(this);
   }
 
   String get destinationPath {
-    var destiny = destination ?? site!.destination;
+    var destiny = destination ?? Site.instance.destination;
 
-    if (isPost && !isIndex) {
+    if (isPage && !isIndex) {
       name = setExtension("index", ext);
     }
 
@@ -152,28 +168,8 @@ class Base with WatcherMixin {
   }
 
   String get relativePath {
-    return p.relative(source, from: site?.config.source);
+    return p.relative(source, from: Site.instance.config.source);
   }
-
-  Map<String, dynamic> _data() {
-    var d = {
-      "page": {
-        ...config,
-        'content': renderer.content,
-        'permalink': link(),
-        "debug": {
-          "source": source,
-          "name": name,
-        },
-      },
-    };
-
-    return d;
-  }
-
-  Map<String, dynamic> get data => _data();
-
-  late String template;
 
   DocumentDrop get to_liquid => DocumentDrop(this);
 

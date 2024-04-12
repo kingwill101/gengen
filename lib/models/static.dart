@@ -3,7 +3,6 @@ import 'package:gengen/models/base.dart';
 class Static extends Base {
   Static(
     super.source, {
-    super.site,
     super.name,
     super.frontMatter,
     super.dirConfig,

@@ -1,10 +1,10 @@
 import 'package:gengen/models/static.dart';
+import 'package:gengen/site.dart';
 import 'package:path/path.dart';
 
 class ThemeAsset extends Static {
   ThemeAsset(
     super.source, {
-    super.site,
     super.name,
     super.frontMatter,
     super.dirConfig,
@@ -13,7 +13,7 @@ class ThemeAsset extends Static {
 
   @override
   String link() {
-    name = relative(source, from: site?.theme.root);
+    name = relative(source, from: Site.instance.theme.root);
 
     return name;
   }
