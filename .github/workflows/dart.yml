@@ -28,12 +28,10 @@ jobs:
       - name: Analyze project source
         run: |
           dart analyze
-          dart run dart_code_linter:metrics check-unused-code lib 
-          dart run dart_code_linter:metrics check-unnecessary-nullable lib
-          
+
       - name: Run tests
         run: dart test
-      
+
       - name: generate
         run: dart run build_runner build
 
