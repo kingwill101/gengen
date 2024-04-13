@@ -1,6 +1,9 @@
+import 'dart:async';
 import 'dart:io';
 
+import 'package:gengen/liquid/modules/data_module.dart';
 import 'package:gengen/logging.dart';
+import 'package:gengen/md/md.dart';
 import 'package:gengen/site.dart';
 import 'package:gengen/utilities.dart';
 import 'package:glob/glob.dart';
@@ -12,27 +15,27 @@ class Template {
 
   String child;
 
-  late Site site;
-
   Map<String, dynamic> data;
 
   final context = liquid.Context.create();
 
   liquid.Root? contentRoot;
 
-  Template(
-    this.template, {
-    this.child = "",
-    this.data = const {},
-    required this.contentRoot,
-  });
-
   Template.r(
     this.template, {
     this.child = "",
     this.data = const {},
-    required this.contentRoot,
-  });
+    this.contentRoot = const ContentRoot(),
+  }) {
+    Map<String, liquid.Module> modules = {
+      "data": DataModule(),
+    };
+
+    modules.forEach((key, value) {
+      context.modules[key] = value;
+      context.modules[key]!.register(context);
+    });
+  }
 
   Future<String> render() async {
     context.variables.addAll(data);
@@ -40,17 +43,32 @@ class Template {
     child = await parse(child);
     context.variables["content"] = child;
 
-    return liquid.Template.parse(
-      context,
-      liquid.Source(null, template, contentRoot),
-    ).render(context);
+    return parse(template);
   }
 
-  Future<String> parse(String content) {
-    return liquid.Template.parse(
-      context,
-      liquid.Source(null, content, contentRoot),
-    ).render(context);
+  Future<String> parse(String content) async {
+    Completer<String> c = Completer();
+
+    try {
+      liquid.Template.parse(
+        context,
+        liquid.Source(null, content, contentRoot),
+      )
+          .render(context)
+          .then((value) => c.complete(value))
+          .onError((error, stackTrace) {
+        log.severe(error);
+      }).catchError((Object err) {
+        log.severe(err);
+        c.completeError(err);
+      });
+    } catch (err, stacktrace) {
+      log.severe(err);
+      log.severe(stacktrace);
+      c.completeError(err);
+    }
+
+    return c.future;
   }
 }
 
@@ -65,9 +83,9 @@ class ContentRoot implements liquid.Root {
       var directory = Directory(dirPath);
       if (!directory.existsSync()) continue;
 
-      var globPattern = Glob("${p.basename(relPath)}.*");
+      var globPattern = Glob("$relPath.*");
 
-      var fileSystemEntities = directory.listSync();
+      var fileSystemEntities = directory.listSync(recursive: true);
       for (var entity in fileSystemEntities) {
         if (entity is File &&
             globPattern.matches(p.relative(entity.path, from: dirPath))) {
@@ -75,7 +93,7 @@ class ContentRoot implements liquid.Root {
               p.basenameWithoutExtension(relPath)) {
             var fileContent = readFileSafe(entity.path);
 
-            return liquid.Source(Uri.file(entity.path), fileContent, this);
+            return liquid.Source(null, renderMd(fileContent), this);
           }
         }
       }
