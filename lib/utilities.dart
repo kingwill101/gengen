@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:gengen/content/tokenizer.dart';
 import 'package:gengen/logging.dart';
-import 'package:gengen/site.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' as html_parser;
 import 'package:html_unescape/html_unescape.dart';
@@ -83,8 +82,6 @@ Map<String, dynamic> getFrontMatter(String matter) {
 
 String readFileSafe(String fullPath, {String contextMsg = ""}) {
   if (isBinaryFile(fullPath)) {
-    log.warning('$fullPath is a binary file, skipping...');
-
     return '';
   }
 
@@ -139,9 +136,71 @@ bool containsLiquid(String content) {
   return content.contains("{%") || content.contains("{{");
 }
 
+bool containsMarkdown(String content) {
+  RegExp markdownSyntax = RegExp(r'\[.*\]\(.*\)|#+ .+');
+
+  return markdownSyntax.hasMatch(content);
+}
+
 String normalize(String title) {
   return slugify(title)
       .toLowerCase()
       .replaceAll(' ', '-')
       .replaceAll(RegExp(r'[^\w-]'), '');
+}
+
+String extractExcerpt(
+  String htmlContent, {
+  int maxLength = 200,
+  String? keyword,
+}) {
+  // Parse the HTML content
+  dom.Document document = html_parser.parse(htmlContent);
+
+  // Find relevant elements
+  List<dom.Element> relevantElements =
+      document.querySelectorAll('p, div, article');
+
+  // Extract and clean text
+  List<String> allSentences = relevantElements.expand((element) {
+    String text = element.text.trim();
+    text = text.replaceAll(
+      RegExp(r'\s+'),
+      ' ',
+    ); // Replace multiple whitespaces with a single space
+
+    // Split the text into sentences
+    return text.split(RegExp(r'[.!?]\s'));
+  }).toList();
+
+  // Combine sentences and ensure they are within the max length
+  String excerpt = '';
+  for (var sentence in allSentences) {
+    if (excerpt.length + sentence.length > maxLength) {
+      break;
+    }
+    excerpt += '$sentence ';
+  }
+
+  // Trim to the maximum length if necessary
+  if (excerpt.length > maxLength) {
+    excerpt = excerpt.substring(0, maxLength);
+    // Optionally, trim at the last full word
+    int lastSpace = excerpt.lastIndexOf(' ');
+    if (lastSpace > 0) {
+      excerpt = excerpt.substring(0, lastSpace);
+    }
+  }
+
+  // If a keyword is provided, prioritize sentences containing the keyword
+  if (keyword != null && keyword.isNotEmpty) {
+    String? sentenceWithKeyword = allSentences.firstWhere(
+      (sentence) => sentence.contains(keyword),
+      orElse: () => '',
+    );
+    excerpt =
+        sentenceWithKeyword.length <= maxLength ? sentenceWithKeyword : excerpt;
+  }
+
+  return excerpt.trim();
 }
