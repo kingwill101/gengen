@@ -14,7 +14,6 @@ class Site extends Path {
   late Set<String> include;
   late Set<String> exclude;
   late Map<String, Layout> layouts;
-
   final List<Base> _posts = [];
   final List<Base> _pages = [];
   final List<Base> _static = [];
@@ -157,14 +156,18 @@ class Site extends Path {
   @override
   String get root => workingDir();
 
-  Map<String, dynamic> get data => {
-        'site': {
-          ...config.all,
-          'pages': pages.map((e) => e.data['page']).toList(),
-          'posts': posts.map((e) => e.data['page']).toList(),
-        },
+  Map<String, dynamic> get data {
+    posts.sort((a, b) => b.date.compareTo(a.date));
+
+    return {
+      'site': {
+        ...config.all,
+        'pages': pages.map((e) => e.to_liquid).toList(),
+        'posts': posts.map((e) => e.to_liquid).toList(),
         'theme': {
           'root': theme.root,
         },
-      };
+      },
+    };
+  }
 }
