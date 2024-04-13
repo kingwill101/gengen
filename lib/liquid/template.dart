@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:gengen/liquid/modules/data_module.dart';
+import 'package:gengen/liquid/modules/url_module.dart';
 import 'package:gengen/logging.dart';
 import 'package:gengen/md/md.dart';
 import 'package:gengen/site.dart';
@@ -29,6 +30,7 @@ class Template {
   }) {
     Map<String, liquid.Module> modules = {
       "data": DataModule(),
+      "url": UrlModule(),
     };
 
     modules.forEach((key, value) {

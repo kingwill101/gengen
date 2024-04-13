@@ -2,17 +2,18 @@ import 'package:gengen/md/short_code.dart';
 import 'package:html/parser.dart' as parser;
 import 'package:markdown/markdown.dart';
 
-
-class EmptyLineBlockSyntax extends BlockSyntax{
+class EmptyLineBlockSyntax extends BlockSyntax {
+  @override
   RegExp get pattern => RegExp(r'^[ \t][ \t]+$');
 
   const EmptyLineBlockSyntax();
 
+  @override
   Node parse(BlockParser parser) {
     parser.encounteredBlankLine = true;
     parser.advance();
 
-    return Element('p',[Element.empty('br')]);
+    return Element('p', [Element.empty('br')]);
   }
 }
 
@@ -21,12 +22,13 @@ String renderMd(String content) {
     content,
     extensionSet: ExtensionSet.gitHubWeb,
     blockSyntaxes: [EmptyLineBlockSyntax()],
-    inlineSyntaxes: [Shortcode(), ],
+    inlineSyntaxes: [
+      Shortcode(),
+    ],
   );
 
   return renderedContent;
 }
-
 
 String stripEmptyTags(String htmlContent) {
   // Parse the HTML content
@@ -40,4 +42,3 @@ String stripEmptyTags(String htmlContent) {
 
   return modifiedHtml;
 }
-

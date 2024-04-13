@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:gengen/commands/abstract_command.dart';
 
 class New extends AbstractCommand {
