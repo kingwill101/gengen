@@ -55,13 +55,11 @@ class Template {
 }
 
 class ContentRoot implements liquid.Root {
-  Site site;
-
-  ContentRoot(this.site);
+  const ContentRoot();
 
   @override
   Future<liquid.Source> resolve(String relPath) async {
-    var paths = [site.includesPath, site.theme.includesPath];
+    var paths = [Site.instance.includesPath, Site.instance.theme.includesPath];
 
     for (var dirPath in paths) {
       var directory = Directory(dirPath);

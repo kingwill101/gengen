@@ -1,8 +1,6 @@
-import 'dart:async';
-
+import 'package:gengen/commands/abstract_command.dart';
 import 'package:gengen/logging.dart';
 import 'package:gengen/site.dart';
-import 'package:gengen/commands/abstract_command.dart';
 
 class Build extends AbstractCommand {
   @override
@@ -12,15 +10,12 @@ class Build extends AbstractCommand {
   String get name => "build";
 
   @override
-  FutureOr<void>? run() {
+  void start() {
     log.info(" Starting build\n");
-
     try {
-      var site = Site(config);
-      site.process();
+      Site.instance.process();
     } on Exception catch (e, _) {
       log.severe(e.toString());
     }
-    // gen(outputDir: outputDir);
   }
 }

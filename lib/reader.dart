@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:gengen/entry_filter.dart';
 import 'package:gengen/readers/layout_reader.dart';
 import 'package:gengen/readers/page_reader.dart';
@@ -11,22 +12,8 @@ import 'package:more/collection.dart';
 import 'package:path/path.dart';
 
 class Reader {
-  final Site _site;
-
-  late PostReader postReader;
-  late PageReader pageReader;
-  late LayoutReader layoutReader;
-
-  Site get site => _site;
-
-  Reader(this._site) {
-    postReader = PostReader(_site);
-    pageReader = PageReader(_site);
-    layoutReader = LayoutReader(_site);
-  }
-
   List<String> getEntries(String dir, [String subfolder = ""]) {
-    var base = site.inSourceDir(join(dir, subfolder));
+    var base = Site.instance.inSourceDir(join(dir, subfolder));
     var directory = Directory(base);
 
     if (!directory.existsSync()) {
@@ -39,7 +26,7 @@ class Reader {
         .map((entity) => relative(entity.path, from: base))
         .toList();
 
-    entries = EntryFilter(site).filter(entries);
+    entries = EntryFilter().filter(entries);
 
     entries.removeWhere((entry) {
       var fullPath = join(base, entry);
@@ -54,10 +41,10 @@ class Reader {
     List<String> dotPages = [];
     List<String> dotStaticFiles = [];
 
-    var entries = filterSpecial(site.root);
+    var entries = filterSpecial(Site.instance.root);
 
     for (var fileEntity in entries) {
-      if (EntryFilter(site).isSpecial(fileEntity)) continue;
+      if (EntryFilter().isSpecial(fileEntity)) continue;
       if (Directory(fileEntity).existsSync()) continue;
 
       if (File(fileEntity).existsSync() && hasYamlHeader(fileEntity)) {
@@ -73,26 +60,43 @@ class Reader {
   }
 
   void readPosts() {
-    _site.posts = postReader.readPosts(site.postPath);
+    Site.instance.posts = PostReader().readPosts(
+      Site.instance.postPath,
+    );
   }
 
   void read() {
-    _site.layouts = layoutReader.read();
+    Site.instance.layouts = LayoutReader().read();
     readDirs();
   }
 
   void readPages(List<String> dotPages) {
-    site.pages.addAll(PageReader(site).read(dotPages));
+    PageReader().read(dotPages).forEach((page) {
+      var search =
+          Site.instance.pages.where((element) => element.source == page.source);
+      if (search.isEmpty) {
+        Site.instance.pages.add(page);
+      }
+    });
   }
 
   void readStaticFiles(List<String> dotStaticFiles) {
-    site.staticFiles.addAll(StaticReader(site).read(dotStaticFiles));
-    site.staticFiles.addAll(ThemeReader(site).read());
+    var files = [
+      ...ThemeReader().read(),
+      ...StaticReader().read(dotStaticFiles)
+    ];
+    for (var file in files) {
+      var search = Site.instance.staticFiles
+          .where((element) => element.source == file.source);
+      if (search.isEmpty) {
+        Site.instance.staticFiles.add(file);
+      }
+    }
   }
 
   List<String> filterSpecial(String base) {
     var directory = Directory(base);
-    var filter = EntryFilter(site);
+    var filter = EntryFilter();
 
     return filter
         .filter(

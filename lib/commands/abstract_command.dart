@@ -1,16 +1,13 @@
-import 'dart:io';
+import 'dart:async';
 
 import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
-import 'package:gengen/configuration.dart';
-import 'package:gengen/logging.dart';
+import 'package:gengen/site.dart';
 import 'package:path/path.dart';
 
 abstract class AbstractCommand extends Command<void> {
-  Configuration get config => Configuration.read(argResults?.map ?? {});
 
   AbstractCommand() {
-    log.info("Binary location ${Platform.resolvedExecutable}");
 
     argParser.addOption(
       "config",
@@ -29,6 +26,14 @@ abstract class AbstractCommand extends Command<void> {
       help: "Output directory",
     );
   }
+
+  @override
+  FutureOr<void>? run() {
+    Site.init(overrides: argResults?.map ?? {});
+    start();
+  }
+
+  void start();
 }
 
 extension ArgResultExtension on ArgResults {

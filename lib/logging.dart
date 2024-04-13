@@ -4,6 +4,7 @@ import 'package:logging/logging.dart';
 final log = Logger('GenGen');
 
 void initLog() {
+  Console.resetAll();
   Logger.root.level = Level.ALL; // defaults to Level.INFO
   Logger.root.onRecord.listen((LogRecord record) {
     Color color;
@@ -25,6 +26,6 @@ void initLog() {
         break;
     }
     Console.setTextColor(color.id);
-    print('${record.level.name}: ${record.time}: ${record.message}');
+    Console.write('${record.level.name}: ${record.time}: ${record.message}\n');
   });
 }

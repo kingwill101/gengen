@@ -4,17 +4,16 @@ import 'package:gengen/site.dart';
 import 'package:path/path.dart' as path_utils;
 
 class EntryFilter {
-  final Site site;
   late String baseDirectory;
 
-  EntryFilter(this.site, [String? baseDirectory]) {
-    this.baseDirectory = deriveBaseDirectory(site, baseDirectory ?? '');
+  EntryFilter([String? baseDirectory]) {
+    this.baseDirectory = deriveBaseDirectory(baseDirectory ?? '');
   }
 
   String getBaseDirectory() => baseDirectory;
 
-  String deriveBaseDirectory(Site site, String baseDir) {
-    var source = site.config.source;
+  String deriveBaseDirectory(String baseDir) {
+    var source = Site.instance.config.source;
     if (baseDir.startsWith(source)) {
       baseDir = baseDir.replaceFirst(source, '');
     }
@@ -40,8 +39,10 @@ class EntryFilter {
   }
 
   bool isIncluded(String entry) {
-    return globInclude(site.include, entry) ||
-        globInclude(site.include, path_utils.basename(entry));
+    var includes = Site.instance.include;
+
+    return globInclude(includes, entry) ||
+        globInclude(includes, path_utils.basename(entry));
   }
 
   bool isSpecial(String entry) {
@@ -56,8 +57,8 @@ class EntryFilter {
   }
 
   bool isExcluded(String entry) {
-    Set<String> excludeSet = Set.from(site.exclude);
-    Set<String> includeSet = Set.from(site.include);
+    Set<String> excludeSet = Set.from(Site.instance.exclude);
+    Set<String> includeSet = Set.from(Site.instance.include);
 
     return globInclude(
       excludeSet.difference(includeSet),
@@ -67,7 +68,8 @@ class EntryFilter {
 
   bool isSymlink(String entry) {
     return FileSystemEntity.isLinkSync(entry) &&
-        !FileSystemEntity.identicalSync(entry, site.inSourceDir(entry));
+        !FileSystemEntity.identicalSync(
+            entry, Site.instance.inSourceDir(entry));
   }
 
   bool globInclude(Set<String> patterns, String entry) {
