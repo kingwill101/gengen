@@ -1,10 +1,7 @@
 import 'dart:io';
 
-import 'package:args/command_runner.dart';
 import 'package:console/console.dart';
-import 'package:gengen/commands/build.dart';
-import 'package:gengen/commands/new.dart';
-import 'package:gengen/commands/serve.dart';
+import 'package:gengen/commands/command_runner.dart';
 import 'package:gengen/logging.dart';
 
 void main(List<String> arguments) {
@@ -24,10 +21,6 @@ void main(List<String> arguments) {
   Console.setTextColor(Color.BLUE.id);
   print(banner);
 
-  CommandRunner<void> runner =
-      CommandRunner<void>("gengen", "Static site generator")
-        ..addCommand(Build())
-        ..addCommand(New())
-        ..addCommand(Serve());
-  runner.run(arguments);
+    handle_command(arguments);
+
 }

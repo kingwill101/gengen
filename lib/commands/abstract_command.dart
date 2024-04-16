@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:args/args.dart';
+import 'package:gengen/commands/arg_extension.dart';
 import 'package:args/command_runner.dart';
 import 'package:gengen/site.dart';
 import 'package:path/path.dart';
@@ -36,18 +36,3 @@ abstract class AbstractCommand extends Command<void> {
   void start();
 }
 
-extension ArgResultExtension on ArgResults {
-  Map<String, dynamic> get map => _config();
-
-  Map<String, dynamic> _config() {
-    Map<String, dynamic> results = {};
-
-    for (var element in options) {
-      if (element == "help") continue;
-      results[element] =
-          element == "config" ? this[element].split(",") : this[element];
-    }
-
-    return results;
-  }
-}
