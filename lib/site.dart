@@ -29,9 +29,9 @@ class Site extends Path {
       config: super.configuration,
     );
 
-    while (!theme.loaded) {
-      sleep(const Duration(milliseconds: 10));
-    }
+    // while (!theme.loaded) {
+    //   sleep(const Duration(milliseconds: 10));
+    // }
     _reader = Reader();
     include = Set.from(config.get<List<String>>("include") ?? []);
     exclude = Set.from(config.get<List<String>>("exclude") ?? []);
@@ -40,7 +40,7 @@ class Site extends Path {
   static void init({
     Map<String, dynamic> overrides = const <String, dynamic>{},
   }) {
-    Site.__internal(overrides: overrides);
+    _instance = Site.__internal(overrides: overrides);
   }
 
   static Site get instance {
@@ -83,23 +83,6 @@ class Site extends Path {
     _posts.addAll(posts);
   }
 
-  Site(super.configuration) {
-    reset();
-
-    theme = Theme.load(
-      config.get<String>("theme")!,
-      themePath: themesDir,
-      config: super.configuration,
-    );
-
-    while (!theme.loaded) {
-      sleep(const Duration(milliseconds: 10));
-    }
-    _reader = Reader();
-    include = Set.from(config.get<List<String>>("include") ?? []);
-    exclude = Set.from(config.get<List<String>>("exclude") ?? []);
-  }
-
   Reader get reader => _reader;
 
   void reset() {
@@ -108,9 +91,9 @@ class Site extends Path {
     }
   }
 
-  void process() {
+  Future<void> process() async {
     _reader.read();
-    write();
+    await write();
   }
 
   Directory get destination => Directory(config.destination);
@@ -122,13 +105,13 @@ class Site extends Path {
     return workDir;
   }
 
-  void write() {
+  Future<void> write() async {
     for (var element in [
       ...staticFiles,
       ...posts,
       ...pages,
     ]) {
-      element.write();
+      await element.write();
     }
   }
 

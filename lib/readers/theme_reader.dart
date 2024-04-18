@@ -11,6 +11,7 @@ class ThemeReader {
   ThemeReader();
 
   List<Base> read() {
+    if(!Site.instance.theme.loaded) return [];
     var files = Reader().filterSpecial(Site.instance.theme.root);
 
     for (var file in files) {

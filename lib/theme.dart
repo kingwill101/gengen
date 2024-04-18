@@ -37,8 +37,8 @@ class Theme extends Path {
     }
 
     if (!loaded) {
-      log.info("Theme '$name' not found, tried: $locations");
-      exit(-1);
+      log.severe("Theme '$name' not found, tried: $locations");
+      return;
     }
 
     var configFile = p.joinAll([location!, "config.yaml"]);
@@ -52,5 +52,5 @@ class Theme extends Path {
   }
 
   @override
-  String get root => p.canonicalize(location!);
+  String get root => p.canonicalize(location ?? '');
 }

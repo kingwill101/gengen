@@ -32,7 +32,7 @@ class Configuration {
     "markdown_extensions": <String>[],
     'permalink': "date",
     'publish_drafts': false,
-    "config": ["config.yaml"],
+    "config": ["_config.yaml"],
     "output": {"posts_dir": "posts"},
   };
 
@@ -51,19 +51,7 @@ class Configuration {
 
   String get source => get("source") as String;
 
-  String get destination {
-    if (_config.containsKey("destination")) {
-      var theDestination = get<String>("destination") as String;
-
-      if (isRelative(theDestination)) {
-        return join(source, theDestination);
-      }
-
-      return theDestination;
-    }
-
-    return _defaults["destination"] as String;
-  }
+  String get destination => get<String>("destination") as String;
 
   T? call<T>(String config) {
     return get<T>(config);
@@ -127,8 +115,8 @@ class Configuration {
 
     String? siteDestination = overrides["destination"] as String?;
     if (overrides.containsKey('destination') && siteDestination != null) {
-      if (isRelative(overrides["destination"] as String)) {
-        _config["destination"] = absolute(siteDestination);
+      if (isRelative(siteDestination)) {
+        _config["destination"] = join(source, siteDestination);
       } else {
         _config["destination"] = siteDestination;
       }
@@ -136,11 +124,11 @@ class Configuration {
     }
 
     if (hasConfig) {
-      List<String> configFiles = get<List<String>>("config") ?? [];
+      List<String> configFiles = get<List<String>>("config", overrides: overrides) ?? [];
 
       for (var config in configFiles) {
-        var file = File(join(source, config));
-        if ((file.path.endsWith('.yaml') || file.path.endsWith('.yml'))) {
+        if ((config.endsWith('.yaml') || config.endsWith('.yml'))) {
+          var file = File(join(source, config));
           if (file.existsSync()) {
             resolvedFiles.add(file.path);
             continue;

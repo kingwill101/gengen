@@ -47,6 +47,7 @@ class LayoutReader {
   }
 
   List<String> themeLayoutEntries() {
+    if(!Site.instance.theme.loaded) return [];
     var directory = Directory(Site.instance.theme.layoutsPath);
     if (!directory.existsSync()) {
       return [];
