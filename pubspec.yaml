@@ -22,7 +22,6 @@ dependencies:
   intl: ^0.19.0
   liquid_engine:
     git:
-      ref: token-regex
       url: https://github.com/kingwill101/liquid_dart
   logging: ^1.2.0
   markdown: ^7.2.2
@@ -38,6 +37,7 @@ dependencies:
   toml: ^0.15.0
   web_socket_channel: ^2.4.5
   yaml_magic: ^1.0.5
+  highlight: ^0.7.0
 
 dependency_overrides:
   #  analyzer: ^6.0.0

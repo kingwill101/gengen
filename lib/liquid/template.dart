@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:gengen/liquid/modules/data_module.dart';
 import 'package:gengen/liquid/modules/url_module.dart';
+import 'package:gengen/liquid/tags/highlight_tag.dart';
 import 'package:gengen/logging.dart';
 import 'package:gengen/md/md.dart';
 import 'package:gengen/site.dart';
@@ -37,6 +38,8 @@ class Template {
       context.modules[key] = value;
       context.modules[key]!.register(context);
     });
+
+    context.tags['highlight'] = liquid.BlockParser.simple(Highlight.factory);
   }
 
   Future<String> render() async {
