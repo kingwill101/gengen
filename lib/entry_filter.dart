@@ -5,9 +5,13 @@ import 'package:path/path.dart' as path_utils;
 
 class EntryFilter {
   late String baseDirectory;
+  late Set<String> excludeSet;
+  late Set<String> includeSet;
 
   EntryFilter([String? baseDirectory]) {
     this.baseDirectory = deriveBaseDirectory(baseDirectory ?? '');
+    excludeSet = Set.from(Site.instance.exclude);
+    includeSet = Set.from(Site.instance.include);
   }
 
   String getBaseDirectory() => baseDirectory;
@@ -57,9 +61,6 @@ class EntryFilter {
   }
 
   bool isExcluded(String entry) {
-    Set<String> excludeSet = Set.from(Site.instance.exclude);
-    Set<String> includeSet = Set.from(Site.instance.include);
-
     return globInclude(
       excludeSet.difference(includeSet),
       relativeToSource(entry),

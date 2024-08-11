@@ -9,7 +9,8 @@ import 'package:gengen/theme.dart';
 import 'package:path/path.dart';
 import 'package:rxdart/rxdart.dart';
 
-class Site extends Path {
+final site = Site.instance;
+
 class Site with PathMixin {
   late Reader _reader;
   late Set<String> include;
@@ -30,12 +31,9 @@ class Site with PathMixin {
       config: config,
     );
 
-    // while (!theme.loaded) {
-    //   sleep(const Duration(milliseconds: 10));
-    // }
     _reader = Reader();
-    include = Set.from(config.get<List<String>>("include") ?? []);
-    exclude = Set.from(config.get<List<String>>("exclude") ?? []);
+    include = Set.from(config.get("include") as List? ?? []);
+    exclude = Set.from(config.get("exclude") as List? ?? []);
   }
 
   static void init({
