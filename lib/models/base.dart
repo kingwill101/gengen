@@ -48,10 +48,16 @@ class Base with WatcherMixin {
   void handleAlias(File value) {
     if (!value.existsSync()) return;
     if (config.containsKey("aliases") && config["aliases"] is List) {
-      for (var alias in config["aliases"] as List) {
+      for (var alias in (config["aliases"] as List)) {
+        if ((alias as String).startsWith("/")) {
+          alias = alias.substring(1);
+        }
+
+        final aliasDestination = p.joinAll(
+            [destinationPath, p.setExtension(alias, p.extension(filePath))]);
+
         try {
-          var dest = File(p.join(destinationPath,
-              p.setExtension(alias as String, p.extension(filePath))));
+          var dest = File(aliasDestination);
           dest.createSync(recursive: true);
           dest.writeAsStringSync(value.readAsStringSync());
         } on Exception catch (_, e) {
