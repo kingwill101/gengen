@@ -1,18 +1,16 @@
 import 'dart:async';
 
-import 'package:gengen/commands/arg_extension.dart';
 import 'package:args/command_runner.dart';
+import 'package:gengen/commands/arg_extension.dart';
 import 'package:gengen/site.dart';
 import 'package:path/path.dart';
 
 abstract class AbstractCommand extends Command<void> {
-
   AbstractCommand() {
-
     argParser.addOption(
       "config",
       help: "config files (comma separated)",
-      defaultsTo: "config.yaml",
+      defaultsTo: null,
     );
 
     argParser.addOption("source", help: "site directory", defaultsTo: current);
@@ -28,11 +26,13 @@ abstract class AbstractCommand extends Command<void> {
   }
 
   @override
-  FutureOr<void>? run() {
+  Future<void> run() async {
     Site.init(overrides: argResults?.map ?? {});
-    start();
+    var result = start();
+    if (result is Future<void>) {
+      await result;
+    }
   }
 
-  void start();
+  FutureOr<void> start();
 }
-

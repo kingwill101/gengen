@@ -1,5 +1,6 @@
 import 'package:args/command_runner.dart';
 import 'package:gengen/commands/build.dart';
+import 'package:gengen/commands/dump.dart';
 import 'package:gengen/commands/new.dart';
 import 'package:gengen/commands/serve.dart';
 import 'package:gengen/logging.dart';
@@ -11,8 +12,8 @@ class _GenGenCommandRunner extends CommandRunner<void> {
     addCommand(Build());
     addCommand(New());
     addCommand(Serve());
+    addCommand(Dump());
   }
-
 
   @override
   Future<void> run(Iterable<String> args) async {

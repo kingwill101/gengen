@@ -10,10 +10,10 @@ class Build extends AbstractCommand {
   String get name => "build";
 
   @override
-  void start() {
+  Future<void> start() async {
     log.info(" Starting build\n");
     try {
-      Site.instance.process();
+      await Site.instance.process();
     } on Exception catch (e, _) {
       log.severe(e.toString());
     }
