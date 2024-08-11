@@ -1,11 +1,15 @@
 targets:
   $default:
     sources:
-      - "$package$"
-      - "lib/$lib$"
-      - "bundle/**"
+      - $package$
+      - bundle/**
+      - lib/**
 
     builders:
+      freezed:
+        options:
+          union_key: type
+          union_value_case: pascal
       gengen:bundle_file_builder:
         enabled: true
 builders:

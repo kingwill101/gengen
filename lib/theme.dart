@@ -5,7 +5,7 @@ import 'package:gengen/logging.dart';
 import 'package:gengen/path.dart';
 import 'package:path/path.dart' as p;
 
-class Theme extends Path {
+class Theme with PathMixin {
   String name;
   bool loaded = false;
   String? location;
@@ -20,8 +20,6 @@ class Theme extends Path {
   }
 
   Future<void> decideLocation(String? themePath) async {
-    log.fine("Theme: loading  $name");
-
     var locations = [
       p.join(themePath ?? "", name),
       p.join(p.current, config.get<String>("themes_dir"), name),
@@ -38,18 +36,16 @@ class Theme extends Path {
     }
 
     if (!loaded) {
-      log.severe("Theme '$name' not found, tried: $locations");
+      log.warning("Theme($name): not found");
       return;
     }
 
     var configFile = p.joinAll([location!, "config.yaml"]);
-    
-    log.info("Theme found in $location");
 
     if (FileStat.statSync(configFile).type == FileSystemEntityType.notFound) {
       return;
     }
-    config.readConfigFile(configFile);
+    config.read(parseConfig(configFile));
   }
 
   @override

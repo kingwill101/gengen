@@ -122,6 +122,7 @@ class Base with WatcherMixin {
     this.dirConfig = const {},
     this.destination,
   }) {
+    if (source.isEmpty) return;
     read();
   }
 

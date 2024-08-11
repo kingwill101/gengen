@@ -22,6 +22,7 @@ analyzer:
     unused_field: error
     unused_local_variable: error
     unused_import: error
+    invalid_annotation_target: ignore
 
 #dart_code_linter:
 #  metrics:

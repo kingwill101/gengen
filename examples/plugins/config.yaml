@@ -1,0 +1,5 @@
+theme: default
+site:
+  title: plugin test
+plugins:
+  - metadata

@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:gengen/layout.dart';
 import 'package:gengen/models/base.dart';
 import 'package:gengen/path.dart';
+import 'package:gengen/plugin/plugin_metadata.dart';
 import 'package:gengen/reader.dart';
 import 'package:gengen/theme.dart';
 import 'package:path/path.dart';
@@ -19,6 +20,7 @@ class Site with PathMixin {
   final List<Base> _posts = [];
   final List<Base> _pages = [];
   final List<Base> _static = [];
+  final List<PluginMetadata> _plugins = [];
 
   static Site? _instance;
 
@@ -76,6 +78,8 @@ class Site with PathMixin {
   List<Base> get posts => _posts;
 
   List<Base> get staticFiles => _static;
+
+  List<PluginMetadata> get plugins => _plugins;
 
   set posts(List<Base> posts) {
     _posts.clear();
