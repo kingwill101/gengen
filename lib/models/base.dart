@@ -142,6 +142,14 @@ class Base with WatcherMixin {
     //config found in post/page front matter
     frontMatter = loadedContent.frontMatter;
 
+    //loop properties and check if values contain liquid templates
+    for (var key in frontMatter.keys) {
+      if (containsLiquid(frontMatter[key].toString())) {
+        frontMatter[key] =
+            Template.r(frontMatter[key].toString(), data: config);
+      }
+    }
+
     content = cleanUpContent(loadedContent.content);
     name = source.removePrefix(Site.instance.config.source + p.separator);
     renderer = Renderer(this);
