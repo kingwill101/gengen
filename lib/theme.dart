@@ -14,7 +14,8 @@ class Theme extends Path {
     this.name, {
     String? themePath = "_themes",
     required Configuration config,
-  }) : super(config) {
+  }) {
+    this.configuration = config;
     decideLocation(themePath);
   }
 

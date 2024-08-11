@@ -19,10 +19,13 @@ class Configuration {
     "theme": "default",
     "source": current,
     "destination": joinAll([current, 'public']),
+    "include": <String>[],
+    "exclude": <String>[],
     "post_dir": "_posts",
     "draft_dir": "_draft",
     "themes_dir": "_themes",
     "layout_dir": "_layouts",
+    "plugin_dir": "_plugins",
     "sass_dir": "_sass",
     "data_dir": "_data",
     "asset_dir": "assets",
@@ -68,31 +71,29 @@ class Configuration {
     }
   }
 
-  void addDefaultExcludes() {
+  void _addDefaultExcludes() {
     _config.putIfAbsent('excludes', () => <String>[]);
   }
 
-  void addDefaultIncludes() {
+  void _addDefaultIncludes() {
     _config.putIfAbsent('includes', () => <String>[]);
   }
 
-  Map<String, dynamic> readConfigFile(
+  Map<String, dynamic> _readConfigFile(
     String filePath, [
     Map<String, dynamic> overrides = const {},
   ]) {
-    var yamlConfig = parseYaml(readFileSafe(filePath));
-
-    _config = {..._config, ...yamlConfig, ...overrides};
+    _config = {..._config, ...readConfigFile(filePath, overrides)};
 
     return _config;
   }
 
-  void readConfigFiles(
+  void _readConfigFiles(
     List<String> files, [
     Map<String, dynamic> overrides = const {},
   ]) {
     for (var file in files) {
-      readConfigFile(file, overrides);
+      _readConfigFile(file, overrides);
     }
   }
 
@@ -124,7 +125,8 @@ class Configuration {
     }
 
     if (hasConfig) {
-      List<String> configFiles = get<List<String>>("config", overrides: overrides) ?? [];
+      List<String> configFiles =
+          get<List<String>>("config", overrides: overrides) ?? [];
 
       for (var config in configFiles) {
         if ((config.endsWith('.yaml') || config.endsWith('.yml'))) {
@@ -143,9 +145,11 @@ class Configuration {
     }
 
     hasConfig ? overrides.remove("config") : ();
-    readConfigFiles(resolvedFiles);
+    _readConfigFiles(resolvedFiles);
     overrides["config"] = resolvedFiles;
     _config.addAll(overrides);
+    _addDefaultIncludes();
+    _addDefaultExcludes();
   }
 }
 
@@ -154,4 +158,17 @@ Configuration configuration(Map<String, dynamic> overrides) {
   config.read(overrides);
 
   return config;
+}
+
+Map<String, dynamic> readConfigFile(
+  String filePath, [
+  Map<String, dynamic> overrides = const {},
+]) {
+  var yamlConfig = parseConfig(readFileSafe(filePath));
+
+  return  {...yamlConfig, ...overrides};
+}
+
+Map<String, dynamic> parseConfig(String content) {
+  return parseYaml(content);
 }

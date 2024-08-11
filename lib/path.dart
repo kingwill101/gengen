@@ -2,14 +2,16 @@ import 'package:gengen/configuration.dart';
 import 'package:gengen/logging.dart';
 import 'package:path/path.dart';
 
-abstract class Path {
-  late Configuration configuration;
+mixin PathMixin {
+  Configuration _configuration = Configuration();
 
-  Configuration get config => configuration;
+  Configuration get config => _configuration;
 
   late String root;
 
-  Path([this.configuration = const Configuration()]);
+  set configuration(Configuration configuration) {
+    _configuration = configuration;
+  }
 
   String pathFor(String folder) {
     String folderPath = join(root, folder);
@@ -35,6 +37,9 @@ abstract class Path {
   String get postPath => pathFor(config.get<String>("post_dir") ?? "");
 
   String get dataPath => pathFor(config.get<String>("data_dir") ?? "");
+
+  String get pluginPath => pathFor(config.get<String>("plugin_dir") ?? "");
+
   String get themesDir => pathFor(config.get<String>("themes_dir") ?? "");
 
   Map<String, dynamic> get output =>
@@ -47,4 +52,17 @@ abstract class Path {
 
     return "posts";
   }
+
+  Map<String, dynamic> toJson() => {
+        "includesPath": includesPath,
+        "layoutsPath": layoutsPath,
+        "sassPath": sassPath,
+        "assetsPath": assetsPath,
+        "postPath": postPath,
+        "dataPath": dataPath,
+        "pluginPath: ": pluginPath,
+        "themesDir": themesDir,
+        "output": output,
+        "postOutputPath": postOutputPath,
+      };
 }

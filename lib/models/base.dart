@@ -28,6 +28,23 @@ class Base with WatcherMixin {
     return false;
   }
 
+  Map<String, Object> toJson() {
+    return {
+      "name": name,
+      "config": config,
+      "relativePath": relativePath,
+      "filePath": filePath,
+      "ext": ext,
+      "isPost": isPost,
+      "isDraft": isDraft(),
+      "isStatic": isStatic,
+      "isAsset": isAsset,
+      "isPage": isPage,
+      "permalink": permalink(),
+      "frontMatter": frontMatter,
+    };
+  }
+
   void handleAlias(File value) {
     if (!value.existsSync()) return;
     if (config.containsKey("aliases") && config["aliases"] is List) {

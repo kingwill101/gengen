@@ -10,6 +10,7 @@ import 'package:path/path.dart';
 import 'package:rxdart/rxdart.dart';
 
 class Site extends Path {
+class Site with PathMixin {
   late Reader _reader;
   late Set<String> include;
   late Set<String> exclude;
@@ -21,12 +22,12 @@ class Site extends Path {
   static Site? _instance;
 
   Site.__internal({Map<String, dynamic> overrides = const {}}) {
-    super.configuration.read(overrides);
+    config.read(overrides);
     reset();
     theme = Theme.load(
       config.get<String>("theme")!,
       themePath: themesDir,
-      config: super.configuration,
+      config: config,
     );
 
     // while (!theme.loaded) {
@@ -94,6 +95,28 @@ class Site extends Path {
   Future<void> process() async {
     _reader.read();
     await write();
+  }
+
+  Future<Map<String, Object>> dump() async {
+    _reader.read();
+
+    final Map<String, Object> siteDump = {
+      "source": config.source,
+      "destination": config.destination,
+      "workingDir": workingDir(),
+      "include": include.toList(),
+      "exclude": exclude.toList(),
+      "posts": _posts.map((e) => e.toJson()).toList(),
+      "pages": _pages.map((e) => e.toJson()).toList(),
+      "plugins": _plugins.map((e) => e.toJson()).toList(),
+      "staticFiles": _static,
+      "layouts": layouts,
+      "config": config.all,
+      "site_dir": toJson(),
+      "theme_dir": theme.toJson(),
+    };
+
+    return siteDump;
   }
 
   Directory get destination => Directory(config.destination);

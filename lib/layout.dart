@@ -46,4 +46,15 @@ class Layout with WatcherMixin {
 
   @override
   String get source => path;
+
+  Map<String, Object> toJson() {
+    return {
+      "path": path,
+      "name": name,
+      "ext": ext,
+      "content": content,
+      "data": data,
+      "relativePath": relativePath,
+    };
+  }
 }
