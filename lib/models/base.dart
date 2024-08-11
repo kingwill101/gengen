@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:gengen/content/tokenizer.dart';
 import 'package:gengen/drops/document_drop.dart';
+import 'package:gengen/liquid/template.dart';
 import 'package:gengen/logging.dart';
 import 'package:gengen/models/permalink_structure.dart';
 import 'package:gengen/renderer.dart';
@@ -60,6 +61,8 @@ class Base with WatcherMixin {
           var dest = File(aliasDestination);
           dest.createSync(recursive: true);
           dest.writeAsStringSync(value.readAsStringSync());
+          log.fine("Created alias '$alias'");
+          print("\t\t  -> '${dest.absolute}'");
         } on Exception catch (_, e) {
           log.warning("Failed to create alias '$alias': $e");
         }
@@ -175,24 +178,24 @@ class Base with WatcherMixin {
 
       return File(source).copy(file.path);
     }).then((value) {
-      log.info("written $source -> ${value.path}");
+      log.info("copied $source");
+      print("\t\t-> ${value.absolute}");
     });
   }
 
   String get filePath => join(destinationPath, link());
 
-  void write() {
+  Future<void> write() async {
     if (isStatic) return copyWrite();
 
-    File file = File(filePath);
-    file.create(recursive: true).then((file) async {
-      var fileContent = isPost || isPage ? await renderer.render() : content;
-      return file.writeAsString(fileContent);
-    }).then((value) {
-      log.info("written $relativePath -> ${link()}");
-      //only call when path is null to prevent
-      handleAlias(value);
-    });
+    File file = await File(filePath).create(recursive: true);
+    var fileContent = isPost || isPage ? await renderer.render() : content;
+    await file.writeAsString(fileContent);
+    log.info("written $relativePath");
+    print("\t\t-> ${link()}");
+    print("\t\t-> ${file.absolute}");
+    //only call when path is null to prevent
+    handleAlias(file);
   }
 
   Map<String, dynamic> _config() {
