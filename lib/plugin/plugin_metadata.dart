@@ -40,13 +40,12 @@ class PluginAsset with _$PluginAsset {
       _$PluginAssetFromJson(json);
 }
 
-enum PluginType { unknown, generator, converter }
-
 extension PluginMetadataX on PluginMetadata {
-  String get id => name.replaceAll(RegExp(r'[^a-z0-9]'), '_');
-
   List<PluginAsset> get dartFiles =>
       files.where((e) => e.path.endsWith('.dart')).toList();
+
+  List<PluginAsset> get assets =>
+      files.where((e) => !e.path.endsWith('.dart')).toList();
 
   String get className {
     try {
