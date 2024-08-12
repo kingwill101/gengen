@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:gengen/fs.dart';
 import 'package:gengen/logging.dart';
 import 'package:gengen/utilities.dart';
 import 'package:path/path.dart';
@@ -126,11 +127,12 @@ class Configuration {
 
     if (hasConfig) {
       List<String> configFiles =
-          get<List<String>>("config", overrides: overrides) ?? [];
+          get<List<String>>("config", overrides: overrides, defaultValue: []) ??
+              [];
 
       for (var config in configFiles) {
         if ((config.endsWith('.yaml') || config.endsWith('.yml'))) {
-          var file = File(join(source, config));
+          var file = fs.file(join(source, config));
           if (file.existsSync()) {
             resolvedFiles.add(file.path);
             continue;
@@ -166,7 +168,7 @@ Map<String, dynamic> readConfigFile(
 ]) {
   var yamlConfig = parseConfig(readFileSafe(filePath));
 
-  return  {...yamlConfig, ...overrides};
+  return {...yamlConfig, ...overrides};
 }
 
 Map<String, dynamic> parseConfig(String content) {

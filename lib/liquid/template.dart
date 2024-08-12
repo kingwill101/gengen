@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'dart:io';
 
+import 'package:gengen/fs.dart';
 import 'package:gengen/liquid/modules/data_module.dart';
 import 'package:gengen/liquid/modules/url_module.dart';
 import 'package:gengen/liquid/tags/highlight_tag.dart';
@@ -85,7 +85,7 @@ class ContentRoot implements liquid.Root {
     var paths = [Site.instance.includesPath, Site.instance.theme.includesPath];
 
     for (var dirPath in paths) {
-      var directory = Directory(dirPath);
+      var directory = fs.directory(dirPath);
       if (!directory.existsSync()) continue;
 
       var globPattern = Glob("$relPath.*");

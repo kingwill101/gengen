@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'dart:io';
 
+import 'package:gengen/fs.dart';
 import 'package:gengen/layout.dart';
 import 'package:gengen/models/base.dart';
 import 'package:gengen/path.dart';
@@ -42,6 +42,7 @@ class Site with PathMixin {
     Map<String, dynamic> overrides = const <String, dynamic>{},
   }) {
     _instance = Site.__internal(overrides: overrides);
+    // Hook.trigger(Site, HookEvent.postInit);
   }
 
   static Site get instance {
@@ -94,8 +95,13 @@ class Site with PathMixin {
     }
   }
 
-  Future<void> process() async {
+  void read() {
     _reader.read();
+  }
+
+  Future<void> process() async {
+    read();
+
     await write();
   }
 
@@ -121,7 +127,7 @@ class Site with PathMixin {
     return siteDump;
   }
 
-  Directory get destination => Directory(config.destination);
+  Directory get destination => fs.directory(config.destination);
 
   String workingDir() {
     String workDir = config.source;
@@ -131,13 +137,11 @@ class Site with PathMixin {
   }
 
   Future<void> write() async {
-    for (var element in [
+    await Future.wait([
       ...staticFiles,
       ...posts,
       ...pages,
-    ]) {
-      await element.write();
-    }
+    ].map((page) => page.write()));
   }
 
   void watch() {
@@ -171,7 +175,10 @@ class Site with PathMixin {
       'site': {
         ...config.all,
         'pages': pages.map((e) => e.to_liquid).toList(),
-        'posts': posts.map((e) => e.to_liquid).toList(),
+        'posts': posts
+            .where((post) => !post.isIndex)
+            .map((e) => e.to_liquid)
+            .toList(),
         'theme': {
           'root': theme.root,
         },

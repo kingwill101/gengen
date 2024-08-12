@@ -1,8 +1,7 @@
-import 'dart:io';
-
 import 'package:args/command_runner.dart';
 import 'package:gengen/bundle/bundle_data.dart';
 import 'package:gengen/commands/abstract_command.dart';
+import 'package:gengen/fs.dart';
 import 'package:gengen/logging.dart';
 import 'package:gengen/site.dart';
 import 'package:gengen/utilities.dart';
@@ -56,6 +55,10 @@ class NewSite extends Command<void> {
       log.severe("Directory must be specified for new site");
       return;
     }
+    if (!fs.directory(directory).existsSync()) {
+      fs.directory(directory).create(recursive: true);
+    }
+
     log.info("Creating new site in $directory");
     createFromBundle(directory, "site_template");
     log.info("Created new site in $directory");
@@ -109,7 +112,7 @@ class NewPost extends AbstractCommand {
     (String, String) name = processName();
     String postPathWExt =
         setExtension(joinAll([Site.instance.postPath, name.$1]), ".md");
-    final postFile = File(postPathWExt);
+    final postFile = fs.file(postPathWExt);
 
     if (postFile.existsSync() && !allowForce) {
       log.severe(
@@ -170,7 +173,7 @@ void createFromBundle(String directory, String bundleName) {
   final Map<String, List<int>> bundle = bundleData[bundleName]!;
 
   bundle.forEach((filePath, fileData) {
-    final file = File("$directory/$filePath");
+    final file = fs.file("$directory/$filePath");
     file.createSync(recursive: true);
     file.writeAsBytesSync(fileData);
   });

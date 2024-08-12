@@ -14,8 +14,11 @@ dependencies:
   console: ^4.1.0
   crypto: ^3.0.3
   csv: ^6.0.0
+  get_it: ^7.7.0
   dart_eval: ^0.7.9
+  file: ^7.0.0
   glob: ^2.1.2
+  highlight: ^0.7.0
   html: ^0.15.4
   html_unescape: ^2.0.0
   http: ^1.2.2
@@ -23,7 +26,6 @@ dependencies:
   liquid_engine:
     git:
       url: https://github.com/kingwill101/liquid_dart
-  highlight: ^0.7.0
   logging: ^1.2.0
   markdown: ^7.2.2
   mime: ^1.0.5

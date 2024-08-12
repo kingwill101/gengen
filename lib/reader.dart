@@ -1,8 +1,9 @@
-import 'dart:io';
 
 import 'package:gengen/entry_filter.dart';
+import 'package:gengen/fs.dart';
 import 'package:gengen/readers/layout_reader.dart';
 import 'package:gengen/readers/page_reader.dart';
+import 'package:gengen/readers/plugin_reader.dart';
 import 'package:gengen/readers/post_reader.dart';
 import 'package:gengen/readers/static_reader.dart';
 import 'package:gengen/readers/theme_reader.dart';
@@ -14,7 +15,7 @@ import 'package:path/path.dart';
 class Reader {
   List<String> getEntries(String dir, [String subfolder = ""]) {
     var base = Site.instance.inSourceDir(join(dir, subfolder));
-    var directory = Directory(base);
+    var directory = fs.directory(base);
 
     if (!directory.existsSync()) {
       return [];
@@ -31,7 +32,7 @@ class Reader {
     entries.removeWhere((entry) {
       var fullPath = join(base, entry);
 
-      return Directory(fullPath).existsSync();
+      return fs.directory(fullPath).existsSync();
     });
 
     return entries;
@@ -45,15 +46,14 @@ class Reader {
 
     for (var fileEntity in entries) {
       if (EntryFilter().isSpecial(fileEntity)) continue;
-      if (Directory(fileEntity).existsSync()) continue;
+      if (fs.directory(fileEntity).existsSync()) continue;
 
-      if (File(fileEntity).existsSync() && hasYamlHeader(fileEntity)) {
+      if (fs.file(fileEntity).existsSync() && hasYamlHeader(fileEntity)) {
         dotPages.add(fileEntity);
       } else {
         dotStaticFiles.add(fileEntity);
       }
     }
-
     readPosts();
     readPages(dotPages);
     readStaticFiles(dotStaticFiles);
@@ -68,6 +68,13 @@ class Reader {
   void read() {
     Site.instance.layouts = LayoutReader().read();
     readDirs();
+    readPlugins();
+  }
+
+  void readPlugins() {
+    Site.instance.plugins.addAll(
+      PluginReader().read(),
+    );
   }
 
   void readPages(List<String> dotPages) {
@@ -95,7 +102,7 @@ class Reader {
   }
 
   List<String> filterSpecial(String base) {
-    var directory = Directory(base);
+    var directory = fs.directory(base);
     var filter = EntryFilter();
 
     return filter

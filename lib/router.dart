@@ -1,5 +1,5 @@
-import 'dart:io';
 
+import 'package:gengen/fs.dart';
 import 'package:gengen/logging.dart';
 import 'package:gengen/site.dart';
 import 'package:gengen/web_socket.dart';
@@ -47,7 +47,7 @@ Handler get router {
     }
 
     if (stat.type == FileSystemEntityType.directory) {
-      File index = File(join(filePath, "index.html"));
+      File index = fs.file(join(filePath, "index.html"));
       if (!index.existsSync()) {
         return Response.notFound('Nothing to be seen here');
       }
@@ -55,7 +55,7 @@ Handler get router {
       filePath = index.path;
     }
 
-    final fileEntity = File(filePath);
+    final fileEntity = fs.file(filePath);
 
     final noCacheHeaders = {
       "Cache-Control": "no-store, max-age=0",

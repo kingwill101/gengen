@@ -1,6 +1,5 @@
-import 'dart:io';
-
 import 'package:gengen/content/tokenizer.dart';
+import 'package:gengen/fs.dart';
 import 'package:gengen/logging.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' as html_parser;
@@ -10,7 +9,7 @@ import 'package:toml/toml.dart';
 import 'package:yaml_magic/yaml_magic.dart';
 
 String? readFile(String path) {
-  var file = File(path);
+  var file = fs.file(path);
   if (!file.existsSync()) {
     return null;
   }
@@ -30,7 +29,7 @@ String slugifyList(List<String> items) {
 }
 
 Map<String, dynamic> getDirectoryFrontMatter(String path) {
-  var index = File(join(path, "_index.md"));
+  var index = fs.file(join(path, "_index.md"));
   if (!index.existsSync()) {
     return {};
   }
@@ -110,7 +109,7 @@ bool hasYamlHeader(String fullPath) {
 }
 
 bool isBinaryFile(String filePath) {
-  final file = File(filePath);
+  final file = fs.file(filePath);
   final maxSize = 1024; // Maximum number of bytes to read for analysis.
 
   try {

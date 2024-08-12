@@ -2,6 +2,7 @@ import 'dart:core';
 
 import 'package:gengen/logging.dart';
 import 'package:gengen/models/base.dart';
+import 'package:gengen/models/url.dart';
 import 'package:gengen/site.dart';
 import 'package:gengen/utilities.dart';
 import 'package:intl/intl.dart';
@@ -41,6 +42,15 @@ extension PermalinkExtension on Base {
     //If permalink doesn't include partition then it should be
     //an hard coded path
     if (entryPermalink.isNotEmpty && !entryPermalink.contains(':')) {
+      //if it is a directory path then we should do
+      // <directory path>/index.html
+      bool isDirectory =
+          p.isAbsolute(entryPermalink) && p.extension(entryPermalink).isEmpty;
+      // bool isFile = p.isAbsolute(filePath) && p.split(filePath).last.isNotEmpty;
+      if (isDirectory) {
+        entryPermalink =  p.join(entryPermalink, 'index.html');
+      }
+
       return entryPermalink.removePrefix('/');
     }
 
@@ -53,7 +63,16 @@ extension PermalinkExtension on Base {
     return p.normalize(buildPermalink(entryPermalink));
   }
 
-  String buildPermalink([String permalink = PermalinkStructure.none]) {
+  URL permalinkURL() {
+    return URL(
+      template: config["permalink"] as String? ?? PermalinkStructure.none,
+      placeholders: permalinkPlaceholders(),
+    );
+  }
+
+  String buildPermalink([
+    String permalink = PermalinkStructure.none,
+  ]) {
     Map<String, dynamic> config = this.config;
 
     String? title = config['title'] as String? ?? "";
@@ -129,5 +148,79 @@ extension PermalinkExtension on Base {
     }
 
     return permalink;
+  }
+
+  Map<String, String> permalinkPlaceholders(
+      [String permalink = PermalinkStructure.none]) {
+    Map<String, String> placeholders = {};
+
+    Map<String, dynamic> config = this.config;
+
+    String? title = config['title'] as String? ?? "";
+
+    if (title.isEmpty) {
+      title = p.withoutExtension(p.basename(name));
+    }
+
+    String normalizedTitle = normalize(title);
+
+    placeholders['title'] = normalizedTitle;
+
+    List<String> tags = config.containsKey("tags")
+        ? List<String>.from(config['tags'] as List)
+        : <String>[];
+
+    String categories = tags.isNotEmpty ? tags.join("/") : "";
+    categories = !isPost ? categories : "uncategorized";
+
+    placeholders['categories'] = categories;
+    placeholders['slugified_categories'] = slugifyList(tags);
+    placeholders['path'] =
+        p.relative(p.dirname(source), from: Site.instance.root);
+    placeholders['basename'] =
+        normalize(p.withoutExtension(p.basename(source)));
+    placeholders['output_ext'] = '.html';
+
+    if (config.containsKey('date') && config['date'] != null) {
+      try {
+        DateTime parsedDate = DateTime.parse(config['date'] as String? ?? "");
+        placeholders['year'] = parsedDate.year.toString();
+        placeholders['month'] = parsedDate.month.toString().padLeft(2, '0');
+        placeholders['day'] = parsedDate.day.toString().padLeft(2, '0');
+        placeholders['short_year'] = parsedDate.year.toString().substring(2);
+        placeholders['i_month'] = parsedDate.month.toString();
+        placeholders['short_month'] = DateFormat('MMM').format(parsedDate);
+        placeholders['long_month'] = DateFormat('MMMM').format(parsedDate);
+        placeholders['i_day'] = parsedDate.day.toString();
+        placeholders['y_day'] = int.parse(DateFormat('D').format(parsedDate))
+            .toString()
+            .padLeft(3, '0');
+        placeholders['hour'] = parsedDate.hour.toString().padLeft(2, '0');
+        placeholders['minute'] = parsedDate.minute.toString().padLeft(2, '0');
+        placeholders['second'] = parsedDate.second.toString().padLeft(2, '0');
+        placeholders['w_year'] = parsedDate.year.toString().substring(2);
+        placeholders['w_day'] = parsedDate.weekday.toString();
+        placeholders['short_day'] = DateFormat('E').format(parsedDate);
+        placeholders['long_day'] = DateFormat('EEEE').format(parsedDate);
+        placeholders['hour'] = parsedDate.hour.toString().padLeft(2, '0');
+        placeholders['minute'] = parsedDate.minute.toString().padLeft(2, '0');
+        placeholders['second'] = parsedDate.second.toString().padLeft(2, '0');
+
+        // Calculate the first day of the year
+        DateTime firstDayOfYear = DateTime(parsedDate.year, 1, 1);
+
+        // Calculate the number of days from the first day of the year
+        int dayOfYear = parsedDate.difference(firstDayOfYear).inDays;
+
+        // Determine the week number
+        int weekNumber = (dayOfYear / 7).ceil();
+        String formattedWeekNumber = weekNumber.toString().padLeft(2, '0');
+        placeholders['week'] = formattedWeekNumber;
+      } catch (e) {
+        log.warning('Error parsing date: $e');
+      }
+    }
+
+    return placeholders;
   }
 }

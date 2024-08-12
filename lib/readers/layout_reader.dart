@@ -1,6 +1,6 @@
-import 'dart:io';
 
 import 'package:gengen/entry_filter.dart';
+import 'package:gengen/fs.dart';
 import 'package:gengen/layout.dart';
 import 'package:gengen/site.dart';
 import 'package:path/path.dart';
@@ -28,7 +28,7 @@ class LayoutReader {
   }
 
   List<String> layoutEntries() {
-    var directory = Directory(Site.instance.layoutsPath);
+    var directory = fs.directory(Site.instance.layoutsPath);
     if (!directory.existsSync()) {
       return [];
     }
@@ -48,7 +48,7 @@ class LayoutReader {
 
   List<String> themeLayoutEntries() {
     if(!Site.instance.theme.loaded) return [];
-    var directory = Directory(Site.instance.theme.layoutsPath);
+    var directory = fs.directory(Site.instance.theme.layoutsPath);
     if (!directory.existsSync()) {
       return [];
     }

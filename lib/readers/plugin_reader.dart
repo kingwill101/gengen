@@ -1,6 +1,5 @@
-import 'dart:io';
-
 import 'package:gengen/configuration.dart';
+import 'package:gengen/fs.dart';
 import 'package:gengen/models/base.dart';
 import 'package:gengen/path_extensions.dart';
 import 'package:gengen/plugin/plugin_metadata.dart';
@@ -15,11 +14,11 @@ class PluginReader {
   List<PluginMetadata> read() {
     final plugins = <PluginMetadata>[];
 
-    final sitePlugins = Directory(Site.instance.pluginPath);
+    final sitePlugins = fs.directory(Site.instance.pluginPath);
     plugins.addAll(dirPlugins(sitePlugins));
 
     if (site.theme.loaded) {
-      final themePlugins = Directory(site.theme.pluginPath);
+      final themePlugins = fs.directory(site.theme.pluginPath);
       plugins.addAll(dirPlugins(themePlugins));
     }
 
@@ -50,7 +49,13 @@ class PluginReader {
       final pluginFiles = directory.listSync(recursive: true);
       final pluginAssets = <PluginAsset>[];
 
-      pluginFiles.forEach((f) {
+      for (var f in pluginFiles) {
+        if (FileStat.statSync(f.path).type == FileSystemEntityType.directory) {
+          continue;
+        }
+
+        if (f.path.contains("config.yaml")) continue;
+
         //TODO filter out files that are not in the whitelist
         //TODO plugin assets that will end up in the final build
         // should be tagged as Static and added to site static list
@@ -60,7 +65,7 @@ class PluginReader {
             path: f.path,
           ),
         );
-      });
+      }
 
       final config = {
         ...parseConfig(pluginConfigContent),

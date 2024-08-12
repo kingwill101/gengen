@@ -1,6 +1,6 @@
-import 'dart:io';
 import 'dart:isolate';
 
+import 'package:gengen/fs.dart';
 import 'package:rxdart/rxdart.dart';
 
 mixin WatcherMixin {
@@ -54,7 +54,7 @@ mixin WatcherMixin {
     String source = args['source'] as String;
     SendPort sendPort = args['sendPort'] as SendPort;
 
-    var file = File(source);
+    var file = fs.file(source);
     var stream = file.watch();
 
     stream.listen((event) {

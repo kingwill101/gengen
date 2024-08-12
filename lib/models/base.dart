@@ -1,8 +1,8 @@
 import 'dart:core';
-import 'dart:io';
 
 import 'package:gengen/content/tokenizer.dart';
 import 'package:gengen/drops/document_drop.dart';
+import 'package:gengen/fs.dart';
 import 'package:gengen/liquid/template.dart';
 import 'package:gengen/logging.dart';
 import 'package:gengen/models/permalink_structure.dart';
@@ -58,7 +58,7 @@ class Base with WatcherMixin {
             [destinationPath, p.setExtension(alias, p.extension(filePath))]);
 
         try {
-          var dest = File(aliasDestination);
+          var dest = fs.file(aliasDestination);
           dest.createSync(recursive: true);
           dest.writeAsStringSync(value.readAsStringSync());
           log.fine("Created alias '$alias'");
@@ -170,14 +170,15 @@ class Base with WatcherMixin {
   }
 
   void copyWrite() {
-    File(!isSass ? filePath : setExtension(filePath, ".css"))
+    fs
+        .file(!isSass ? filePath : setExtension(filePath, ".css"))
         .create(recursive: true)
         .then((file) async {
       if (isSass) {
         return file.writeAsString(await renderer.render());
       }
 
-      return File(source).copy(file.path);
+      return fs.file(source).copy(file.path);
     }).then((value) {
       log.info("copied $source");
       print("\t\t-> ${value.absolute}");
@@ -189,7 +190,8 @@ class Base with WatcherMixin {
   Future<void> write() async {
     if (isStatic) return copyWrite();
 
-    File file = await File(filePath).create(recursive: true);
+    File file = await fs.file(filePath).create(recursive: true);
+
     var fileContent = isPost || isPage ? await renderer.render() : content;
     await file.writeAsString(fileContent);
     log.info("written $relativePath");

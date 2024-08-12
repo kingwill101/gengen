@@ -22,7 +22,8 @@ class URL {
 
   String generateUrl(String template) {
     placeholders!.forEach((key, value) {
-      template = template.replaceAll(":$key", Uri.encodeComponent(value as String));
+      template =
+          template.replaceAll(":$key", Uri.encodeComponent(value as String));
     });
 
     return template;
@@ -34,11 +35,15 @@ class URL {
         .replaceAll("//", "/");
   }
 
-  static URL create(
-      {String? template,
-      Map<String, dynamic>? placeholders,
-      String? permalink,}) {
+  static URL create({
+    String? template,
+    Map<String, dynamic>? placeholders,
+    String? permalink,
+  }) {
     return URL(
-        template: template, placeholders: placeholders, permalink: permalink,);
+      template: template,
+      placeholders: placeholders,
+      permalink: permalink,
+    );
   }
 }
