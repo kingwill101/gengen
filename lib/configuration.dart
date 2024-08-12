@@ -20,7 +20,7 @@ class Configuration {
     "url": "http://gengen.local",
     "theme": "default",
     "source": current,
-    "destination": joinAll([current, 'public']),
+    "destination": 'public',
     "include": <String>[],
     "exclude": <String>[],
     "post_dir": "_posts",
@@ -165,6 +165,12 @@ class Configuration {
     _config.addAll(overrides);
     _addDefaultIncludes();
     _addDefaultExcludes();
+
+    if (isRelative(destination)) {
+      _config["destination"] = join(source, destination);
+    } else {
+      _config["destination"] = destination;
+    }
   }
 }
 
