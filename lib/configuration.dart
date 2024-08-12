@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:gengen/fs.dart';
@@ -38,6 +39,7 @@ class Configuration {
     'publish_drafts': false,
     "config": ["_config.yaml"],
     "output": {"posts_dir": "posts"},
+    "data": <String, dynamic>{}
   };
 
   T? get<T>(
@@ -52,6 +54,14 @@ class Configuration {
   }
 
   Map<String, dynamic> get all => _config;
+
+  void add(String key, Map<String, dynamic> value) {
+    if (_config[key] is Map) {
+      _config[key] = {...(_config[key] as Map<String, dynamic>), ...value};
+    } else {
+      _config[key] = value;
+    }
+  }
 
   String get source => get("source") as String;
 
@@ -84,7 +94,10 @@ class Configuration {
     String filePath, [
     Map<String, dynamic> overrides = const {},
   ]) {
-    _config = {..._config, ...readConfigFile(filePath, overrides)};
+    _config = {
+      ..._config,
+      ...readConfigFile(filePath, overrides) as Map<String, dynamic>
+    };
 
     return _config;
   }
@@ -162,15 +175,16 @@ Configuration configuration(Map<String, dynamic> overrides) {
   return config;
 }
 
-Map<String, dynamic> readConfigFile(
+dynamic readConfigFile(
   String filePath, [
   Map<String, dynamic> overrides = const {},
 ]) {
   var yamlConfig = parseConfig(readFileSafe(filePath));
+  final a = jsonDecode(jsonEncode(yamlConfig));
 
-  return {...yamlConfig, ...overrides};
+  return a;
 }
 
-Map<String, dynamic> parseConfig(String content) {
+dynamic parseConfig(String content) {
   return parseYaml(content);
 }

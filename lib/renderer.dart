@@ -67,7 +67,7 @@ class Renderer {
 
     // Add page data and site-wide data to the template's data
     tmpl.data.addAll({"page": base.to_liquid});
-    tmpl.data.addAll(Site.instance.data);
+    tmpl.data.addAll(Site.instance.map);
 
     // Render the current layout with its content
     var template = Template.r(
@@ -106,7 +106,7 @@ class Renderer {
       content,
       data: {
         "page": base.to_liquid,
-        ...Site.instance.data,
+        ...Site.instance.map,
       },
       contentRoot: ContentRoot(),
     );

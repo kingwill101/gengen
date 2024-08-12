@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:gengen/content/tokenizer.dart';
 import 'package:gengen/fs.dart';
 import 'package:gengen/logging.dart';
@@ -6,7 +8,7 @@ import 'package:html/parser.dart' as html_parser;
 import 'package:html_unescape/html_unescape.dart';
 import 'package:path/path.dart';
 import 'package:toml/toml.dart';
-import 'package:yaml_magic/yaml_magic.dart';
+import 'package:yaml/yaml.dart';
 
 String? readFile(String path) {
   var file = fs.file(path);
@@ -59,16 +61,18 @@ String cleanUpContent(String htmlContent) {
   return unescape.convert(htmlContent).replaceAll('\u00A0', ' ');
 }
 
-Map<String, dynamic> parseYaml(String front) {
-  return YamlMagic.fromString(content: front, path: '').map;
+dynamic parseYaml(String front) {
+  return loadYaml(front);
 }
 
 Map<String, dynamic> getFrontMatter(String matter) {
   Map<String, dynamic> frontMatter = <String, dynamic>{};
 
-  frontMatter = parseYaml(matter);
+  if (matter.isEmpty) return frontMatter;
 
-  if (matter.isNotEmpty && frontMatter.isEmpty) {
+  frontMatter = jsonDecode(jsonEncode(parseYaml(matter))) as Map<String, dynamic>;
+
+  if (frontMatter.isEmpty) {
     try {
       frontMatter = TomlDocument.parse(matter).toMap();
     } catch (e) {

@@ -168,7 +168,10 @@ class Site with PathMixin {
   @override
   String get root => workingDir();
 
-  Map<String, dynamic> get data {
+  Map<String, dynamic> get data =>
+      config.get<Map<String, dynamic>>("data", defaultValue: {})!;
+
+  Map<String, dynamic> get map {
     posts.sort((a, b) => b.date.compareTo(a.date));
 
     return {

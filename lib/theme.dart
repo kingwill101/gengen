@@ -45,7 +45,7 @@ class Theme with PathMixin {
     if (FileStat.statSync(configFile).type == FileSystemEntityType.notFound) {
       return;
     }
-    config.read(parseConfig(configFile));
+    config.read(parseConfig(configFile) as Map<String, dynamic>);
   }
 
   @override

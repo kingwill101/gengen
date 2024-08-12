@@ -68,7 +68,7 @@ class PluginReader {
       }
 
       final config = {
-        ...parseConfig(pluginConfigContent),
+        ...(parseConfig(pluginConfigContent) as Map<String, Object>),
         "path": directory.path,
         "files": pluginAssets.map((a) => a.toJson()).toList(),
       };

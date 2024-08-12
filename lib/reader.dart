@@ -1,6 +1,6 @@
-
 import 'package:gengen/entry_filter.dart';
 import 'package:gengen/fs.dart';
+import 'package:gengen/readers/data_reader.dart';
 import 'package:gengen/readers/layout_reader.dart';
 import 'package:gengen/readers/page_reader.dart';
 import 'package:gengen/readers/plugin_reader.dart';
@@ -66,6 +66,7 @@ class Reader {
   }
 
   void read() {
+    readData();
     Site.instance.layouts = LayoutReader().read();
     readDirs();
     readPlugins();
@@ -75,6 +76,10 @@ class Reader {
     Site.instance.plugins.addAll(
       PluginReader().read(),
     );
+  }
+
+  void readData() {
+    DataReader().read();
   }
 
   void readPages(List<String> dotPages) {
@@ -114,5 +119,16 @@ class Reader {
 
       return !parts.any((part) => filter.isSpecial(part));
     }).toList();
+  }
+
+  List<String> filter(String base) {
+    var directory = fs.directory(base);
+    var filter = EntryFilter();
+
+    return filter
+        .filter(
+          directory.listSync(recursive: true).map((e) => e.path).toList(),
+        )
+        .toList();
   }
 }
