@@ -43,13 +43,13 @@ void main() {
 
     test("getJson", () async {
       var json =
-      '''
-      {% assign arguments = 'https://dummyjson.com/products/1' %}
-      {{ "https://dummyjson.com/products/1" | getJson: endpoint }}
+      r'''
+      {%- assign product_data = 'https://dummyjson.com/products/1' | get_json -%}
+      {{- product_data.id -}}
       ''';
 
       var result = await Template.r(json, contentRoot: TestRoot({})).render();
-      expect(result, '');
+      expect(result, '1');
     });
   });
 
