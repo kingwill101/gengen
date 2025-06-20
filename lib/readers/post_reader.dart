@@ -9,6 +9,8 @@ class PostReader {
   PostReader();
 
   List<Base> readPosts(String dir) {
+    unfilteredContent.clear(); // Clear any previous content
+    
     var docs = readContent(dir, RegExp(r'^[a-zA-Z0-9\-_]*'));
     unfilteredContent.addAll(docs);
 
@@ -22,9 +24,7 @@ class PostReader {
       if (!matcher.hasMatch(entry)) continue;
 
       var path = Site.instance.inSourceDir(join(dir, entry));
-      var doc = Post(
-        path,
-      );
+      var doc = Post(path);
       docs.add(doc);
     }
 

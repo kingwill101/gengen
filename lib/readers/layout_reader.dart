@@ -1,34 +1,37 @@
-
 import 'package:gengen/entry_filter.dart';
 import 'package:gengen/fs.dart';
 import 'package:gengen/layout.dart';
 import 'package:gengen/site.dart';
 import 'package:path/path.dart';
 
+/// Responsible for reading and managing layout files for the site.
+///
+/// The LayoutReader class is responsible for reading and managing the layout files
+/// for the site. It scans the layouts directory and the theme layouts directory
+/// to find all available layouts, and stores them in a map for easy access.
+///
 class LayoutReader {
-
   var layouts = <String, Layout>{};
 
   LayoutReader();
 
-  Map<String, Layout> read() {
+  Future<Map<String, Layout>> read() async {
     layoutEntries().forEach((layoutFile) {
-      var name = Site.instance.relativeToRoot(withoutExtension(layoutFile));
-      layouts[name] =
-          Layout(layoutFile, name, ext: extension(layoutFile));
+      var name = relative(withoutExtension(layoutFile), from: site.layoutsPath);
+      layouts[name] = Layout(layoutFile, name, ext: extension(layoutFile));
     });
 
     themeLayoutEntries().forEach((layoutFile) {
-      var name =  Site.instance.theme.relativeToRoot(withoutExtension(layoutFile));
-      layouts[name] =
-          Layout(layoutFile, name, ext: extension(layoutFile));
+      var name =
+          relative(withoutExtension(layoutFile), from: site.theme.layoutsPath);
+      layouts[name] = Layout(layoutFile, name, ext: extension(layoutFile));
     });
 
     return layouts;
   }
 
   List<String> layoutEntries() {
-    var directory = fs.directory(Site.instance.layoutsPath);
+    var directory = fs.directory(site.layoutsPath);
     if (!directory.existsSync()) {
       return [];
     }
@@ -37,8 +40,7 @@ class LayoutReader {
     var allEntities = directory.listSync(recursive: true, followLinks: false);
 
     for (var entity in allEntities) {
-      if (entity is File &&
-          entity.path.contains(RegExp(r'[^/\\]*[/\\][^/\\]*\..*'))) {
+      if (entity is File) {
         entries.add(entity.path);
       }
     }
@@ -47,8 +49,8 @@ class LayoutReader {
   }
 
   List<String> themeLayoutEntries() {
-    if(!Site.instance.theme.loaded) return [];
-    var directory = fs.directory(Site.instance.theme.layoutsPath);
+    if (!site.theme.loaded) return [];
+    var directory = fs.directory(site.theme.layoutsPath);
     if (!directory.existsSync()) {
       return [];
     }
@@ -57,13 +59,11 @@ class LayoutReader {
     var allEntities = directory.listSync(recursive: true, followLinks: false);
 
     for (var entity in allEntities) {
-      if (entity is File &&
-          entity.path.contains(RegExp(r'[^/\\]*[/\\][^/\\]*\..*'))) {
+      if (entity is File) {
         entries.add(entity.path);
       }
     }
 
     return EntryFilter().filter(entries);
   }
-
 }

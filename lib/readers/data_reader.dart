@@ -1,15 +1,14 @@
 import 'dart:io';
 
 import 'package:gengen/configuration.dart';
-import 'package:gengen/reader.dart';
 import 'package:gengen/site.dart';
 import 'package:path/path.dart';
 
 class DataReader {
   DataReader();
 
-  void read() {
-    var files = Reader().filter(Site.instance.dataPath);
+  Future<void> read() async {
+    var files = await site.reader.filter(site.dataPath);
 
     final directoryStructure = <String, dynamic>{};
     final extensions = [".json", ".yaml", ".yml"];
@@ -29,8 +28,7 @@ class DataReader {
       Map<String, dynamic> currentMap = directoryStructure;
       for (var i = 0; i < parts.length; i++) {
         if (i == parts.length - 1) {
-          currentMap[parts[i]] =
-              readConfigFile(file); // Create an empty map for the file
+          currentMap[parts[i]] = readConfigFile(file);
         } else {
           if (!currentMap.containsKey(parts[i])) {
             currentMap[parts[i]] = <String, dynamic>{};
@@ -39,6 +37,6 @@ class DataReader {
         }
       }
     }
-    Site.instance.config.add("data", directoryStructure);
+    site.config.add("data", directoryStructure);
   }
 }

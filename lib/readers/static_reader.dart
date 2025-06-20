@@ -7,8 +7,11 @@ class StaticReader {
   StaticReader();
 
   List<Base> read(List<String> files) {
+    unfilteredContent.clear(); // Clear any previous content
+    
     for (var file in files) {
-      unfilteredContent.add(Static(file));
+      final staticFile = Static(file);
+      unfilteredContent.add(staticFile);
     }
     
     return unfilteredContent;

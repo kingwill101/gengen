@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:gengen/fs.dart';
 import 'package:gengen/models/base.dart';
 import 'package:gengen/models/theme_asset.dart';
 import 'package:gengen/reader.dart';
@@ -11,16 +12,24 @@ class ThemeReader {
   ThemeReader();
 
   List<Base> read() {
-    if(!Site.instance.theme.loaded) return [];
-    var files = Reader().filterSpecial(Site.instance.theme.root);
+    unfilteredContent.clear(); // Clear any previous content
+    
+    if (!site.theme.loaded) return [];
+    
+    var files = Reader().filterSpecial(site.theme.root);
 
     for (var file in files) {
-      if (FileStat.statSync(file).type == FileSystemEntityType.directory) {
+      if (fs.isDirectorySync(file)) {
         continue;
       }
-      unfilteredContent.add(ThemeAsset(file, ));
+      if (file.startsWith(site.theme.layoutsPath)) {
+        continue;
+      }
+      
+      final themeAsset = ThemeAsset(file);
+      unfilteredContent.add(themeAsset);
     }
-    
+
     return unfilteredContent;
   }
 }

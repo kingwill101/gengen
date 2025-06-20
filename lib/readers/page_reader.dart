@@ -7,8 +7,11 @@ class PageReader {
   PageReader();
 
   List<Base> read(List<String> files) {
+    unfilteredContent.clear(); // Clear any previous content
+    
     for (var file in files) {
-      unfilteredContent.add(Page(file, ));
+      final page = Page(file);
+      unfilteredContent.add(page);
     }
 
     return unfilteredContent;

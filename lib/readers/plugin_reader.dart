@@ -1,32 +1,34 @@
 import 'package:gengen/configuration.dart';
 import 'package:gengen/fs.dart';
-import 'package:gengen/models/base.dart';
+import 'package:gengen/logging.dart';
 import 'package:gengen/path_extensions.dart';
+import 'package:gengen/plugin/loader.dart';
+import 'package:gengen/plugin/plugin.dart';
 import 'package:gengen/plugin/plugin_metadata.dart';
 import 'package:gengen/site.dart';
 import 'package:path/path.dart' as p;
 
 class PluginReader {
-  List<Base> unfilteredContent = [];
-
   PluginReader();
 
-  List<PluginMetadata> read() {
-    final plugins = <PluginMetadata>[];
-
+  Future<List<BasePlugin>> read() async {
+    final plugins = <BasePlugin>[];
     final sitePlugins = fs.directory(Site.instance.pluginPath);
-    plugins.addAll(dirPlugins(sitePlugins));
+
+    plugins.addAll(await dirPlugins(sitePlugins));
+    log.info("Plugins loaded: SITE plugins action");
 
     if (site.theme.loaded) {
       final themePlugins = fs.directory(site.theme.pluginPath);
-      plugins.addAll(dirPlugins(themePlugins));
+      plugins.addAll(await dirPlugins(themePlugins));
+      log.info("Plugins loaded: THEME plugins action");
     }
 
     return plugins;
   }
 
-  static List<PluginMetadata> dirPlugins(Directory directory,
-      {List<String> whitelist = const []}) {
+  static Future<List<BasePlugin>> dirPlugins(Directory directory,
+      {List<String> whitelist = const []}) async {
     if (!directory.existsSync()) {
       return [];
     }
@@ -36,7 +38,7 @@ class PluginReader {
       followLinks: false,
     );
 
-    final plugins = <PluginMetadata>[];
+    final plugins = <BasePlugin>[];
 
     final directories = allEntities
         .whereType<Directory>()
@@ -44,7 +46,8 @@ class PluginReader {
 
     for (final directory in directories) {
       final pluginConfigContent =
-          directory.file("config.yaml").readAsStringSync();
+          readConfigFile(directory.file("config.yaml").path)
+              as Map<String, dynamic>;
 
       final pluginFiles = directory.listSync(recursive: true);
       final pluginAssets = <PluginAsset>[];
@@ -68,7 +71,7 @@ class PluginReader {
       }
 
       final config = {
-        ...(parseConfig(pluginConfigContent) as Map<String, Object>),
+        ...pluginConfigContent,
         "path": directory.path,
         "files": pluginAssets.map((a) => a.toJson()).toList(),
       };
@@ -76,7 +79,8 @@ class PluginReader {
       final plugin = PluginMetadata.fromJson(
         config,
       );
-      plugins.add(plugin);
+      final loader = initializePlugin(plugin);
+      plugins.add(loader);
     }
 
     return plugins;
