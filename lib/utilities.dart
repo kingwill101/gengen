@@ -6,8 +6,9 @@ import 'package:gengen/logging.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' as html_parser;
 import 'package:html_unescape/html_unescape.dart';
+import 'package:intl/intl.dart';
 import 'package:path/path.dart';
-import 'package:toml/toml.dart';
+// import 'package:toml/toml.dart';
 import 'package:yaml/yaml.dart';
 
 String? readFile(String path) {
@@ -22,8 +23,8 @@ String? readFile(String path) {
 String slugify(String text) {
   return text
       .toLowerCase()
-      .replaceAll(RegExp(r'\s+'), '-')
-      .replaceAll(RegExp(r'[^\w-]'), '');
+      .replaceAll(RegExp(r'[^a-z0-9]+'), '-')
+      .replaceAll(RegExp(r'^-|-$'), '');
 }
 
 String slugifyList(List<String> items) {
@@ -68,17 +69,23 @@ dynamic parseYaml(String front) {
 Map<String, dynamic> getFrontMatter(String matter) {
   Map<String, dynamic> frontMatter = <String, dynamic>{};
 
+  if (matter.startsWith("\n")) {
+    matter = matter.replaceFirst("\n", "");
+  }
+
   if (matter.isEmpty) return frontMatter;
 
-  frontMatter = jsonDecode(jsonEncode(parseYaml(matter))) as Map<String, dynamic>;
+  final parsed = parseYaml(matter);
+  if (parsed == null) return {};
+  frontMatter = jsonDecode(jsonEncode(parsed)) as Map<String, dynamic>;
 
-  if (frontMatter.isEmpty) {
-    try {
-      frontMatter = TomlDocument.parse(matter).toMap();
-    } catch (e) {
-      return {};
-    }
-  }
+  // if (frontMatter.isEmpty) {
+  //   try {
+  //     frontMatter = TomlDocument.parse(matter).toMap();
+  //   } catch (e) {
+  //     return {};
+  //   }
+  // }
 
   return frontMatter;
 }
@@ -90,10 +97,8 @@ String readFileSafe(String fullPath, {String contextMsg = ""}) {
 
   try {
     return readFile(fullPath) ?? '';
-  } catch (e) {
-    log.severe('Error reading file', e);
-    log.info(contextMsg);
-
+  } catch (e, s) {
+    log.severe('Error reading file: $contextMsg', e, s);
     return '';
   }
 }
@@ -127,16 +132,17 @@ bool isBinaryFile(String filePath) {
     }
 
     return false; // No null byte found, likely a text file.
-  } catch (e) {
+  } catch (e, s) {
     // Handle file I/O errors here.
-    log.severe('Error reading file: $e', e);
+    log.severe('Error reading file: $e', e, s);
 
     return true; // Assume it's binary if there was an error reading it.
   }
 }
 
 bool containsLiquid(String content) {
-  return content.contains("{%") || content.contains("{{");
+  final RegExp liquidSyntax = RegExp(r'{[{%][\s\S]*?[%}]}');
+  return liquidSyntax.hasMatch(content);
 }
 
 bool containsMarkdown(String content) {
@@ -146,10 +152,7 @@ bool containsMarkdown(String content) {
 }
 
 String normalize(String title) {
-  return slugify(title)
-      .toLowerCase()
-      .replaceAll(' ', '-')
-      .replaceAll(RegExp(r'[^\w-]'), '');
+  return slugify(title);
 }
 
 String extractExcerpt(
@@ -206,4 +209,34 @@ String extractExcerpt(
   }
 
   return excerpt.trim();
+}
+
+DateTime parseDate(String dateString,
+    {String? format = "yyyy-MM-dd HH:mm:ss"}) {
+  DateFormat dateFormat = DateFormat(format);
+
+  try {
+    return dateFormat.parseLoose(dateString);
+  } catch (e) {
+    try {
+      return DateTime.parse(dateString);
+    } catch (e) {
+      return DateTime.now();
+    }
+  }
+}
+
+Map<String, dynamic> deepMerge(
+    Map<String, dynamic> m1, Map<String, dynamic> m2) {
+  var result = {...m1};
+  for (var key in m2.keys) {
+    var v2 = m2[key];
+    var v1 = result[key];
+    if (v1 is Map<String, dynamic> && v2 is Map<String, dynamic>) {
+      result[key] = deepMerge(v1, v2);
+    } else {
+      result[key] = v2;
+    }
+  }
+  return result;
 }
