@@ -1,10 +1,9 @@
 import 'dart:convert';
-import 'dart:io';
-
 import 'package:gengen/fs.dart';
 import 'package:gengen/logging.dart';
 import 'package:gengen/utilities.dart';
 import 'package:path/path.dart';
+import 'package:yaml/yaml.dart'; // Import for YamlException
 
 class Configuration {
   Configuration.read(Map<String, dynamic> cfg) {
@@ -22,7 +21,7 @@ class Configuration {
     "source": current,
     "destination": 'public',
     "include": <String>[],
-    "exclude": <String>[],
+    "exclude": <String>['config.yaml'],
     "post_dir": "_posts",
     "draft_dir": "_draft",
     "themes_dir": "_themes",
@@ -39,8 +38,13 @@ class Configuration {
     'publish_drafts': false,
     "config": ["_config.yaml"],
     "output": {"posts_dir": "posts"},
-    "data": <String, dynamic>{}
+    "data": <String, dynamic>{},
+    "date_format": "yyyy-MM-dd HH:mm:ss"
   };
+
+  static void resetConfig() {
+    _config = {..._defaults};
+  }
 
   T? get<T>(
     String key, {
@@ -94,10 +98,23 @@ class Configuration {
     String filePath, [
     Map<String, dynamic> overrides = const {},
   ]) {
-    _config = {
-      ..._config,
-      ...readConfigFile(filePath, overrides) as Map<String, dynamic>
-    };
+    // Modify to not call exit(-1) for testability
+    if (!fs.file(filePath).existsSync()) {
+      log.warning("Config file '$filePath' not found. Skipping.");
+      return {}; // Return empty map if file not found
+    }
+
+    dynamic yamlConfig;
+    try {
+      yamlConfig = parseConfig(readFileSafe(filePath));
+    } on YamlException catch (e) {
+      log.severe("Malformed config file '$filePath': ${e.message}");
+      rethrow; // Re-throw YamlException for testability
+    }
+
+    final a = jsonDecode(jsonEncode(yamlConfig));
+
+    _config = deepMerge(_config, a as Map<String, dynamic>);
 
     return _config;
   }
@@ -114,8 +131,6 @@ class Configuration {
   void read([Map<String, dynamic> configOverride = const {}]) {
     var overrides = {...configOverride};
     List<String> resolvedFiles = [];
-
-    bool hasConfig = overrides.containsKey("config");
 
     String? siteSource = overrides["source"] as String?;
 
@@ -138,31 +153,36 @@ class Configuration {
       overrides.remove("destination");
     }
 
-    if (hasConfig) {
-      List<String> configFiles =
-          get<List<String>>("config", overrides: overrides, defaultValue: []) ??
-              [];
+    final configFilesList =
+        get<List<String>>("config", overrides: overrides, defaultValue: []) ??
+            [];
 
-      for (var config in configFiles) {
-        if ((config.endsWith('.yaml') || config.endsWith('.yml'))) {
-          var file = fs.file(join(source, config));
-          if (file.existsSync()) {
-            resolvedFiles.add(file.path);
-            continue;
-          }
-          log.severe("Config $config not found");
-          exit(-1);
-        } else {
-          log.severe("Invalid config $config");
-          exit(-1);
+    for (var config in configFilesList) {
+      if ((config.endsWith('.yaml') || config.endsWith('.yml'))) {
+        var file = fs.file(join(source, config));
+        if (file.existsSync()) {
+          resolvedFiles.add(file.path);
+          continue;
         }
+        // Change from exit(-1) to logging warning for testability
+        log.warning("Config '$config' not found. Skipping.");
+      } else {
+        // Change from exit(-1) to throwing FormatException for testability
+        throw FormatException(
+            "Invalid config '$config'. Configuration file must end with .yaml or .yml.");
       }
     }
 
-    hasConfig ? overrides.remove("config") : ();
+    if (overrides.containsKey('config')) {
+      overrides.remove("config");
+    }
+    
     _readConfigFiles(resolvedFiles);
-    overrides["config"] = resolvedFiles;
-    _config.addAll(overrides);
+    
+    _config = deepMerge(_config, overrides);
+    
+    checkIncludeExclude(_config);
+
     _addDefaultIncludes();
     _addDefaultExcludes();
 
@@ -192,5 +212,6 @@ dynamic readConfigFile(
 }
 
 dynamic parseConfig(String content) {
-  return parseYaml(content);
+  // Catch YamlException here if needed, or let it propagate
+  return loadYaml(content);
 }
