@@ -75,9 +75,13 @@ Map<String, dynamic> getFrontMatter(String matter) {
 
   if (matter.isEmpty) return frontMatter;
 
-  final parsed = parseYaml(matter);
-  if (parsed == null) return {};
-  frontMatter = jsonDecode(jsonEncode(parsed)) as Map<String, dynamic>;
+  try {
+    final parsed = parseYaml(matter);
+    if (parsed == null) return {};
+    frontMatter = jsonDecode(jsonEncode(parsed)) as Map<String, dynamic>;
+  } on YamlException {
+    return {};
+  }
 
   // if (frontMatter.isEmpty) {
   //   try {
