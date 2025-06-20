@@ -87,11 +87,11 @@ class Configuration {
   }
 
   void _addDefaultExcludes() {
-    _config.putIfAbsent('excludes', () => <String>[]);
+    _config.putIfAbsent('exclude', () => <String>[]);
   }
 
   void _addDefaultIncludes() {
-    _config.putIfAbsent('includes', () => <String>[]);
+    _config.putIfAbsent('include', () => <String>[]);
   }
 
   Map<String, dynamic> _readConfigFile(
