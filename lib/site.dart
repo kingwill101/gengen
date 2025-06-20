@@ -1,16 +1,22 @@
 import 'dart:async';
 
 import 'package:gengen/fs.dart';
+import 'package:gengen/hook.dart';
 import 'package:gengen/layout.dart';
+import 'package:gengen/logging.dart';
 import 'package:gengen/models/base.dart';
 import 'package:gengen/path.dart';
-import 'package:gengen/plugin/plugin_metadata.dart';
+import 'package:gengen/plugin/builtin/liquid.dart';
+import 'package:gengen/plugin/builtin/markdown.dart';
+import 'package:gengen/plugin/builtin/sass.dart';
+import 'package:gengen/plugin/plugin.dart';
 import 'package:gengen/reader.dart';
 import 'package:gengen/theme.dart';
 import 'package:path/path.dart';
 import 'package:rxdart/rxdart.dart';
+// import 'package:sentry/sentry.dart';
 
-final site = Site.instance;
+Site get site => Site.instance;
 
 class Site with PathMixin {
   late Reader _reader;
@@ -20,13 +26,16 @@ class Site with PathMixin {
   final List<Base> _posts = [];
   final List<Base> _pages = [];
   final List<Base> _static = [];
-  final List<PluginMetadata> _plugins = [];
+  final List<BasePlugin> _plugins = [
+    MarkdownPlugin(),
+    LiquidPlugin(),
+    SassPlugin()
+  ];
 
   static Site? _instance;
 
   Site.__internal({Map<String, dynamic> overrides = const {}}) {
     config.read(overrides);
-    reset();
     theme = Theme.load(
       config.get<String>("theme")!,
       themePath: themesDir,
@@ -42,20 +51,20 @@ class Site with PathMixin {
     Map<String, dynamic> overrides = const <String, dynamic>{},
   }) {
     _instance = Site.__internal(overrides: overrides);
-    // Hook.trigger(Site, HookEvent.postInit);
   }
 
   static Site get instance {
     _instance ??= Site.__internal();
-
     return _instance!;
   }
 
-// Create a broadcast StreamController
+  static void resetInstance() {
+    _instance = null;
+  }
+
   final StreamController<String> _fileChangeController =
       StreamController.broadcast();
 
-// Getter for the stream
   Stream<String> get fileChangeStream =>
       _fileChangeController.stream.debounceTime(
         Duration(
@@ -67,7 +76,6 @@ class Site with PathMixin {
     _fileChangeController.close();
   }
 
-// Method to add a file change event
   void notifyFileChange(String filePath) {
     _fileChangeController.sink.add(filePath);
   }
@@ -80,7 +88,7 @@ class Site with PathMixin {
 
   List<Base> get staticFiles => _static;
 
-  List<PluginMetadata> get plugins => _plugins;
+  List<BasePlugin> get plugins => _plugins;
 
   set posts(List<Base> posts) {
     _posts.clear();
@@ -89,24 +97,47 @@ class Site with PathMixin {
 
   Reader get reader => _reader;
 
-  void reset() {
+  Future<void> reset() async {
     if (destination.existsSync()) {
-      destination.deleteSync(recursive: true);
+      await destination.delete(recursive: true);
     }
   }
 
-  void read() {
-    _reader.read();
+  Future<void> read() async {
+    await _reader.read();
   }
 
   Future<void> process() async {
-    read();
+    // Clean destination if configured to do so
+    if (config.get<bool>('clean', defaultValue: false)!) {
+      if (await destination.exists()) {
+        await destination.delete(recursive: true);
+      }
+    }
 
+    // Reset collections for idempotency
+    layouts = {};
+    _posts.clear();
+    _pages.clear();
+    _static.clear();
+
+    await runHook(HookEvent.afterInit);
+    await runHook(HookEvent.beforeRead);
+    await read();
+    await runHook(HookEvent.afterRead);
+    await runHook(HookEvent.beforeGenerate);
+    await runGenerators();
+    await runHook(HookEvent.afterGenerate);
+    await runHook(HookEvent.beforeRender);
+    await render();
+    await runHook(HookEvent.afterRender);
+    await runHook(HookEvent.beforeWrite);
     await write();
+    await runHook(HookEvent.afterWrite);
   }
 
   Future<Map<String, Object>> dump() async {
-    _reader.read();
+    await _reader.read();
 
     final Map<String, Object> siteDump = {
       "source": config.source,
@@ -116,7 +147,7 @@ class Site with PathMixin {
       "exclude": exclude.toList(),
       "posts": _posts.map((e) => e.toJson()).toList(),
       "pages": _pages.map((e) => e.toJson()).toList(),
-      "plugins": _plugins.map((e) => e.toJson()).toList(),
+      "plugins": _plugins.map((e) => e.metadata.toJson()).toList(),
       "staticFiles": _static,
       "layouts": layouts,
       "config": config.all,
@@ -137,14 +168,30 @@ class Site with PathMixin {
   }
 
   Future<void> write() async {
+    final items = [
+      ...staticFiles,
+      ...posts,
+      ...pages,
+    ];
+
+    log.info('writing ${items.length} items');
+    await Future.wait(items.map((page) async {
+      await page.write();
+    }));
+    log.info('write done');
+  }
+
+  Future<void> render() async {
     await Future.wait([
       ...staticFiles,
       ...posts,
       ...pages,
-    ].map((page) => page.write()));
+    ].map((page) async {
+      await page.render();
+    }));
   }
 
-  void watch() {
+  Future<void> watch() async {
     for (var value in [
       ...staticFiles,
       ...posts,
@@ -175,17 +222,64 @@ class Site with PathMixin {
     posts.sort((a, b) => b.date.compareTo(a.date));
 
     return {
-      'site': {
-        ...config.all,
-        'pages': pages.map((e) => e.to_liquid).toList(),
-        'posts': posts
-            .where((post) => !post.isIndex)
-            .map((e) => e.to_liquid)
-            .toList(),
-        'theme': {
-          'root': theme.root,
-        },
+      ...config.all,
+      'feed_meta': '',
+      'pages': pages.map((e) => e.to_liquid).toList(),
+      'posts':
+          posts.where((post) => !post.isIndex).map((e) => e.to_liquid).toList(),
+      'theme': {
+        'root': theme.root,
       },
     };
+  }
+
+  Future<void> runHook(HookEvent event) async {
+    for (var plugin in _plugins) {
+      switch (event) {
+        case HookEvent.afterInit:
+          plugin.afterInit();
+          break;
+        case HookEvent.beforeRead:
+          plugin.beforeRead();
+          break;
+        case HookEvent.afterRead:
+          plugin.afterRead();
+          break;
+        case HookEvent.beforeConvert:
+          plugin.beforeConvert();
+          break;
+        case HookEvent.afterConvert:
+          plugin.afterConvert();
+          break;
+        case HookEvent.beforeGenerate:
+          plugin.beforeGenerate();
+          break;
+        case HookEvent.afterGenerate:
+          plugin.afterGenerate();
+          break;
+        case HookEvent.beforeRender:
+          plugin.beforeRender();
+          break;
+        case HookEvent.afterRender:
+          plugin.afterRender();
+          break;
+        case HookEvent.beforeWrite:
+          plugin.beforeWrite();
+          break;
+        case HookEvent.afterWrite:
+          plugin.afterWrite();
+          break;
+        case HookEvent.afterReset:
+        case HookEvent.convert:
+          // TODO: Handle this case.
+          throw UnimplementedError();
+      }
+    }
+  }
+
+  Future<void> runGenerators() async {
+    for (var plugin in _plugins) {
+      await plugin.generate();
+    }
   }
 }
