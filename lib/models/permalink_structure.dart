@@ -1,6 +1,5 @@
 import 'dart:core';
 
-import 'package:gengen/logging.dart';
 import 'package:gengen/models/base.dart';
 import 'package:gengen/models/url.dart';
 import 'package:gengen/site.dart';
@@ -8,6 +7,8 @@ import 'package:gengen/utilities.dart';
 import 'package:intl/intl.dart';
 import 'package:more/collection.dart';
 import 'package:path/path.dart' as p;
+
+import '../logging.dart';
 
 class PermalinkStructure {
   static const String date = ":categories/:year/:month/:day/:title:output_ext";
@@ -34,30 +35,24 @@ class PermalinkStructure {
 extension PermalinkExtension on Base {
   String permalink() {
     if (config.isEmpty || !config.containsKey("permalink")) {
-      return buildPermalink();
+      return p.normalize(buildPermalink());
     }
 
     String entryPermalink = config["permalink"] as String? ?? "";
 
-    //If permalink doesn't include partition then it should be
-    //an hard coded path
-    if (entryPermalink.isNotEmpty && !entryPermalink.contains(':')) {
-      //if it is a directory path then we should do
-      // <directory path>/index.html
-      bool isDirectory =
-          p.isAbsolute(entryPermalink) && p.extension(entryPermalink).isEmpty;
-      // bool isFile = p.isAbsolute(filePath) && p.split(filePath).last.isNotEmpty;
-      if (isDirectory) {
-        entryPermalink =  p.join(entryPermalink, 'index.html');
-      }
-
-      return entryPermalink.removePrefix('/');
+    var structures = PermalinkStructure.map();
+    if (structures.containsKey(entryPermalink)) {
+      entryPermalink = structures[entryPermalink]!;
     }
 
-    var structures = PermalinkStructure.map();
-
-    if (structures.containsKey(entryPermalink)) {
-      return buildPermalink(structures[entryPermalink]!);
+    //If permalink doesn't include partition then it should be
+    //an hard coded path
+    //if it is a directory path then we should do
+    // <directory path>/index.html
+    bool isDirectory = p.extension(entryPermalink).isEmpty;
+    // bool isFile = p.isAbsolute(filePath) && p.split(filePath).last.isNotEmpty;
+    if (isDirectory) {
+      entryPermalink = p.join(entryPermalink, 'index.html');
     }
 
     return p.normalize(buildPermalink(entryPermalink));
@@ -70,14 +65,15 @@ extension PermalinkExtension on Base {
     );
   }
 
-  String buildPermalink([
-    String permalink = PermalinkStructure.none,
-  ]) {
+  String buildPermalink([String permalink = PermalinkStructure.none]) {
     Map<String, dynamic> config = this.config;
 
     String? title = config['title'] as String? ?? "";
+    String? slug = config['slug'] as String? ?? "";
 
-    if (title.isEmpty) {
+    if (slug.isNotEmpty) {
+      title = slug;
+    } else if (title.isEmpty) {
       title = p.withoutExtension(p.basename(name));
     }
 
@@ -88,17 +84,13 @@ extension PermalinkExtension on Base {
         : <String>[];
 
     String categories = tags.isNotEmpty ? tags.join("/") : "";
-    categories = !isPost ? categories : "uncategorized";
+    categories = !isPost ? categories : "posts";
 
     permalink = permalink
-        .replaceAll(
-          ':categories',
-          categories,
-        )
+        .replaceAll(':categories', categories)
         .replaceAll(':slugified_categories', slugifyList(tags))
         .replaceAll(':title', normalizedTitle)
-        .replaceAll(
-            ':path', p.relative(p.dirname(source), from: Site.instance.root))
+        .replaceAll(':path', p.relative(p.dirname(source), from: site.root))
         .replaceAll(
           ':basename',
           normalize(p.withoutExtension(p.basename(source))),
@@ -107,7 +99,10 @@ extension PermalinkExtension on Base {
 
     if (config.containsKey('date') && config['date'] != null) {
       try {
-        DateTime parsedDate = DateTime.parse(config['date'] as String? ?? "");
+        DateTime parsedDate = parseDate(
+          config['date'] as String,
+          format: site.config.get("date_format"),
+        );
 
         permalink = permalink
             .replaceAll(':year', parsedDate.year.toString())
@@ -120,9 +115,9 @@ extension PermalinkExtension on Base {
             .replaceAll(':i_day', parsedDate.day.toString())
             .replaceAll(
               ':y_day',
-              int.parse(DateFormat('D').format(parsedDate))
-                  .toString()
-                  .padLeft(3, '0'),
+              int.parse(
+                DateFormat('D').format(parsedDate),
+              ).toString().padLeft(3, '0'),
             )
             .replaceAll(':w_year', DateFormat('kk').format(parsedDate))
             .replaceAll(':w_day', parsedDate.weekday.toString())
@@ -142,23 +137,27 @@ extension PermalinkExtension on Base {
         int weekNumber = (dayOfYear / 7).ceil();
         String formattedWeekNumber = weekNumber.toString().padLeft(2, '0');
         permalink = permalink.replaceAll(':week', formattedWeekNumber);
-      } catch (e) {
-        log.warning('Error parsing date: $e');
+      } catch (e, stack) {
+        log.warning('Error parsing date: $e', e, stack  );
       }
     }
 
     return permalink;
   }
 
-  Map<String, String> permalinkPlaceholders(
-      [String permalink = PermalinkStructure.none]) {
+  Map<String, String> permalinkPlaceholders([
+    String permalink = PermalinkStructure.none,
+  ]) {
     Map<String, String> placeholders = {};
 
     Map<String, dynamic> config = this.config;
 
     String? title = config['title'] as String? ?? "";
+    String? slug = config['slug'] as String? ?? "";
 
-    if (title.isEmpty) {
+    if (slug.isNotEmpty) {
+      title = slug;
+    } else if (title.isEmpty) {
       title = p.withoutExtension(p.basename(name));
     }
 
@@ -171,14 +170,14 @@ extension PermalinkExtension on Base {
         : <String>[];
 
     String categories = tags.isNotEmpty ? tags.join("/") : "";
-    categories = !isPost ? categories : "uncategorized";
+    categories = !isPost ? categories : "posts";
 
     placeholders['categories'] = categories;
     placeholders['slugified_categories'] = slugifyList(tags);
-    placeholders['path'] =
-        p.relative(p.dirname(source), from: Site.instance.root);
-    placeholders['basename'] =
-        normalize(p.withoutExtension(p.basename(source)));
+    placeholders['path'] = p.relative(p.dirname(source), from: site.root);
+    placeholders['basename'] = normalize(
+      p.withoutExtension(p.basename(source)),
+    );
     placeholders['output_ext'] = '.html';
 
     if (config.containsKey('date') && config['date'] != null) {
@@ -192,9 +191,9 @@ extension PermalinkExtension on Base {
         placeholders['short_month'] = DateFormat('MMM').format(parsedDate);
         placeholders['long_month'] = DateFormat('MMMM').format(parsedDate);
         placeholders['i_day'] = parsedDate.day.toString();
-        placeholders['y_day'] = int.parse(DateFormat('D').format(parsedDate))
-            .toString()
-            .padLeft(3, '0');
+        placeholders['y_day'] = int.parse(
+          DateFormat('D').format(parsedDate),
+        ).toString().padLeft(3, '0');
         placeholders['hour'] = parsedDate.hour.toString().padLeft(2, '0');
         placeholders['minute'] = parsedDate.minute.toString().padLeft(2, '0');
         placeholders['second'] = parsedDate.second.toString().padLeft(2, '0');
@@ -216,8 +215,8 @@ extension PermalinkExtension on Base {
         int weekNumber = (dayOfYear / 7).ceil();
         String formattedWeekNumber = weekNumber.toString().padLeft(2, '0');
         placeholders['week'] = formattedWeekNumber;
-      } catch (e) {
-        log.warning('Error parsing date: $e');
+      } catch (e, stack) {
+        log.warning('Error parsing date: $e', e, stack);
       }
     }
 
