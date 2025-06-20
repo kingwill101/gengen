@@ -46,7 +46,7 @@ class Base with WatcherMixin {
     };
   }
 
-  void handleAlias(File value) {
+  Future<void> handleAlias(File value) async {
     if (!value.existsSync()) return;
     if (config.containsKey("aliases") && config["aliases"] is List) {
       for (var alias in (config["aliases"] as List)) {
@@ -59,8 +59,8 @@ class Base with WatcherMixin {
 
         try {
           var dest = fs.file(aliasDestination);
-          dest.createSync(recursive: true);
-          dest.writeAsStringSync(value.readAsStringSync());
+          await dest.create(recursive: true);
+          await dest.writeAsString(value.readAsStringSync());
           log.fine("Created alias '$alias'");
           print("\t\t  -> '${dest.absolute}'");
         } on Exception catch (_, e) {
@@ -95,8 +95,12 @@ class Base with WatcherMixin {
 
   bool get isHtml => htmlExtensions.contains(ext);
 
-  bool get isMarkdown =>
-      markdownExtensions.contains(ext) || containsMarkdown(content);
+  bool get isMarkdown {
+    final result =
+        markdownExtensions.contains(ext) || containsMarkdown(content);
+    log.info("isMarkdown check for ${this.source}: $result");
+    return result;
+  }
 
   bool get hasLiquid => containsLiquid(content);
 
@@ -140,8 +144,8 @@ class Base with WatcherMixin {
 
     //config from _index.md located in directory hierarchy
     //starting in _posts
-    dirConfig = walkDirectoriesAndGetFrontMatters(
-        Site.instance.relativeToSource(source));
+    dirConfig =
+        walkDirectoriesAndGetFrontMatters(site.relativeToSource(source));
 
     //config found in post/page front matter
     frontMatter = loadedContent.frontMatter;
@@ -150,17 +154,17 @@ class Base with WatcherMixin {
     for (var key in frontMatter.keys) {
       if (containsLiquid(frontMatter[key].toString())) {
         frontMatter[key] =
-            Template.r(frontMatter[key].toString(), data: config);
+            GenGenTempate.r(frontMatter[key].toString(), data: config);
       }
     }
 
     content = cleanUpContent(loadedContent.content);
-    name = source.removePrefix(Site.instance.config.source + p.separator);
+    name = source.removePrefix(site.config.source + p.separator);
     renderer = Renderer(this);
   }
 
   String get destinationPath {
-    var destiny = destination ?? Site.instance.destination;
+    var destiny = destination ?? site.destination;
 
     if (isPage && !isIndex) {
       name = setExtension("index", ext);
@@ -169,51 +173,60 @@ class Base with WatcherMixin {
     return destiny.path;
   }
 
-  void copyWrite() {
-    fs
-        .file(!isSass ? filePath : setExtension(filePath, ".css"))
-        .create(recursive: true)
-        .then((file) async {
-      if (isSass) {
-        return file.writeAsString(await renderer.render());
-      }
-
-      return fs.file(source).copy(file.path);
-    }).then((value) {
-      log.info("copied $source");
-      print("\t\t-> ${value.absolute}");
-    });
+  Future<void> copyWrite() async {
+    final outputPath = !isSass ? filePath : setExtension(filePath, ".css");
+    final file = await fs.file(outputPath).create(recursive: true);
+    if (isSass) {
+      await file.writeAsString(await renderer.render());
+    } else {
+      await fs.file(source).copy(file.path);
+    }
+    log.info("copied $source");
+    print("\t\t-> ${file.absolute}");
   }
 
   String get filePath => join(destinationPath, link());
 
+  Future<void> render() async {
+    log.info("attempting to render $relativePath");
+    if (isPost || isPage || (isStatic && isSass)) {
+      log.info("rendering $relativePath");
+      await renderer.render();
+    }
+  }
+
   Future<void> write() async {
-    if (isStatic) return copyWrite();
+    if (isStatic && isSass) {
+      await copyWrite();
+      return;
+    }
 
     File file = await fs.file(filePath).create(recursive: true);
 
-    var fileContent = isPost || isPage ? await renderer.render() : content;
+    var fileContent = isPost || isPage ? renderer.content : content;
     await file.writeAsString(fileContent);
     log.info("written $relativePath");
     print("\t\t-> ${link()}");
     print("\t\t-> ${file.absolute}");
     //only call when path is null to prevent
-    handleAlias(file);
+    await handleAlias(file);
   }
 
   Map<String, dynamic> _config() {
-    Map<String, dynamic> config = Map.from(dirConfig);
-    for (var element in [defaultMatter, dirConfig, frontMatter]) {
-      element.forEach((key, value) {
-        config[key] = value;
-      });
+    Map<String, dynamic> config = {};
+    for (var element in [
+      defaultMatter,
+      site.config.all,
+      dirConfig,
+      frontMatter
+    ]) {
+      config = deepMerge(config, element);
     }
-
     return config;
   }
 
   String get relativePath {
-    return p.relative(source, from: Site.instance.config.source);
+    return p.relative(source, from: site.config.source);
   }
 
   DocumentDrop get to_liquid => DocumentDrop(this);
@@ -221,7 +234,7 @@ class Base with WatcherMixin {
   @override
   void onFileChange() {
     //listing pages will have stale content if we don't  process everything
-    Site.instance.process();
-    Site.instance.notifyFileChange(filePath);
+    site.process();
+    site.notifyFileChange(filePath);
   }
 }
