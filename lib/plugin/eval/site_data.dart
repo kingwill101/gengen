@@ -1,15 +1,9 @@
 import 'package:dart_eval/dart_eval_bridge.dart';
 import 'package:dart_eval/stdlib/core.dart';
-import 'package:gengen/plugin/model.dart';
+import 'package:gengen/plugin/eval/model.dart';
 import 'package:gengen/site.dart';
 
 class $Site implements $Instance {
-  /// Configure this class for use in a [Runtime]
-  static void configureForRuntime(Runtime runtime) {
-    runtime.registerBridgeFunc(
-        'package:gengen/plugin/site_data.dart', 'Site.', $Site.$new);
-  }
-
   /// Compile-time type declaration of [$Site]
   static const $type = BridgeTypeRef(
     BridgeTypeSpec(
@@ -46,6 +40,18 @@ class $Site implements $Instance {
               true,
             ),
           ],
+        ),
+      ),
+      'instance': BridgeMethodDef(
+        isStatic: true,
+       BridgeFunctionDef(
+          returns: BridgeTypeAnnotation(
+              BridgeTypeRef(
+                BridgeTypeSpec('package:gengen/site.dart', 'Site'),
+              ),
+              nullable: true),
+          namedParams: [],
+          params: [],
         ),
       ),
     },

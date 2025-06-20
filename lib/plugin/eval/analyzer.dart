@@ -20,6 +20,36 @@ class DartAnalyzer {
     unit.visitChildren(visitor);
     return visitor.extendsClass;
   }
+
+  bool doesOverrideMethod(String className, String methodName) {
+    var visitor = MethodOverrideVisitor(className, methodName);
+    unit.visitChildren(visitor);
+    return visitor.overridesMethod;
+  }
+}
+
+class MethodOverrideVisitor extends RecursiveAstVisitor<void> {
+  final String className;
+  final String methodName;
+  bool overridesMethod = false;
+
+  MethodOverrideVisitor(this.className, this.methodName);
+
+  @override
+  void visitClassDeclaration(ClassDeclaration node) {
+    if (node.name.lexeme == className) {
+      for (var member in node.members) {
+        if (member is MethodDeclaration) {
+          if (member.name.lexeme == methodName &&
+              member.metadata.any((m) => m.name.name == 'override')) {
+            overridesMethod = true;
+            break;
+          }
+        }
+      }
+    }
+    super.visitClassDeclaration(node);
+  }
 }
 
 class ExtensionVisitor extends RecursiveAstVisitor<void> {

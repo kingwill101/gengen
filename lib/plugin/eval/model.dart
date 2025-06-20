@@ -19,6 +19,20 @@ class $Base extends Base implements $Instance {
       // Define the default constructor with an empty string
       '': BridgeFunctionDef(returns: $type.annotate).asConstructor
     },
+    getters: {
+      'config': BridgeMethodDef(
+        BridgeFunctionDef(
+          returns: BridgeTypeAnnotation(
+              BridgeTypeRef(CoreTypes.map, [
+                BridgeTypeRef(CoreTypes.string),
+                BridgeTypeRef(CoreTypes.dynamic)
+              ]),
+              nullable: false),
+          namedParams: [],
+          params: [],
+        ),
+      ),
+    },
     fields: {
       'name': BridgeFieldDef(CoreTypes.string.ref.annotate),
       'source': BridgeFieldDef(CoreTypes.string.ref.annotate),
@@ -32,6 +46,7 @@ class $Base extends Base implements $Instance {
       'ext': BridgeFieldDef(CoreTypes.string.ref.annotate),
       'date': BridgeFieldDef(CoreTypes.dateTime.ref.annotate),
       'data': BridgeFieldDef(CoreTypes.map.ref.annotate),
+      'config': BridgeFieldDef(CoreTypes.map.ref.annotate),
     },
     wrap: true,
   );
@@ -80,6 +95,8 @@ class $Base extends Base implements $Instance {
       case "date":
         return $DateTime.wrap($value.date);
       case "data":
+        return $Map.wrap($value.config);
+      case "config":
         return $Map.wrap($value.config);
       default:
         return _superclass.$getProperty(runtime, identifier);
