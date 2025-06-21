@@ -2,51 +2,38 @@ import 'dart:io';
 
 import 'package:gengen/site.dart';
 import 'package:path/path.dart' as path_utils;
+import 'package:glob/glob.dart';
 
 class EntryFilter {
-  late String baseDirectory;
-  late Set<String> excludeSet;
-  late Set<String> includeSet;
+  final Set<String> excludeSet;
+  final Set<String> includeSet;
+  final String source;
 
-  EntryFilter([String? baseDirectory]) {
-    this.baseDirectory = deriveBaseDirectory(baseDirectory ?? '');
-    excludeSet = Set.from(Site.instance.exclude);
-    includeSet = Set.from(Site.instance.include);
-  }
-
-  String getBaseDirectory() => baseDirectory;
-
-  String deriveBaseDirectory(String baseDir) {
-    var source = Site.instance.config.source;
-    if (baseDir.startsWith(source)) {
-      baseDir = baseDir.replaceFirst(source, '');
-    }
-
-    return baseDir;
-  }
-
-  String relativeToSource(String entry) {
-    return path_utils.join(baseDirectory, entry);
-  }
+  EntryFilter()
+      : excludeSet = Set.from(Site.instance.exclude),
+        includeSet = Set.from(Site.instance.include),
+        source = Site.instance.config.source;
 
   List<String> filter(List<String> entries) {
-    return entries.where((e) {
-      if (e.endsWith('.')) return false;
+    return entries.where((entry) {
+      if (entry.endsWith('.')) return false;
+      if (isSymlink(entry)) return false;
 
-      bool included = isIncluded(e);
-      if (isExcluded(e) && !included) return false;
-      if (isSymlink(e)) return false;
+      final relativePath = path_utils.relative(entry, from: source);
+
+      final included = isIncluded(relativePath);
+      final excluded = isExcluded(relativePath);
+
+      if (excluded && !included) return false;
       if (included) return true;
 
-      return !isSpecial(e) && !isBackup(e);
+      return !isSpecial(relativePath) && !isBackup(relativePath);
     }).toList();
   }
 
   bool isIncluded(String entry) {
-    var includes = Site.instance.include;
-
-    return globInclude(includes, entry) ||
-        globInclude(includes, path_utils.basename(entry));
+    return globInclude(includeSet, entry) ||
+        globInclude(includeSet, path_utils.basename(entry));
   }
 
   bool isSpecial(String entry) {
@@ -61,54 +48,28 @@ class EntryFilter {
   }
 
   bool isExcluded(String entry) {
-    return globInclude(
-      excludeSet.difference(includeSet),
-      relativeToSource(entry),
-    );
+    return globInclude(excludeSet.difference(includeSet), entry);
   }
 
   bool isSymlink(String entry) {
     return FileSystemEntity.isLinkSync(entry) &&
-        !FileSystemEntity.identicalSync(
-            entry, Site.instance.inSourceDir(entry));
+        !FileSystemEntity.identicalSync(entry, Site.instance.inSourceDir(entry));
   }
 
   bool globInclude(Set<String> patterns, String entry) {
     for (var pattern in patterns) {
-      RegExp regex = RegExp(globToRegExp(pattern));
-      if (regex.hasMatch(entry)) {
+      final glob = Glob(pattern, caseSensitive: false);
+      if (glob.matches(entry)) {
+        return true;
+      }
+      
+      // Also check if the pattern matches a parent directory
+      // For example, pattern "secret" should match "secret/file.txt"
+      if (entry.startsWith('$pattern/')) {
         return true;
       }
     }
 
     return false;
-  }
-
-  String globToRegExp(String pattern) {
-    var buffer = StringBuffer();
-    for (var i = 0; i < pattern.length; i++) {
-      var char = pattern[i];
-      switch (char) {
-        case '*':
-          buffer.write('.*');
-          break;
-        case '?':
-          buffer.write('.');
-          break;
-        case '[':
-          buffer.write('[');
-          break;
-        case ']':
-          buffer.write(']');
-          break;
-        default:
-          if (RegExp(r'[.(){}+|^$]').hasMatch(char)) {
-            buffer.write('\\');
-          }
-          buffer.write(char);
-      }
-    }
-
-    return buffer.toString();
   }
 }

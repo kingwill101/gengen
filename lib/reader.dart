@@ -31,55 +31,53 @@ class Reader {
 
     entries.removeWhere((entry) {
       var fullPath = join(base, entry);
-
       return fs.directory(fullPath).existsSync();
     });
 
     return entries;
   }
 
-  void readDirs() {
+  Future<void> readDirs() async {
     List<String> dotPages = [];
     List<String> dotStaticFiles = [];
 
     var entries = filterSpecial(Site.instance.root);
 
     for (var fileEntity in entries) {
-      if (EntryFilter().isSpecial(fileEntity)) continue;
-      if (fs.directory(fileEntity).existsSync()) continue;
+      if (await fs.directory(fileEntity).exists()) continue;
 
-      if (fs.file(fileEntity).existsSync() && hasYamlHeader(fileEntity)) {
+      if (await fs.file(fileEntity).exists() && hasYamlHeader(fileEntity)) {
         dotPages.add(fileEntity);
       } else {
         dotStaticFiles.add(fileEntity);
       }
     }
-    readPosts();
+    await readPosts();
     readPages(dotPages);
     readStaticFiles(dotStaticFiles);
   }
 
-  void readPosts() {
-    Site.instance.posts = PostReader().readPosts(
+  Future<void> readPosts() async {
+    Site.instance.posts = await PostReader().readPosts(
       Site.instance.postPath,
     );
   }
 
-  void read() {
-    readData();
-    Site.instance.layouts = LayoutReader().read();
-    readDirs();
-    readPlugins();
+  Future<void> read() async {
+    await readData();
+    Site.instance.layouts = await LayoutReader().read();
+    await readDirs();
+    await readPlugins();
   }
 
-  void readPlugins() {
+  Future<void> readPlugins() async {
     Site.instance.plugins.addAll(
-      PluginReader().read(),
+      await PluginReader().read(),
     );
   }
 
-  void readData() {
-    DataReader().read();
+  Future<void> readData() async {
+    await DataReader().read();
   }
 
   void readPages(List<String> dotPages) {
@@ -97,6 +95,7 @@ class Reader {
       ...ThemeReader().read(),
       ...StaticReader().read(dotStaticFiles)
     ];
+    
     for (var file in files) {
       var search = Site.instance.staticFiles
           .where((element) => element.source == file.source);
@@ -110,24 +109,27 @@ class Reader {
     var directory = fs.directory(base);
     var filter = EntryFilter();
 
-    return filter
-        .filter(
-      directory.listSync(recursive: true).map((e) => e.path).toList(),
-    )
-        .where((entry) {
-      var parts = split(entry.removePrefix(base));
+    final allFiles = directory.listSync(recursive: true).map((e) => e.path).toList();
+    final filteredFiles = filter.filter(allFiles);
 
+    return filteredFiles.where((entry) {
+      var parts = split(entry.removePrefix(base));
       return !parts.any((part) => filter.isSpecial(part));
     }).toList();
   }
 
-  List<String> filter(String base) {
+  Future<List<String>> filter(String base) async {
     var directory = fs.directory(base);
+
+    if (!await directory.exists()) {
+      return [];
+    }
+    
     var filter = EntryFilter();
 
     return filter
         .filter(
-          directory.listSync(recursive: true).map((e) => e.path).toList(),
+          await directory.list(recursive: true).map((e) => e.path).toList(),
         )
         .toList();
   }
