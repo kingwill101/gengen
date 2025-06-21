@@ -69,6 +69,7 @@ class NewTheme extends Command<void> {
   NewTheme() {
     argParser.addOption(
       "directory",
+      abbr: 'd',
       help: "Output directory",
       defaultsTo: null,
     );
@@ -111,7 +112,7 @@ class NewPost extends AbstractCommand {
   void start() {
     (String, String) name = processName();
     String postPathWExt =
-        setExtension(joinAll([Site.instance.postPath, name.$1]), ".md");
+        setExtension(joinAll([site.postPath, name.$1]), ".md");
     final postFile = fs.file(postPathWExt);
 
     if (postFile.existsSync() && !allowForce) {
@@ -159,8 +160,8 @@ A sentence is how it all begins
     try {
       postFile.writeAsStringSync(content);
       log.info("Post written to: ${postFile.path}");
-    } on FileSystemException catch (e) {
-      log.severe("Failed to create posts: ${e.message}");
+    } on FileSystemException catch (e, s) {
+      log.severe("Failed to create posts: ${e.message}", e, s);
     }
   }
 }

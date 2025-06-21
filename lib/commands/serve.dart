@@ -16,7 +16,7 @@ class Serve extends AbstractCommand {
   Future<FutureOr<void>?> start() async {
     try {
       Site.instance.process();
-      Site.instance.watch();
+      site.watch();
       route();
     } on Exception catch (e, _) {
       log.severe(e.toString());
