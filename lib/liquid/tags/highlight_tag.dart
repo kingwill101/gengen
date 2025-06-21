@@ -1,30 +1,49 @@
-import 'package:highlight/highlight.dart' show highlight;
-import 'package:liquid_engine/liquid_engine.dart';
+import 'dart:async';
 
-class Highlight extends Block {
-  final String? highlightType;
+import 'package:highlight/highlight.dart';
+import 'package:liquify/parser.dart';
 
-  Highlight(this.highlightType, super.children);
+class Highlight extends AbstractTag with CustomTagParser {
+  Highlight(super.content, super.filters);
 
   @override
-  Stream<String> render(RenderContext context) async* {
-    var result = super.render(context);
-    var source = await result.join();
-    var parsed = highlight.parse(
-      source,
-      language: highlightType ?? 'plaintext',
-    );
-    yield parsed.toHtml();
+  dynamic evaluate(Evaluator evaluator, Buffer buffer) {
+    String highlightContent = '';
+    final language = args.isEmpty ? 'text' : args[0].name;
+
+    for (final node in body) {
+      highlightContent += evaluator.evaluate(node).toString();
+    }
+
+    buffer
+        .write(highlight.parse(highlightContent, language: language).toHtml());
   }
 
-  static SimpleBlockFactory get factory => (tokens, children) {
-        String? type;
-        var parser = TagParser.from(tokens);
+  @override
+  FutureOr evaluateAsync(Evaluator evaluator, Buffer buffer) {
+    return evaluate(evaluator, buffer);
+  }
 
-        if (tokens.isNotEmpty) {
-            type = parser.current.value;
-        }
+  @override
+  Parser parser() {
+    return someTagWithEnd("highlight");
+  }
+}
 
-        return Highlight(type, children);
-      };
+Parser<Tag> someTagWithEnd(String name) {
+  return (someTag(name) &
+          (tag() | text()).plusLazy(someEndTag(name)) &
+          someEndTag(name))
+      .map((v) {
+    return (v[0] as Tag)
+        .copyWith(body: (v[1] as List).map((e) => e as ASTNode).toList());
+  });
+}
+
+Parser<Tag> someEndTag(String name) {
+  final tagName = name.startsWith("end") ? name : "end$name";
+  var parser = ((tagStart()) & string(tagName).trim() & (tagEnd()));
+  return parser.map((values) {
+    return Tag(tagName, []);
+  }).labeled('someEndTag');
 }
