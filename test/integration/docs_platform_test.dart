@@ -95,6 +95,11 @@ void main() {
       final cssBundle = io.File(p.join(outputDir, 'assets', 'css', 'main.css'));
       expect(cssBundle.existsSync(), isTrue,
           reason: 'docs CSS bundle should be emitted');
+      final cssContent = cssBundle.readAsStringSync();
+      expect(cssContent.trim().isNotEmpty, isTrue,
+          reason: 'docs CSS bundle should contain compiled styles');
+      expect(cssContent, contains('.docs-sidebar'),
+          reason: 'docs CSS should include sidebar styles');
     });
 
     test('core docs navigation data matches source pages', () {

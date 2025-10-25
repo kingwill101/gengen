@@ -43,13 +43,13 @@ abstract class BasePlugin {
 
   FutureOr<void> afterConvert() {}
 
-  /// Returns HTML to be injected into the <head> section
+  /// Returns HTML to be injected into the `<head>` section.
   /// This is called during template rendering for each page
   String getHeadInjection() {
     return '';
   }
 
-  /// Returns HTML to be injected before </body>
+  /// Returns HTML to be injected before `</body>`.
   /// This is called during template rendering for each page
   String getBodyInjection() {
     return '';

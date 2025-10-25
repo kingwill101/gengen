@@ -106,8 +106,10 @@ void main() {
 
     test('should load data', () async {
       await reader.read();
-      expect(site.data['members'], isA<List>());
-      expect(site.data['members'].length, 2);
+      expect(site.data['members'], isA<List<dynamic>>());
+      final members = site.data['members'] as List<dynamic>;
+      expect(members.length, 2);
+      expect(members.first, isA<Map<String, dynamic>>());
     });
 
     test('should load posts', () async {
@@ -304,10 +306,10 @@ void main() {
         'source': sourcePath,
         'destination': p.join(site.config.destination),
         'theme': 'my-theme',
-        'exclude': [
-          'secret',  // Just the directory name, should exclude everything inside
+        'exclude': <String>[
+          'secret', // Just the directory name, should exclude everything inside
         ],
-        'include': []
+        'include': const <String>[]
       });
       
       final newSite = Site.instance;

@@ -1,6 +1,6 @@
 .docs-sidebar {
   position: sticky;
-  top: $header-height + $spacing-md;
+  top: calc(#{$header-height} + #{$spacing-md});
   align-self: start;
   background-color: rgba($bg-color, 0.92);
   border-radius: $border-radius-lg;
@@ -94,7 +94,7 @@
 
 .docs-toc {
   position: sticky;
-  top: $header-height + $spacing-md;
+  top: calc(#{$header-height} + #{$spacing-md});
   align-self: start;
 
   &__inner {

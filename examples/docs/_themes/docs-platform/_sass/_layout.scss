@@ -236,7 +236,7 @@
 
   .docs-sidebar {
     position: sticky;
-    top: $header-height + $spacing-sm;
+    top: calc(#{$header-height} + #{$spacing-sm});
   }
 
   .docs-article__body {
