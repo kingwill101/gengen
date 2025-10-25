@@ -1,0 +1,211 @@
+# GenGen Plugin Registry
+# This file contains information about all built-in plugins
+
+groups:
+  core:
+    name: "Core Plugins"
+    description: "Essential plugins for basic functionality"
+    enabled_by_default: true
+    plugins:
+      - name: "DraftPlugin"
+        class_name: "DraftPlugin"
+        description: "Handles draft posts and pages. Posts with `draft: true` are excluded unless `publish_drafts` is enabled."
+        config_key: "publish_drafts"
+        config_type: "boolean"
+        default_config: false
+        features:
+          - "Draft post filtering"
+          - "Development mode support"
+          - "Conditional publishing"
+        
+      - name: "MarkdownPlugin"
+        class_name: "MarkdownPlugin"
+        description: "Processes Markdown files and converts them to HTML with CommonMark specification."
+        supported_extensions: [".md", ".markdown"]
+        features:
+          - "GitHub Flavored Markdown"
+          - "Syntax highlighting"
+          - "Table support"
+          - "Task lists"
+          - "Footnotes"
+        
+      - name: "LiquidPlugin"
+        class_name: "LiquidPlugin"
+        description: "Processes Liquid templates for dynamic content generation."
+        features:
+          - "Site data access"
+          - "Template inheritance"
+          - "Custom filters and tags"
+          - "Variable interpolation"
+        available_objects:
+          - "site: Site-wide data and configuration"
+          - "page: Current page data"
+          - "post: Current post data (for posts)"
+          - "content: Rendered content"
+
+  seo:
+    name: "SEO Plugins"
+    description: "Search engine optimization and discoverability plugins"
+    enabled_by_default: false
+    plugins:
+      - name: "RssPlugin"
+        class_name: "RssPlugin"
+        description: "Generates RSS 2.0 compliant XML feeds for your site's posts."
+        config_key: "rss"
+        default_config:
+          path: "feed.xml"
+          limit: 20
+          full_content: false
+        features:
+          - "RSS 2.0 compliance"
+          - "Automatic post discovery"
+          - "Configurable post limits"
+          - "Full content or excerpt mode"
+          - "Dublin Core metadata"
+          - "Proper XML encoding"
+        
+      - name: "SitemapPlugin"
+        class_name: "SitemapPlugin"
+        description: "Generates XML sitemaps following sitemap.org protocol for better search engine indexing."
+        config_key: "sitemap"
+        default_config:
+          path: "sitemap.xml"
+          include_posts: true
+          include_pages: true
+        features:
+          - "Sitemap.org protocol compliance"
+          - "Automatic URL discovery"
+          - "Priority and change frequency settings"
+          - "Excludes draft content"
+          - "SEO-optimized structure"
+
+  assets:
+    name: "Asset Plugins"
+    description: "Asset processing and compilation plugins"
+    enabled_by_default: false
+    plugins:
+      - name: "SassPlugin"
+        class_name: "SassPlugin"
+        description: "Compiles Sass/SCSS files to CSS with support for imports, variables, and mixins."
+        config_key: "sass"
+        default_config:
+          style: "compressed"
+          source_map: false
+          load_paths: ["_sass"]
+        features:
+          - "SCSS and Sass syntax support"
+          - "Import resolution"
+          - "Source maps (optional)"
+          - "Multiple output styles"
+          - "Variable and mixin support"
+        
+      - name: "TailwindPlugin"
+        class_name: "TailwindPlugin"
+        description: "Processes Tailwind CSS for utility-first styling."
+        config_key: "tailwind"
+        default_config:
+          executable: "./tailwindcss"
+          input: "assets/css/tailwind.css"
+          output: "assets/css/styles.css"
+        features:
+          - "Automatic Tailwind compilation"
+          - "Configurable input/output paths"
+          - "Production optimization"
+          - "Custom executable path"
+          - "JIT mode support"
+        requirements:
+          - "Tailwind CSS executable"
+
+  content:
+    name: "Content Plugins"
+    description: "Content enhancement and organization plugins"
+    enabled_by_default: false
+    plugins:
+      - name: "PaginationPlugin"
+        class_name: "PaginationPlugin"
+        description: "Automatically paginates long lists of posts across multiple pages."
+        config_key: "pagination"
+        default_config:
+          enabled: true
+          per_page: 10
+          permalink: "/page/:num/"
+          title_suffix: " - Page :num"
+        features:
+          - "Configurable posts per page"
+          - "Custom permalink structure"
+          - "Navigation helpers"
+          - "SEO-friendly URLs"
+          - "Template variables"
+        
+      - name: "AliasPlugin"
+        class_name: "AliasPlugin"
+        description: "Creates URL aliases and redirects for pages and posts."
+        usage: "Add `aliases:` array to front matter"
+        features:
+          - "Multiple aliases per page"
+          - "Automatic redirect generation"
+          - "SEO-friendly redirects"
+          - "Link equity maintenance"
+          - "Migration support"
+
+# Default plugin configuration
+defaults:
+  enabled:
+    - "core"
+  disabled: []
+  
+# Plugin management commands
+commands:
+  list: "gengen plugins"
+  available: "gengen plugins --available"
+  enabled: "gengen plugins --enabled"
+  groups: "gengen plugins --groups"
+
+# Configuration examples
+examples:
+  minimal:
+    description: "Minimal setup with core plugins only"
+    config:
+      plugins:
+        enabled:
+          - core
+  
+  blog:
+    description: "Blog setup with SEO and content plugins"
+    config:
+      plugins:
+        enabled:
+          - core
+          - seo
+          - content
+  
+  full_featured:
+    description: "Full-featured site with all plugin groups"
+    config:
+      plugins:
+        enabled:
+          - core
+          - seo
+          - assets
+          - content
+  
+  custom:
+    description: "Custom plugin selection"
+    config:
+      plugins:
+        enabled:
+          - MarkdownPlugin
+          - LiquidPlugin
+          - SassPlugin
+          - RssPlugin
+        disabled: []
+  
+  selective_disable:
+    description: "Enable groups but disable specific plugins"
+    config:
+      plugins:
+        enabled:
+          - core
+          - assets
+        disabled:
+          - TailwindPlugin

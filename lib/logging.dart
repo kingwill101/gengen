@@ -26,6 +26,13 @@ void initLog() {
         break;
     }
     Console.setTextColor(color.id);
-    Console.write('${record.level.name}: ${record.time}: ${record.message}\n');
+    Console.write(
+        '(${record.loggerName}) ${record.level.name}: ${record.time}: ${record.message}\n');
+    if (record.stackTrace != null) {
+      Console.setTextColor(Color.RED.id);
+      Console.write('${record.error}');
+      Console.write('${record.stackTrace}');
+      print(record.stackTrace.toString());
+    }
   });
 }

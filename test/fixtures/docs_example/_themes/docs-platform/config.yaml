@@ -1,0 +1,13 @@
+name: docs-platform
+version: 0.1.0
+description: "Reusable documentation theme for GenGen"
+authors:
+  - "GenGen Team"
+license: MIT
+layouts:
+  - default
+  - home
+sass:
+  input: assets/css/main.scss
+assets:
+  - assets/js/docs.js

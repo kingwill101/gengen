@@ -14,4 +14,13 @@ class Page extends Base {
   }) {
     defaultMatter.addAll({"permalink": PermalinkStructure.post});
   }
+
+  @override
+  String link() {
+    // Special handling for pages in _posts directory (like _posts/index.html)
+    if (name.startsWith('_posts/')) {
+      return permalink().replaceFirst("_posts", "posts");
+    }
+    return permalink();
+  }
 }

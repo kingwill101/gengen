@@ -42,4 +42,33 @@ abstract class BasePlugin {
   FutureOr<void> beforeConvert() {}
 
   FutureOr<void> afterConvert() {}
+
+  /// Returns HTML to be injected into the <head> section
+  /// This is called during template rendering for each page
+  String getHeadInjection() {
+    return '';
+  }
+
+  /// Returns HTML to be injected before </body>
+  /// This is called during template rendering for each page
+  String getBodyInjection() {
+    return '';
+  }
+
+  /// Returns a list of CSS files that should be automatically included
+  /// These are relative to the plugin's asset directory
+  List<String> getCssAssets() {
+    return [];
+  }
+
+  /// Returns a list of JavaScript files that should be automatically included
+  /// These are relative to the plugin's asset directory
+  List<String> getJsAssets() {
+    return [];
+  }
+
+  /// Returns additional meta tags to be included in head
+  Map<String, String> getMetaTags() {
+    return {};
+  }
 }

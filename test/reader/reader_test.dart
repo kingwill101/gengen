@@ -76,13 +76,12 @@ void main() {
       memoryFileSystem.directory(myPluginPath).createSync(recursive: true);
 
       memoryFileSystem
-          .file(p.join(myPluginPath, 'my_plugin.dart'))
-          .writeAsStringSync(
-              'import "package:gengen/plugin/plugin.dart"; class Plugin extends BasePlugin { @override void generate() { print("MyPlugin executed"); } }');
+          .file(p.join(myPluginPath, 'main.lua'))
+          .writeAsStringSync('function init_plugin(metadata)\n  return {\n    after_generate = function() end\n  }\nend');
 
       memoryFileSystem
           .file(p.join(myPluginPath, 'config.yaml'))
-          .writeAsStringSync('name: MyPlugin\nentrypoint: my_plugin:Plugin');
+          .writeAsStringSync('name: MyPlugin\nentrypoint: main.lua:init_plugin');
 
       Site.init(overrides: {
         'source': sourcePath,
@@ -136,8 +135,8 @@ void main() {
     test('should load plugins', () async {
       await reader.read();
       // The built-in plugins are always there, so we check for +1
-      expect(site.plugins.length, 4,
-          reason: 'Should load built-in plugins plus my_plugin.dart');
+      expect(site.plugins.length, 6,
+          reason: 'Should load built-in plugins plus my_plugin.lua');
       expect(site.plugins.any((p) => p.metadata.name == 'MyPlugin'), isTrue);
     });
   });

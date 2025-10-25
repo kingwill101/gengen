@@ -21,7 +21,22 @@ class Configuration {
     "source": current,
     "destination": 'public',
     "include": <String>[],
-    "exclude": <String>['config.yaml'],
+    "exclude": <String>[
+      'config.yaml',
+      'README.md',
+      'Gemfile',
+      'Gemfile.lock',
+      'node_modules',
+      'vendor',
+      '.sass-cache',
+      '.git',
+      '.gitignore',
+      'pubspec.yaml',
+      'pubspec.lock',
+      '.packages',
+      'build.yaml',
+      'analysis_options.yaml',
+    ],
     "post_dir": "_posts",
     "draft_dir": "_draft",
     "themes_dir": "_themes",
@@ -36,10 +51,28 @@ class Configuration {
     "markdown_extensions": <String>[],
     'permalink': "date",
     'publish_drafts': false,
-    "config": ["_config.yaml"],
+    "config": <String>["_config.yaml"],
     "output": {"posts_dir": "posts"},
     "data": <String, dynamic>{},
-    "date_format": "yyyy-MM-dd HH:mm:ss"
+    "date_format": "yyyy-MM-dd HH:mm:ss",
+    "plugins": {
+      "enabled": <String>[
+        "core", // Enable core plugin group by default
+      ],
+      "disabled": <String>[],
+      "groups": {
+        "core": <String>[
+          "DraftPlugin",
+          "MarkdownPlugin",
+          "LiquidPlugin",
+          "SassPlugin",
+          "PaginationPlugin",
+        ],
+        "seo": <String>["RssPlugin", "SitemapPlugin"],
+        "assets": <String>["SassPlugin", "TailwindPlugin"],
+        "content": <String>["PaginationPlugin", "AliasPlugin"],
+      },
+    },
   };
 
   static void resetConfig() {
@@ -54,7 +87,38 @@ class Configuration {
     var entry =
         (overrides[key] ?? _config[key] ?? _defaults[key] ?? defaultValue);
 
-    return entry as T?;
+    if (entry == null) return null;
+
+    // Safe type conversion
+    if (entry is T) return entry;
+
+    // Handle common type conversions
+    if (T == bool) {
+      if (entry is String) {
+        return (entry.toLowerCase() == 'true') as T?;
+      }
+      if (entry is int) {
+        return (entry != 0) as T?;
+      }
+    }
+
+    if (T == int && entry is String) {
+      return int.tryParse(entry) as T?;
+    }
+
+    if (T == String) {
+      return entry.toString() as T?;
+    }
+
+    // For other types, try the cast but handle failure gracefully
+    try {
+      return entry as T?;
+    } catch (e) {
+      log.warning(
+        'Failed to cast config value "$key" ($entry) to type $T, using default: $defaultValue',
+      );
+      return defaultValue;
+    }
   }
 
   Map<String, dynamic> get all => _config;
@@ -88,6 +152,13 @@ class Configuration {
 
   void _addDefaultExcludes() {
     _config.putIfAbsent('exclude', () => <String>[]);
+
+    // Automatically exclude the destination directory to prevent reading output files
+    final destinationDir = basename(destination);
+    final excludeList = (_config['exclude'] as List).cast<String>();
+    if (!excludeList.contains(destinationDir)) {
+      excludeList.add(destinationDir);
+    }
   }
 
   void _addDefaultIncludes() {
@@ -150,12 +221,11 @@ class Configuration {
       } else {
         _config["destination"] = siteDestination;
       }
-      overrides.remove("destination");
     }
 
     final configFilesList =
         get<List<String>>("config", overrides: overrides, defaultValue: []) ??
-            [];
+        [];
 
     for (var config in configFilesList) {
       if ((config.endsWith('.yaml') || config.endsWith('.yml'))) {
@@ -169,18 +239,19 @@ class Configuration {
       } else {
         // Change from exit(-1) to throwing FormatException for testability
         throw FormatException(
-            "Invalid config '$config'. Configuration file must end with .yaml or .yml.");
+          "Invalid config '$config'. Configuration file must end with .yaml or .yml.",
+        );
       }
     }
 
     if (overrides.containsKey('config')) {
       overrides.remove("config");
     }
-    
+
     _readConfigFiles(resolvedFiles);
-    
+
     _config = deepMerge(_config, overrides);
-    
+
     checkIncludeExclude(_config);
 
     _addDefaultIncludes();

@@ -1,0 +1,29 @@
+{% assign variant = include.variant | default: 'info' %}
+{% assign title = include.title %}
+{% capture body %}{{ include.body | default: include.content }}{% endcapture %}
+{% if include.icon %}
+  {% assign icon = include.icon %}
+{% else %}
+  {% case variant %}
+    {% when 'success' %}
+      {% assign icon = '✅' %}
+    {% when 'warning' %}
+      {% assign icon = '⚠️' %}
+    {% when 'danger' %}
+      {% assign icon = '⛔' %}
+    {% else %}
+      {% assign icon = '💡' %}
+  {% endcase %}
+{% endif %}
+
+<div class="callout callout--{{ variant }}">
+  <div class="callout__icon" aria-hidden="true">{{ icon }}</div>
+  <div class="callout__content">
+    {% if title %}
+      <h4 class="callout__title">{{ title }}</h4>
+    {% endif %}
+    <div class="callout__body">
+      {{ body | markdownify }}
+    </div>
+  </div>
+</div>

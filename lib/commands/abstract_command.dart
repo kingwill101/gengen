@@ -15,19 +15,19 @@ abstract class AbstractCommand extends Command<void> {
 
     argParser.addOption("source", help: "site directory", defaultsTo: current);
     argParser.addOption("theme", help: "site theme", defaultsTo: "default");
-    argParser.addOption(
-      "themes_dir",
-      help: "Directory containing themes",
-    );
-    argParser.addOption(
-      "destination",
-      help: "Output directory",
-    );
+    argParser.addOption("themes_dir", help: "Directory containing themes");
+    argParser.addOption("destination", help: "Output directory");
   }
 
   @override
   Future<void> run() async {
-    Site.init(overrides: argResults?.map ?? {});
+    final overrides = <String, dynamic>{...?argResults?.map};
+
+    if (argResults?.rest.isNotEmpty == true) {
+      overrides['source'] = argResults!.rest.first;
+    }
+
+    Site.init(overrides: overrides);
     var result = start();
     if (result is Future<void>) {
       await result;

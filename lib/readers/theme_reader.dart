@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:gengen/fs.dart';
 import 'package:gengen/models/base.dart';

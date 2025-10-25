@@ -5,7 +5,6 @@ import 'package:gengen/models/url.dart';
 import 'package:gengen/site.dart';
 import 'package:gengen/utilities.dart';
 import 'package:intl/intl.dart';
-import 'package:more/collection.dart';
 import 'package:path/path.dart' as p;
 
 import '../logging.dart';
@@ -40,22 +39,73 @@ extension PermalinkExtension on Base {
 
     String entryPermalink = config["permalink"] as String? ?? "";
 
+    // Only apply date-based permalinks to posts
+    // Pages and other files should use simpler permalink structures
+    if (!isPost && entryPermalink == "date") {
+      // Special handling for index pages in _posts directory
+      if (isIndex && name.startsWith('_posts/')) {
+        // For _posts/index.html, use "posts/index.html"
+        return 'posts/index.html';
+      }
+      // For other non-posts, use the 'none' structure
+      return p.normalize(buildPermalink(PermalinkStructure.none));
+    }
+
     var structures = PermalinkStructure.map();
     if (structures.containsKey(entryPermalink)) {
       entryPermalink = structures[entryPermalink]!;
+      
+      // Check if the pattern ends with '/' BEFORE calling buildPermalink
+      bool endsWithSlash = entryPermalink.endsWith('/');
+      
+      String processedPermalink = buildPermalink(entryPermalink);
+      
+      // If the original pattern ended with '/', add index.html
+      if (endsWithSlash) {
+        processedPermalink = processedPermalink + 'index.html';
+      }
+      
+      return p.normalize(processedPermalink);
+    }
+    
+    // If it contains tokens, process it as a template
+    if (entryPermalink.contains(':')) {
+      // Check if the pattern ends with '/' BEFORE processing
+      bool endsWithSlash = entryPermalink.endsWith('/');
+      
+      String processedPermalink = buildPermalink(entryPermalink);
+      
+      // If the original pattern ended with '/', add index.html
+      if (endsWithSlash) {
+        processedPermalink = processedPermalink + 'index.html';
+      } else if (!processedPermalink.contains('.') && processedPermalink.isNotEmpty) {
+        // If no extension and not empty, treat as directory and add index.html
+        processedPermalink = processedPermalink + '/index.html';
+      }
+      
+      return p.normalize(processedPermalink);
+    }
+    
+    // If it's not a known structure and has no tokens, treat it as a literal path
+    // Remove leading slash if present to ensure relative path
+    String literalPath = entryPermalink.startsWith('/')
+        ? entryPermalink.substring(1)
+        : entryPermalink;
+
+    if (literalPath.isEmpty) {
+      return 'index.html';
     }
 
-    //If permalink doesn't include partition then it should be
-    //an hard coded path
-    //if it is a directory path then we should do
-    // <directory path>/index.html
-    bool isDirectory = p.extension(entryPermalink).isEmpty;
-    // bool isFile = p.isAbsolute(filePath) && p.split(filePath).last.isNotEmpty;
-    if (isDirectory) {
-      entryPermalink = p.join(entryPermalink, 'index.html');
+    // Handle clean URLs: if permalink ends with '/' or has no extension, 
+    // append 'index.html' to create proper directory structure
+    if (literalPath.endsWith('/')) {
+      literalPath = literalPath + 'index.html';
+    } else if (!literalPath.contains('.') && literalPath.isNotEmpty) {
+      // If no extension and not empty, treat as directory and add index.html
+      literalPath = literalPath + '/index.html';
     }
-
-    return p.normalize(buildPermalink(entryPermalink));
+    
+    return literalPath;
   }
 
   URL permalinkURL() {
@@ -68,7 +118,8 @@ extension PermalinkExtension on Base {
   String buildPermalink([String permalink = PermalinkStructure.none]) {
     Map<String, dynamic> config = this.config;
 
-    String? title = config['title'] as String? ?? "";
+    // For title, only use frontMatter and defaultMatter, not site-wide config
+    String? title = (frontMatter['title'] ?? defaultMatter['title']) as String? ?? "";
     String? slug = config['slug'] as String? ?? "";
 
     if (slug.isNotEmpty) {
@@ -83,8 +134,18 @@ extension PermalinkExtension on Base {
         ? List<String>.from(config['tags'] as List)
         : <String>[];
 
-    String categories = tags.isNotEmpty ? tags.join("/") : "";
-    categories = !isPost ? categories : "posts";
+    // Check for explicit categories first, then default to "posts" for posts
+    String categories = "";
+    if (config.containsKey("categories") && config['categories'] != null) {
+      List<String> categoryList = List<String>.from(config['categories'] as List);
+      categories = categoryList.isNotEmpty ? categoryList.first : "";
+    }
+    
+    // For posts without explicit categories, default to "posts"
+    // Tags should NOT be used as categories
+    if (isPost && categories.isEmpty) {
+      categories = "posts";
+    }
 
     permalink = permalink
         .replaceAll(':categories', categories)
@@ -96,6 +157,11 @@ extension PermalinkExtension on Base {
           normalize(p.withoutExtension(p.basename(source))),
         )
         .replaceAll(':output_ext', '.html');
+
+    // Clean up any leading slashes that might be created by empty categories
+    if (permalink.startsWith('/')) {
+      permalink = permalink.substring(1);
+    }
 
     if (config.containsKey('date') && config['date'] != null) {
       try {
@@ -133,12 +199,19 @@ extension PermalinkExtension on Base {
         // Calculate the number of days from the first day of the year
         int dayOfYear = parsedDate.difference(firstDayOfYear).inDays;
 
-        // Determine the week number
-        int weekNumber = (dayOfYear / 7).ceil();
+        // Determine the week number (week 1 starts on January 1st)
+        int weekNumber = (dayOfYear / 7).ceil() + 1;
         String formattedWeekNumber = weekNumber.toString().padLeft(2, '0');
         permalink = permalink.replaceAll(':week', formattedWeekNumber);
       } catch (e, stack) {
-        log.warning('Error parsing date: $e', e, stack  );
+        log.warning('Error parsing date for ${source}: $e', e, stack);
+        // For files without valid dates, fall back to a simpler permalink structure
+        // Manually build the 'none' structure without date tokens
+        String fallbackPermalink = PermalinkStructure.none
+            .replaceAll(':categories', categories)
+            .replaceAll(':title', normalizedTitle)
+            .replaceAll(':output_ext', '.html');
+        return fallbackPermalink;
       }
     }
 
@@ -169,8 +242,18 @@ extension PermalinkExtension on Base {
         ? List<String>.from(config['tags'] as List)
         : <String>[];
 
-    String categories = tags.isNotEmpty ? tags.join("/") : "";
-    categories = !isPost ? categories : "posts";
+    // Check for explicit categories first, then default to "posts" for posts
+    String categories = "";
+    if (config.containsKey("categories") && config['categories'] != null) {
+      List<String> categoryList = List<String>.from(config['categories'] as List);
+      categories = categoryList.isNotEmpty ? categoryList.first : "";
+    }
+    
+    // For posts without explicit categories, default to "posts"
+    // Tags should NOT be used as categories
+    if (isPost && categories.isEmpty) {
+      categories = "posts";
+    }
 
     placeholders['categories'] = categories;
     placeholders['slugified_categories'] = slugifyList(tags);
@@ -211,8 +294,8 @@ extension PermalinkExtension on Base {
         // Calculate the number of days from the first day of the year
         int dayOfYear = parsedDate.difference(firstDayOfYear).inDays;
 
-        // Determine the week number
-        int weekNumber = (dayOfYear / 7).ceil();
+        // Determine the week number (week 1 starts on January 1st)
+        int weekNumber = (dayOfYear / 7).ceil() + 1;
         String formattedWeekNumber = weekNumber.toString().padLeft(2, '0');
         placeholders['week'] = formattedWeekNumber;
       } catch (e, stack) {

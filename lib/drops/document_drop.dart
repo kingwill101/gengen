@@ -1,28 +1,33 @@
 import 'package:gengen/models/base.dart';
 import 'package:gengen/utilities.dart';
 import 'package:intl/intl.dart';
-import 'package:liquid_engine/liquid_engine.dart';
+import 'package:liquify/liquify.dart';
+import 'package:markdown/markdown.dart' as md;
 
 class DocumentDrop extends Drop {
   Base content;
 
   @override
-  List<Symbol> get invokable =>
-      <Symbol>[#content, #title, #permalink, #excerpt, #date];
+  List<Symbol> get invokable => <Symbol>[
+    #content,
+    #title,
+    #permalink,
+    #excerpt,
+    #date,
+    #summary,
+  ];
 
   DocumentDrop(this.content);
 
   @override
   Map<String, dynamic> get attrs => {
-        "debug": {
-          "source": content.source,
-          "name": content.name,
-        },
-      };
+    ...content.frontMatter,
+    "layout": content.layout,
+    "debug": {"source": content.source, "name": content.name},
+  };
 
   @override
   dynamic invoke(Symbol symbol) {
-
     /**
      * {
         page: {
@@ -45,9 +50,14 @@ class DocumentDrop extends Drop {
       case #permalink:
         return content.link();
       case #excerpt:
-        return extractExcerpt(content.renderer.content);
+        if (content.isMarkdown) {
+          return extractExcerpt(md.markdownToHtml(content.content));
+        }
+        return extractExcerpt(content.content);
       case #date:
-        return DateFormat.yMMMMEEEEd().format(content.date);
+        return content.date;
+      case #summary:
+        return extractExcerpt(content.content);
       default:
         return null;
     }

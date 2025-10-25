@@ -1,0 +1,30 @@
+.post__content,
+.page__content {
+  line-height: 1.7;
+
+  h2 {
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+  }
+
+  p {
+    margin-bottom: 1rem;
+  }
+
+  pre {
+    background: #0f172a;
+    color: #f8fafc;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    overflow: auto;
+  }
+
+  code {
+    font-family: 'Fira Code', 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  }
+
+  ul,
+  ol {
+    padding-left: 1.25rem;
+  }
+}

@@ -1,4 +1,5 @@
 import 'package:gengen/models/base.dart';
+import 'package:gengen/models/page.dart';
 import 'package:gengen/models/post.dart';
 import 'package:gengen/site.dart';
 import 'package:path/path.dart';
@@ -24,8 +25,23 @@ class PostReader {
       if (!matcher.hasMatch(entry)) continue;
 
       var path = Site.instance.inSourceDir(join(dir, entry));
+      
+      // Check the filename to determine how to handle it
+      String filename = withoutExtension(basename(entry));
+      
+      if (filename == '_index') {
+        // _index.md files are for directory-level metadata only
+        // Skip processing them as content files
+        continue;
+      } else if (filename == 'index') {
+        // index.html files are special index pages that list posts
+        var doc = Page(path);
+        docs.add(doc);
+      } else {
+        // Regular posts
       var doc = Post(path);
       docs.add(doc);
+      }
     }
 
     return docs.toList();

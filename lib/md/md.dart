@@ -1,4 +1,5 @@
 import 'package:gengen/md/short_code.dart';
+import 'package:gengen/utilities.dart';
 import 'package:html/parser.dart' as parser;
 import 'package:markdown/markdown.dart';
 
@@ -27,7 +28,7 @@ String renderMd(String content) {
     ],
   );
 
-  return renderedContent;
+  return cleanUpContent(renderedContent);
 }
 
 String stripEmptyTags(String htmlContent) {

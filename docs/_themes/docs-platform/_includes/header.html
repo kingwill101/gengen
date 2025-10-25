@@ -1,0 +1,34 @@
+{% assign is_home = include.is_home | default: false %}
+<header class="docs-header{% if is_home %} docs-header--home{% endif %}">
+  <div class="docs-header__inner">
+    <div class="docs-header__brand">
+      <a class="brand-link" href="/">
+        <span class="brand-logo">📘</span>
+        <span class="brand-text">
+          <span class="brand-title">{{ site.title }}</span>
+          {% if site.description %}
+            <span class="brand-subtitle">{{ site.description }}</span>
+          {% endif %}
+        </span>
+      </a>
+    </div>
+
+    {% if site.data.site.main_navigation %}
+    <nav class="docs-header__nav" aria-label="Primary">
+      {% for item in site.data.site.main_navigation %}
+        <a href="{{ item.url }}"
+           class="nav-link{% if page.url == item.url %} is-active{% endif %}">
+          {{ item.title }}
+        </a>
+      {% endfor %}
+    </nav>
+    {% endif %}
+
+    <div class="docs-header__actions">
+      {% render 'search' %}
+      <button class="theme-toggle" type="button" aria-label="Toggle theme">
+        <span class="theme-toggle__icon">🌗</span>
+      </button>
+    </div>
+  </div>
+</header>

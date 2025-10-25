@@ -12,6 +12,7 @@ class New extends Command<void> {
     addSubcommand(NewSite());
     addSubcommand(NewTheme());
     addSubcommand(NewPost());
+    addSubcommand(NewDocs());
   }
 
   @override
@@ -25,7 +26,43 @@ class New extends Command<void> {
 
   @override
   void run() {
-    print('You must specify a subcommand: post, site, or theme');
+    print('You must specify a subcommand: post, site, theme, or docs');
+  }
+}
+
+class NewDocs extends Command<void> {
+  NewDocs() {
+    argParser.addOption(
+      'dir',
+      help: 'Output directory',
+      defaultsTo: null,
+      abbr: 'd',
+    );
+  }
+
+  @override
+  String get description =>
+      'Create a new documentation site using the docs platform theme';
+
+  @override
+  String get name => 'docs';
+
+  @override
+  void run() {
+    final String? directory = argResults?["dir"] as String?;
+
+    if (directory == null) {
+      log.severe('Directory must be specified for new docs site');
+      return;
+    }
+
+    if (!fs.directory(directory).existsSync()) {
+      fs.directory(directory).create(recursive: true);
+    }
+
+    log.info('Creating new docs site in $directory');
+    createFromBundle(directory, 'docs_template');
+    log.info('Created new docs site in $directory');
   }
 }
 
@@ -36,6 +73,14 @@ class NewSite extends Command<void> {
       help: "Output directory",
       defaultsTo: null,
       abbr: 'd',
+    );
+
+    argParser.addOption(
+      'theme',
+      abbr: 't',
+      allowed: _availableThemes,
+      defaultsTo: 'default',
+      help: 'Apply the named theme to the new site',
     );
 
     argParser.addOption('basic');
@@ -61,6 +106,8 @@ class NewSite extends Command<void> {
 
     log.info("Creating new site in $directory");
     createFromBundle(directory, "site_template");
+    final theme = (argResults?['theme'] as String? ?? 'default').trim();
+    _applyTheme(directory, theme);
     log.info("Created new site in $directory");
   }
 }
@@ -94,10 +141,16 @@ class NewTheme extends Command<void> {
 
 class NewPost extends AbstractCommand {
   NewPost() {
-    argParser.addOption("title",
-        help: "Title of the new post", defaultsTo: null);
-    argParser.addFlag('force',
-        help: 'allow gengen to overwrite existing files', defaultsTo: false);
+    argParser.addOption(
+      "title",
+      help: "Title of the new post",
+      defaultsTo: null,
+    );
+    argParser.addFlag(
+      'force',
+      help: 'allow gengen to overwrite existing files',
+      defaultsTo: false,
+    );
   }
 
   @override
@@ -111,13 +164,16 @@ class NewPost extends AbstractCommand {
   @override
   void start() {
     (String, String) name = processName();
-    String postPathWExt =
-        setExtension(joinAll([site.postPath, name.$1]), ".md");
+    String postPathWExt = setExtension(
+      joinAll([site.postPath, name.$1]),
+      ".md",
+    );
     final postFile = fs.file(postPathWExt);
 
     if (postFile.existsSync() && !allowForce) {
       log.severe(
-          'file with name already exists. Use the --force flag to overwrite');
+        'file with name already exists. Use the --force flag to overwrite',
+      );
       return;
     }
 
@@ -126,7 +182,8 @@ class NewPost extends AbstractCommand {
   }
 
   (String, String) processName() {
-    String name = argResults?["title"] as String? ??
+    String name =
+        argResults?["title"] as String? ??
         argResults?.rest.join('') ??
         'My GenGen Post';
     String nameWithoutPath = name;
@@ -178,4 +235,49 @@ void createFromBundle(String directory, String bundleName) {
     file.createSync(recursive: true);
     file.writeAsBytesSync(fileData);
   });
+}
+
+const _availableThemes = ['default', 'aurora'];
+
+void _applyTheme(String siteDirectory, String themeName) {
+  final normalized = themeName.toLowerCase();
+  final bundleKey = 'theme_$normalized';
+
+  if (!bundleData.containsKey(bundleKey)) {
+    log.warning(
+      "Theme '$themeName' not found. Skipping theme scaffolding.",
+    );
+    return;
+  }
+
+  final themesDir = join(siteDirectory, '_themes', themeName);
+  createFromBundle(themesDir, bundleKey);
+  _setThemeInConfig(siteDirectory, normalized);
+}
+
+void _setThemeInConfig(String siteDirectory, String themeName) {
+  final configFile = fs.file(join(siteDirectory, 'config.yaml'));
+  if (!configFile.existsSync()) {
+    log.warning('config.yaml not found in $siteDirectory; cannot set theme');
+    return;
+  }
+
+  final lines = configFile.readAsLinesSync();
+  bool updated = false;
+  final updatedLines = lines.map((line) {
+    final trimmed = line.trimLeft();
+    if (trimmed.startsWith('theme:')) {
+      final indentLength = line.length - trimmed.length;
+      final indent = indentLength > 0 ? line.substring(0, indentLength) : '';
+      updated = true;
+      return '${indent}theme: "$themeName"';
+    }
+    return line;
+  }).toList();
+
+  if (!updated) {
+    updatedLines.insert(0, 'theme: "$themeName"');
+  }
+
+  configFile.writeAsStringSync(updatedLines.join('\n'));
 }

@@ -1,0 +1,22 @@
+@use 'variables' as *;
+
+@mixin aurora-container {
+  width: min(100% - 2.5rem, 68rem);
+  margin-inline: auto;
+
+  @media (min-width: $aurora-breakpoint-lg) {
+    width: min(100% - 6rem, 72rem);
+  }
+}
+
+@mixin aurora-focus-ring {
+  outline: 3px solid rgba(79, 70, 229, 0.45);
+  outline-offset: 3px;
+}
+
+@mixin aurora-gradient-text {
+  background: $aurora-gradient-accent;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}

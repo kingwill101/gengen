@@ -1,46 +1,30 @@
 import 'package:gengen/configuration.dart';
-import 'package:gengen/di.dart';
 import 'package:gengen/fs.dart' as gengen_fs;
-import 'package:file/file.dart';
 import 'package:file/memory.dart';
 import 'package:test/test.dart';
 import 'package:path/path.dart' as p;
-import 'package:yaml/yaml.dart' as yaml_parser; // Import with alias for YamlException
+import 'package:yaml/yaml.dart' as yaml_parser;
 
 void main() {
   late MemoryFileSystem memoryFileSystem;
-  // This captures the actual current working directory of the Dart process (where 'gengen' is running).
-  // All mock file creations and path assertions will be based on this real path, mirrored in MemoryFileSystem.
   final String realProjectRoot = p.current;
 
   setUp(() {
     memoryFileSystem = MemoryFileSystem();
 
-    // Inject the in-memory file system into gengen's fs global variable.
-    // This ensures all gengen's file operations (e.g., in Configuration.read)
-    // use our mock filesystem instead of the real one.
     gengen_fs.fs = memoryFileSystem;
 
-    // Reset Configuration's static state before each test.
-    // This is crucial for test isolation as Configuration holds static data.
     Configuration.resetConfig();
 
-    // Mirror the real project root directory structure within the in-memory file system.
-    // This allows Configuration to find mock config files at their expected p.current locations.
     memoryFileSystem.directory(realProjectRoot).createSync(recursive: true);
-    // Setting currentDirectory here ensures that any subsequent p.current calls
-    // within the test execution environment (even though gengen's Configuration
-    // uses the real p.current) will correspond to realProjectRoot in our mocked file system.
     memoryFileSystem.currentDirectory = memoryFileSystem.directory(realProjectRoot);
 
-    // Note: Site.init() is deliberately NOT called here as Configuration tests
-    // should be isolated and not depend on Site's global state or its config loading.
   });
 
   group('Configuration Tests', () {
     test('1. Default values are applied correctly when no config is provided', () {
       final config = Configuration();
-      config.read(); // Read with no overrides or config files
+      config.read();
 
       expect(config.get<String>('title'), 'My GenGen Site');
       expect(config.get<String>('url'), 'http://gengen.local');

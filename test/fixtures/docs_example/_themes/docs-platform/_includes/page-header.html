@@ -1,0 +1,18 @@
+<header class="docs-article__header">
+  <div class="docs-article__meta">
+    {% if page.badge %}
+      <span class="docs-badge docs-badge--{{ page.badge.variant | default: 'info' }}">
+        {{ page.badge.label }}
+      </span>
+    {% endif %}
+    {% if page.updated %}
+      <span class="docs-meta docs-meta--updated">
+        Updated {{ page.updated | date: site.date_format | default: "%Y-%m-%d" }}
+      </span>
+    {% endif %}
+  </div>
+  <h1>{{ page.title }}</h1>
+  {% if page.description %}
+    <p class="docs-article__description">{{ page.description }}</p>
+  {% endif %}
+</header>

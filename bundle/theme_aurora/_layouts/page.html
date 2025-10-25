@@ -1,0 +1,19 @@
+---
+layout: default
+---
+
+<section class="aurora-container aurora-page">
+  <header class="aurora-page__header">
+    <h1>{{ page.title }}</h1>
+    {% if page.description %}
+      <p>{{ page.description }}</p>
+    {% endif %}
+  </header>
+  {% assign content_class = 'aurora-page__content' %}
+  {% if page.wide %}
+    {% assign content_class = content_class | append: ' aurora-page__content--wide' %}
+  {% endif %}
+  <article class="{{ content_class }}">
+    {{ content }}
+  </article>
+</section>

@@ -1,12 +1,15 @@
 import 'package:gengen/configuration.dart';
+import 'package:gengen/exceptions.dart';
 import 'package:gengen/fs.dart';
 import 'package:gengen/logging.dart';
+import 'package:gengen/models/plugin_asset.dart' as plugin_static;
 import 'package:gengen/path_extensions.dart';
 import 'package:gengen/plugin/loader.dart';
 import 'package:gengen/plugin/plugin.dart';
 import 'package:gengen/plugin/plugin_metadata.dart';
 import 'package:gengen/site.dart';
 import 'package:path/path.dart' as p;
+import 'package:glob/glob.dart';
 
 class PluginReader {
   PluginReader();
@@ -27,47 +30,123 @@ class PluginReader {
     return plugins;
   }
 
-  static Future<List<BasePlugin>> dirPlugins(Directory directory,
-      {List<String> whitelist = const []}) async {
+  static Future<List<BasePlugin>> dirPlugins(
+    Directory directory, {
+    List<String> whitelist = const [],
+  }) async {
     if (!directory.existsSync()) {
       return [];
     }
 
-    var allEntities = directory.listSync(
-      recursive: false,
-      followLinks: false,
-    );
+    var allEntities = directory.listSync(recursive: false, followLinks: false);
 
     final plugins = <BasePlugin>[];
 
-    final directories = allEntities
-        .whereType<Directory>()
-        .where((d) => d.hasFile("config.yaml"));
+    final directories = allEntities.whereType<Directory>().where(
+      (d) => d.hasFile("config.yaml"),
+    );
 
     for (final directory in directories) {
       final pluginConfigContent =
           readConfigFile(directory.file("config.yaml").path)
               as Map<String, dynamic>;
 
-      final pluginFiles = directory.listSync(recursive: true);
       final pluginAssets = <PluginAsset>[];
+      final pluginName = p.basename(directory.path);
 
-      for (var f in pluginFiles) {
-        if (FileStat.statSync(f.path).type == FileSystemEntityType.directory) {
-          continue;
+      // Check if files are explicitly listed in config
+      final explicitFiles = pluginConfigContent['files'] as List<dynamic>?;
+
+      if (explicitFiles != null) {
+        // Use explicitly listed files from config
+        for (final fileConfig in explicitFiles) {
+          if (fileConfig is Map<String, dynamic>) {
+            final fileName = fileConfig['name'] as String?;
+            final filePath = fileConfig['path'] as String?;
+
+            if (fileName != null && filePath != null) {
+              final resolvedPaths = <String>[];
+
+              void registerAsset(String assetPath, {String? overrideName}) {
+                pluginAssets.add(
+                  PluginAsset(
+                    name: overrideName ?? p.basename(assetPath),
+                    path: assetPath,
+                  ),
+                );
+
+                if (!assetPath.endsWith('.dart') &&
+                    !assetPath.endsWith('.lua')) {
+                  final staticAsset = plugin_static.PluginStaticAsset(
+                    assetPath,
+                    pluginName,
+                    name: overrideName ?? p.basename(assetPath),
+                  );
+                  Site.instance.staticFiles.add(staticAsset);
+                }
+              }
+
+              try {
+                final glob = Glob(filePath);
+                final matches = await glob
+                    .listFileSystem(fs, root: directory.path)
+                    .toList();
+
+                for (final match in matches) {
+                  if (match is File) {
+                    resolvedPaths.add(match.path);
+                    registerAsset(match.path);
+                  }
+                }
+              } on FormatException catch (e) {
+                log.warning(
+                  'Plugin $pluginName: Invalid glob pattern "$filePath" (${e.message}), falling back to literal lookup.',
+                );
+              }
+
+              if (resolvedPaths.isEmpty) {
+                final fullPath = p.join(directory.path, filePath);
+                final file = fs.file(fullPath);
+                if (file.existsSync()) {
+                  resolvedPaths.add(fullPath);
+                  registerAsset(fullPath, overrideName: fileName);
+                }
+              }
+
+              if (resolvedPaths.isEmpty) {
+                throw PluginException(
+                  'Plugin "$pluginName" declared asset pattern "$filePath" '
+                  'but no files were found in ${directory.path}.',
+                );
+              }
+            }
+          }
         }
+      } else {
+        // Fallback to auto-scanning directory files (legacy behavior)
+        final pluginFiles = directory.listSync(recursive: true);
 
-        if (f.path.contains("config.yaml")) continue;
+        for (var f in pluginFiles) {
+          if (FileStat.statSync(f.path).type ==
+              FileSystemEntityType.directory) {
+            continue;
+          }
 
-        //TODO filter out files that are not in the whitelist
-        //TODO plugin assets that will end up in the final build
-        // should be tagged as Static and added to site static list
-        pluginAssets.add(
-          PluginAsset(
-            name: p.basename(f.path),
-            path: f.path,
-          ),
-        );
+          if (f.path.contains("config.yaml")) continue;
+
+          // All plugin files need to be in the metadata for the loader
+          pluginAssets.add(PluginAsset(name: p.basename(f.path), path: f.path));
+
+          // Only add non-Dart files to static files for copying
+          if (!f.path.endsWith('.dart') && !f.path.endsWith('.lua')) {
+            final staticAsset = plugin_static.PluginStaticAsset(
+              f.path,
+              pluginName,
+              name: p.basename(f.path),
+            );
+            Site.instance.staticFiles.add(staticAsset);
+          }
+        }
       }
 
       final config = {
@@ -76,11 +155,11 @@ class PluginReader {
         "files": pluginAssets.map((a) => a.toJson()).toList(),
       };
 
-      final plugin = PluginMetadata.fromJson(
-        config,
-      );
+      final plugin = PluginMetadata.fromJson(config);
       final loader = initializePlugin(plugin);
-      plugins.add(loader);
+      if (loader != null) {
+        plugins.add(loader);
+      }
     }
 
     return plugins;

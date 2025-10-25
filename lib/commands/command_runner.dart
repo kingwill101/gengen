@@ -4,6 +4,7 @@ import 'package:args/command_runner.dart';
 import 'package:gengen/commands/build.dart';
 import 'package:gengen/commands/dump.dart';
 import 'package:gengen/commands/new.dart';
+import 'package:gengen/commands/plugins.dart';
 import 'package:gengen/commands/serve.dart';
 import 'package:gengen/logging.dart';
 
@@ -17,6 +18,7 @@ class _GenGenCommandRunner extends CommandRunner<void> {
     addCommand(New());
     addCommand(Serve());
     addCommand(Dump());
+    addCommand(PluginsCommand());
   }
 
   @override

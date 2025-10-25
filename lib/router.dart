@@ -1,4 +1,3 @@
-
 import 'package:gengen/fs.dart';
 import 'package:gengen/logging.dart';
 import 'package:gengen/site.dart';
@@ -10,8 +9,6 @@ import 'package:shelf/shelf_io.dart' as shelf_io;
 import 'package:shelf_router/shelf_router.dart';
 import 'package:shelf_static/shelf_static.dart';
 import 'package:shelf_web_socket/shelf_web_socket.dart';
-import 'package:web_socket_channel/web_socket_channel.dart'
-    show WebSocketChannel;
 
 Future<void> route() async {
   log.fine("About to serve content");
@@ -27,19 +24,18 @@ Handler get router {
   final router = Router();
 
   router.get('/debug/ws', (Request request) {
-    var handler = webSocketHandler(
-      (WebSocketChannel webSocket) {
-        log.info("watcher: reloading");
-        Site.instance.fileChangeStream.listen((event) {
+    var handler = webSocketHandler((webSocket, _) {
+      webSocket.stream.listen((message) {
+        site.fileChangeStream.listen((event) {
           webSocket.sink.add('reload');
         });
-      },
-    );
+      });
+    });
 
     return handler(request);
   });
   router.get('/<file|.*>', (Request request, String file) {
-    var filePath = '${Site.instance.destination.path}/$file';
+    var filePath = '${site.destination.path}/$file';
     final stat = FileStat.statSync(filePath);
 
     if (stat.type == FileSystemEntityType.notFound) {
@@ -76,11 +72,9 @@ Handler get router {
         ...noCacheHeaders,
       });
     } else {
-
       return createStaticHandler(
-        Site.instance.destination.path,
+        site.destination.path,
         serveFilesOutsidePath: true,
-
       )(request);
     }
   });

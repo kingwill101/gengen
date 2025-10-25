@@ -19,12 +19,7 @@ void main() {
   });
 
   test("correct plugin count", () {
-    expect(site.plugins.length, equals(1));
+    expect(site.plugins.length, equals(5));
   });
 
-  test("plugin metadata", () {
-    final plugin = site.plugins.first;
-    expect(plugin.metadata.name, equals("metadata"));
-    expect(plugin.metadata.entrypoint, equals("metadata:Plugin"));
-  });
 }

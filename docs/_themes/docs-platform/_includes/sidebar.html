@@ -1,0 +1,40 @@
+<aside class="docs-sidebar" aria-label="Documentation navigation">
+  <div class="docs-sidebar__inner">
+    <div class="docs-sidebar__title">
+      <span class="docs-sidebar__label">Documentation</span>
+      <button class="docs-sidebar__toggle" type="button" aria-label="Toggle navigation">
+        ☰
+      </button>
+    </div>
+
+    {% assign sections = site.data.docs.navigation.sidebar.sections %}
+    {% if sections %}
+      <ul class="docs-sidebar__sections">
+        {% for section in sections %}
+          <li class="docs-sidebar__section">
+            <h2>
+              {% if section.icon %}<span class="docs-sidebar__icon">{{ section.icon }}</span>{% endif %}
+              {{ section.title }}
+            </h2>
+            {% if section.pages %}
+              <ul class="docs-sidebar__pages">
+                {% for entry in section.pages %}
+                  <li>
+                    <a href="{{ entry.url }}"
+                       class="docs-sidebar__link{% if page.url == entry.url %} is-active{% endif %}"
+                       {% if entry.external %}target="_blank" rel="noopener"{% endif %}>
+                      {{ entry.title }}
+                    </a>
+                    {% if entry.description %}
+                      <p class="docs-sidebar__description">{{ entry.description }}</p>
+                    {% endif %}
+                  </li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  </div>
+</aside>

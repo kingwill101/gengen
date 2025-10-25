@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:gengen/fs.dart';
 import 'package:gengen/liquid/modules/data_module.dart';
 import 'package:gengen/liquid/modules/url_module.dart';
@@ -24,31 +26,50 @@ class GenGenTempate {
 
   liquid.Root contentRoot;
 
+  final String? templateName;
+
   GenGenTempate.r(
     this.template, {
     this.child = "",
     this.data = const {},
     this.contentRoot = const ContentRoot(),
+    this.templateName,
   }) {
     liquid.TagRegistry.register(
-        'highlight', (content, filters) => Highlight(content, filters));
+      'highlight',
+      (content, filters) => Highlight(content, filters),
+    );
     liquid.TagRegistry.register(
-        'feed_meta', (content, filters) => Feed(content, filters));
+      'feed_meta',
+      (content, filters) => Feed(content, filters),
+    );
     liquid.TagRegistry.register(
-        'seo', (content, filters) => Seo(content, filters));
+      'seo',
+      (content, filters) => Seo(content, filters),
+    );
     liquid.TagRegistry.register(
-        'avatar', (content, filters) => Avatar(content, filters));
+      'avatar',
+      (content, filters) => Avatar(content, filters),
+    );
     liquid.TagRegistry.register(
-        'link', (content, filters) => link.Link(content, filters));
+      'link',
+      (content, filters) => link.Link(content, filters),
+    );
 
     liquid.TagRegistry.register(
-        'include', (content, filters) => Include(content, filters));
-    
+      'include',
+      (content, filters) => Include(content, filters),
+    );
+
     // Plugin asset injection tags
     liquid.TagRegistry.register(
-        'plugin_head', (content, filters) => PluginHead(content, filters));
+      'plugin_head',
+      (content, filters) => PluginHead(content, filters),
+    );
     liquid.TagRegistry.register(
-        'plugin_body', (content, filters) => PluginBody(content, filters));
+      'plugin_body',
+      (content, filters) => PluginBody(content, filters),
+    );
     liquid.FilterRegistry.registerModule('ur', UrlModule());
     liquid.FilterRegistry.registerModule('data', DataModule());
   }
@@ -58,29 +79,17 @@ class GenGenTempate {
       child = await liquid.Template.parse(
         template,
         root: contentRoot,
-        data: {
-          ...data,
-        },
+        data: {...data},
       ).renderAsync();
     }
 
     if (template.isEmpty) return template;
 
-    try {
-      return await liquid.Template.parse(
-        template,
-        root: contentRoot,
-        data: {
-          ...data,
-          if (child.isNotEmpty) 'content': child,
-        },
-      ).renderAsync();
-    } catch (e, s) {
-      log.severe("($template) result", e, s);
-      // Instead of returning empty string, return the original template
-      // This preserves the content even if liquid processing fails
-      return template;
-    }
+    return await liquid.Template.parse(
+      template,
+      root: contentRoot,
+      data: {...data, if (child.isNotEmpty) 'content': child},
+    ).renderAsync();
   }
 }
 
@@ -89,61 +98,85 @@ class ContentRoot implements liquid.Root {
 
   @override
   liquid.Source resolve(String relPath) {
-    var paths = [site.includesPath, site.theme.includesPath];
-    for (var dirPath in paths) {
-      var directory = fs.directory(dirPath);
-      if (!directory.existsSync()) continue;
-
-      var globPattern = Glob("*$relPath*");
-
-      var fileSystemEntities = directory.listSync(recursive: true);
-
-      for (var entity in fileSystemEntities) {
-        if (entity is File &&
-            globPattern.matches(p.relative(entity.path, from: dirPath))) {
-          if (p.basenameWithoutExtension(entity.path) ==
-              p.basenameWithoutExtension(relPath)) {
-            var fileContent = readFileSafe(entity.path);
-            fileContent = cleanUpContent(fileContent);
-
-            return liquid.Source(null, fileContent, this);
-          }
-        }
-      }
-    }
-
-    log.warning("Include: $relPath not found");
-
-    return liquid.Source(null, '', this);
+    final include = _resolveIncludeSync(relPath);
+    return liquid.Source(null, include, this);
   }
 
   @override
   Future<liquid.Source> resolveAsync(String relPath) async {
-    var paths = [site.includesPath, site.theme.includesPath];
-    for (var dirPath in paths) {
-      var directory = fs.directory(dirPath);
+    final include = await _resolveIncludeAsync(relPath);
+    return liquid.Source(null, include, this);
+  }
+
+  String _resolveIncludeSync(String relPath) {
+    final paths = [site.includesPath, site.theme.includesPath];
+    for (final dirPath in paths) {
+      final directory = fs.directory(dirPath);
+      if (!directory.existsSync()) continue;
+
+      final fileContent = _findIncludeInDirectory(directory, relPath);
+      if (fileContent != null) {
+        return fileContent;
+      }
+    }
+
+    throw liquid.TemplateNotFoundException(relPath);
+  }
+
+  Future<String> _resolveIncludeAsync(String relPath) async {
+    final paths = [site.includesPath, site.theme.includesPath];
+    for (final dirPath in paths) {
+      final directory = fs.directory(dirPath);
       if (!await directory.exists()) continue;
 
-      var globPattern = Glob("*$relPath*");
+      final fileContent = await _findIncludeInDirectoryAsync(
+        directory,
+        relPath,
+      );
+      if (fileContent != null) {
+        return fileContent;
+      }
+    }
 
-      var fileSystemEntities = directory.list(recursive: true);
+    throw liquid.TemplateNotFoundException(relPath);
+  }
 
-      await for (final entity in fileSystemEntities) {
-        if (entity is File &&
-            globPattern.matches(p.relative(entity.path, from: dirPath))) {
-          if (p.basenameWithoutExtension(entity.path) ==
-              p.basenameWithoutExtension(relPath)) {
-            var fileContent = readFileSafe(entity.path);
-            fileContent = cleanUpContent(fileContent);
+  String? _findIncludeInDirectory(Directory directory, String relPath) {
+    final globPattern = Glob("*$relPath*");
 
-            return liquid.Source(null, fileContent, this);
-          }
+    final fileSystemEntities = directory.listSync(recursive: true);
+    for (final entity in fileSystemEntities) {
+      if (entity is File &&
+          globPattern.matches(p.relative(entity.path, from: directory.path))) {
+        if (p.basenameWithoutExtension(entity.path) ==
+            p.basenameWithoutExtension(relPath)) {
+          var fileContent = readFileSafe(entity.path);
+          return cleanUpContent(fileContent);
         }
       }
     }
 
-    log.warning("Include: $relPath not found");
+    return null;
+  }
 
-    return liquid.Source(null, '', this);
+  Future<String?> _findIncludeInDirectoryAsync(
+    Directory directory,
+    String relPath,
+  ) async {
+    final globPattern = Glob("*$relPath*");
+    final fileSystemEntities = directory.list(recursive: true);
+
+    await for (final entity in fileSystemEntities) {
+      if (entity is File &&
+          globPattern.matches(p.relative(entity.path, from: directory.path))) {
+        if (p.basenameWithoutExtension(entity.path) ==
+            p.basenameWithoutExtension(relPath)) {
+          var fileContent = readFileSafe(entity.path);
+          return cleanUpContent(fileContent);
+        }
+      }
+    }
+
+    return null;
   }
 }

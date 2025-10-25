@@ -1,0 +1,30 @@
+# GenGen Documentation Site Configuration
+
+# Essential Site Information
+title: "GenGen Documentation"
+description: "Complete documentation for GenGen static site generator"
+author: "GenGen Team"
+url: "https://gengen.dev"
+
+# Build Settings
+theme: "docs-platform"
+destination: "public"
+permalink: "pretty"
+
+# Content Processing
+markdown_extensions:
+  - ".md"
+  - ".markdown"
+
+# File Processing
+exclude:
+  - "README.md"
+  - "config.yaml"
+  - ".git"
+  - "public"
+
+# Development Settings
+publish_drafts: false
+
+# Date Format
+date_format: "yyyy-MM-dd"

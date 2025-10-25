@@ -1,6 +1,5 @@
-import 'dart:io';
-
 import 'package:gengen/configuration.dart';
+import 'package:gengen/fs.dart';
 import 'package:gengen/logging.dart';
 import 'package:gengen/path.dart';
 import 'package:path/path.dart' as p;
@@ -19,16 +18,14 @@ class Theme with PathMixin {
     decideLocation(themePath);
   }
 
-  Future<void> decideLocation(String? themePath) async {
+  void decideLocation(String? themePath) {
     var locations = [
       p.join(themePath ?? "", name),
       p.join(p.current, config.get<String>("themes_dir"), name),
     ];
 
     for (var local in locations) {
-      if (FileStat.statSync(local).type == FileSystemEntityType.notFound) {
-        continue;
-      } else {
+      if (fs.directory(local).existsSync()) {
         loaded = true;
         location = local;
         break;
@@ -42,10 +39,9 @@ class Theme with PathMixin {
 
     var configFile = p.joinAll([location!, "config.yaml"]);
 
-    if (FileStat.statSync(configFile).type == FileSystemEntityType.notFound) {
-      return;
+    if (fs.file(configFile).existsSync()) {
+      config.read(readConfigFile(configFile) as Map<String, dynamic>);
     }
-    config.read(parseConfig(configFile) as Map<String, dynamic>);
   }
 
   @override

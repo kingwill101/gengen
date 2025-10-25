@@ -2,7 +2,6 @@ import 'package:gengen/md/md.dart';
 import 'package:gengen/models/base.dart';
 import 'package:gengen/plugin/plugin.dart';
 import 'package:gengen/plugin/plugin_metadata.dart';
-import 'package:gengen/utilities.dart';
 
 class MarkdownPlugin extends BasePlugin {
   @override

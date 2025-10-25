@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:gengen/content/tokenizer.dart';
 import 'package:gengen/fs.dart';
 import 'package:gengen/logging.dart';
+import 'package:gengen/site.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' as html_parser;
 import 'package:html_unescape/html_unescape.dart';
@@ -32,7 +33,10 @@ String slugifyList(List<String> items) {
 }
 
 Map<String, dynamic> getDirectoryFrontMatter(String path) {
-  var index = fs.file(join(path, "_index.md"));
+  final directoryPath = isAbsolute(path)
+      ? path
+      : join(site.config.source, path);
+  var index = fs.file(join(directoryPath, "_index.md"));
   if (!index.existsSync()) {
     return {};
   }
@@ -112,13 +116,22 @@ bool hasYamlHeader(String fullPath) {
     return false;
   }
 
-  var c = toContent(readFileSafe(fullPath));
-
-  if (c.frontMatter.isEmpty) {
-    return false;
+  String content = readFileSafe(fullPath);
+  
+  // Check if the file has frontmatter delimiters (--- or +++)
+  // This includes files with empty frontmatter like ---\n---
+  final RegExp frontMatterPattern = RegExp(
+    r'^\s*[+-]{3}[\s\S]*?[+-]{3}',
+    dotAll: false,
+  );
+  
+  if (frontMatterPattern.hasMatch(content)) {
+    return true;
   }
 
-  return true;
+  // Fallback to the original logic for non-empty frontmatter
+  var c = toContent(content);
+  return c.frontMatter.isNotEmpty;
 }
 
 bool isBinaryFile(String filePath) {

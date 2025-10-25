@@ -1,5 +1,6 @@
 import 'package:gengen/configuration.dart';
 import 'package:gengen/logging.dart';
+import 'package:dot_prop/dot_prop.dart';
 import 'package:path/path.dart';
 
 mixin PathMixin {
@@ -11,6 +12,17 @@ mixin PathMixin {
 
   set configuration(Configuration configuration) {
     _configuration = configuration;
+  }
+
+  List<Object?> path(String notation) {
+    final value = getProperty(config.all, notation);
+    if (value is List<Object?>) {
+      return value;
+    } else if (value is List) {
+      return value.cast<Object?>();
+    } else {
+      throw Exception("Property at '$notation' is not a List<Object?>");
+    }
   }
 
   String pathFor(String folder) {

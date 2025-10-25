@@ -1,20 +1,21 @@
 import 'dart:async';
+import 'package:collection/collection.dart';
 
+import 'package:gengen/configuration.dart';
 import 'package:gengen/fs.dart';
 import 'package:gengen/hook.dart';
 import 'package:gengen/layout.dart';
 import 'package:gengen/logging.dart';
 import 'package:gengen/models/base.dart';
+import 'package:gengen/performance/benchmark.dart';
+import 'package:gengen/plugin/builtin/pagination.dart';
 import 'package:gengen/path.dart';
-import 'package:gengen/plugin/builtin/liquid.dart';
-import 'package:gengen/plugin/builtin/markdown.dart';
-import 'package:gengen/plugin/builtin/sass.dart';
 import 'package:gengen/plugin/plugin.dart';
+import 'package:gengen/plugin/plugin_manager.dart';
 import 'package:gengen/reader.dart';
 import 'package:gengen/theme.dart';
 import 'package:path/path.dart';
 import 'package:rxdart/rxdart.dart';
-// import 'package:sentry/sentry.dart';
 
 Site get site => Site.instance;
 
@@ -26,16 +27,16 @@ class Site with PathMixin {
   final List<Base> _posts = [];
   final List<Base> _pages = [];
   final List<Base> _static = [];
-  final List<BasePlugin> _plugins = [
-    MarkdownPlugin(),
-    LiquidPlugin(),
-    SassPlugin()
-  ];
+  List<BasePlugin> _plugins = [];
 
   static Site? _instance;
 
   Site.__internal({Map<String, dynamic> overrides = const {}}) {
     config.read(overrides);
+
+    // Initialize plugins based on configuration
+    _plugins = PluginManager.getEnabledPlugins(config.all);
+
     theme = Theme.load(
       config.get<String>("theme")!,
       themePath: themesDir,
@@ -60,17 +61,14 @@ class Site with PathMixin {
 
   static void resetInstance() {
     _instance = null;
+    Configuration.resetConfig();
   }
 
   final StreamController<String> _fileChangeController =
       StreamController.broadcast();
 
   Stream<String> get fileChangeStream =>
-      _fileChangeController.stream.debounceTime(
-        Duration(
-          milliseconds: 500,
-        ),
-      );
+      _fileChangeController.stream.debounceTime(Duration(milliseconds: 500));
 
   void dispose() {
     _fileChangeController.close();
@@ -84,7 +82,11 @@ class Site with PathMixin {
 
   List<Base> get pages => _pages;
 
-  List<Base> get posts => _posts;
+  List<Base> get posts {
+    // Sort posts by date (newest first) whenever accessed
+    _posts.sort((a, b) => b.date.compareTo(a.date));
+    return _posts;
+  }
 
   List<Base> get staticFiles => _static;
 
@@ -109,10 +111,12 @@ class Site with PathMixin {
 
   Future<void> process() async {
     // Clean destination if configured to do so
-    if (config.get<bool>('clean', defaultValue: false)!) {
-      if (await destination.exists()) {
-        await destination.delete(recursive: true);
-      }
+    if (config.get<bool>('clean', defaultValue: true)!) {
+      await Benchmark.timeAsync('clean', () async {
+        if (await destination.exists()) {
+          await destination.delete(recursive: true);
+        }
+      });
     }
 
     // Reset collections for idempotency
@@ -121,19 +125,46 @@ class Site with PathMixin {
     _pages.clear();
     _static.clear();
 
-    await runHook(HookEvent.afterInit);
-    await runHook(HookEvent.beforeRead);
-    await read();
-    await runHook(HookEvent.afterRead);
-    await runHook(HookEvent.beforeGenerate);
-    await runGenerators();
-    await runHook(HookEvent.afterGenerate);
-    await runHook(HookEvent.beforeRender);
-    await render();
-    await runHook(HookEvent.afterRender);
-    await runHook(HookEvent.beforeWrite);
-    await write();
-    await runHook(HookEvent.afterWrite);
+    await Benchmark.timeAsync(
+      'hook_after_init',
+      () => runHook(HookEvent.afterInit),
+    );
+    await Benchmark.timeAsync(
+      'hook_before_read',
+      () => runHook(HookEvent.beforeRead),
+    );
+    await Benchmark.timeAsync('read', () => read());
+    await Benchmark.timeAsync(
+      'hook_after_read',
+      () => runHook(HookEvent.afterRead),
+    );
+    await Benchmark.timeAsync(
+      'hook_before_generate',
+      () => runHook(HookEvent.beforeGenerate),
+    );
+    await Benchmark.timeAsync('generators', () => runGenerators());
+    await Benchmark.timeAsync(
+      'hook_after_generate',
+      () => runHook(HookEvent.afterGenerate),
+    );
+    await Benchmark.timeAsync(
+      'hook_before_render',
+      () => runHook(HookEvent.beforeRender),
+    );
+    await Benchmark.timeAsync('render', () => render());
+    await Benchmark.timeAsync(
+      'hook_after_render',
+      () => runHook(HookEvent.afterRender),
+    );
+    await Benchmark.timeAsync(
+      'hook_before_write',
+      () => runHook(HookEvent.beforeWrite),
+    );
+    await Benchmark.timeAsync('write', () => write());
+    await Benchmark.timeAsync(
+      'hook_after_write',
+      () => runHook(HookEvent.afterWrite),
+    );
   }
 
   Future<Map<String, Object>> dump() async {
@@ -168,35 +199,29 @@ class Site with PathMixin {
   }
 
   Future<void> write() async {
-    final items = [
-      ...staticFiles,
-      ...posts,
-      ...pages,
-    ];
+    final items = [...staticFiles, ...posts, ...pages];
 
+    Benchmark.increment('files_processed', items.length);
     log.info('writing ${items.length} items');
-    await Future.wait(items.map((page) async {
+
+    // Always use simple sequential writing (it's already fast)
+    for (final page in items) {
       await page.write();
-    }));
+    }
+
     log.info('write done');
   }
 
   Future<void> render() async {
-    await Future.wait([
-      ...staticFiles,
-      ...posts,
-      ...pages,
-    ].map((page) async {
-      await page.render();
-    }));
+    final items = [...staticFiles, ...posts, ...pages];
+
+    for (var item in items) {
+      await item.render();
+    }
   }
 
   Future<void> watch() async {
-    for (var value in [
-      ...staticFiles,
-      ...posts,
-      ...pages,
-    ]) {
+    for (var value in [...staticFiles, ...posts, ...pages]) {
       value.watch();
     }
 
@@ -220,16 +245,24 @@ class Site with PathMixin {
 
   Map<String, dynamic> get map {
     posts.sort((a, b) => b.date.compareTo(a.date));
+    final filteredPosts = posts.where((post) => !post.isIndex).toList();
+
+    // Get pagination data from PaginationPlugin
+    final paginationPlugin = _plugins.whereType<PaginationPlugin>().firstOrNull;
+    final paginationDrop = paginationPlugin?.paginationData;
+    final paginationData = paginationDrop != null
+        ? Map<String, dynamic>.from(paginationDrop.attrs)
+        : const <String, dynamic>{};
 
     return {
       ...config.all,
       'feed_meta': '',
       'pages': pages.map((e) => e.to_liquid).toList(),
-      'posts':
-          posts.where((post) => !post.isIndex).map((e) => e.to_liquid).toList(),
-      'theme': {
-        'root': theme.root,
-      },
+      'posts': filteredPosts.map((e) => e.to_liquid).toList(),
+      'paginate': paginationData,
+      'pagination': paginationData,
+      'time': DateTime.now(),
+      'theme': {'root': theme.root},
     };
   }
 
@@ -237,37 +270,37 @@ class Site with PathMixin {
     for (var plugin in _plugins) {
       switch (event) {
         case HookEvent.afterInit:
-          plugin.afterInit();
+          await plugin.afterInit();
           break;
         case HookEvent.beforeRead:
-          plugin.beforeRead();
+          await plugin.beforeRead();
           break;
         case HookEvent.afterRead:
-          plugin.afterRead();
+          await plugin.afterRead();
           break;
         case HookEvent.beforeConvert:
-          plugin.beforeConvert();
+          await plugin.beforeConvert();
           break;
         case HookEvent.afterConvert:
-          plugin.afterConvert();
+          await plugin.afterConvert();
           break;
         case HookEvent.beforeGenerate:
-          plugin.beforeGenerate();
+          await plugin.beforeGenerate();
           break;
         case HookEvent.afterGenerate:
-          plugin.afterGenerate();
+          await plugin.afterGenerate();
           break;
         case HookEvent.beforeRender:
-          plugin.beforeRender();
+          await plugin.beforeRender();
           break;
         case HookEvent.afterRender:
-          plugin.afterRender();
+          await plugin.afterRender();
           break;
         case HookEvent.beforeWrite:
-          plugin.beforeWrite();
+          await plugin.beforeWrite();
           break;
         case HookEvent.afterWrite:
-          plugin.afterWrite();
+          await plugin.afterWrite();
           break;
         case HookEvent.afterReset:
         case HookEvent.convert:

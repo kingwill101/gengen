@@ -1,0 +1,23 @@
+# Site-specific data
+name: "GenGen"
+tagline: "A powerful static site generator"
+version: "1.0.0"
+github: "https://github.com/gengen/gengen"
+
+# Theme configuration for documentation
+theme_config:
+  color_scheme: "light"
+  show_sidebar: true
+  syntax_highlighting: true
+  search_enabled: true
+
+# Main navigation (if needed for header)
+main_navigation:
+  - title: "Home"
+    url: "/"
+  - title: "Getting Started"
+    url: "/getting-started/"
+  - title: "Configuration"
+    url: "/configuration/"
+  - title: "Examples"
+    url: "/examples/" 

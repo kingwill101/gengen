@@ -1,0 +1,147 @@
+# Main sidebar navigation
+sidebar:
+  sections:
+    - title: "Getting Started"
+      icon: "🚀"
+      order: 1
+      pages:
+        - title: "Overview"
+          url: "/"
+          description: "Introduction to GenGen and quick start guide"
+          order: 1
+        - title: "Installation"
+          url: "/installation/"
+          description: "How to install and set up GenGen"
+          order: 2
+        - title: "Configuration"
+          url: "/configuration/"
+          description: "Complete guide to configuring GenGen"
+          order: 3
+        - title: "Pages & Content"
+          url: "/pages/"
+          description: "Creating and structuring pages and posts"
+          order: 4
+
+    - title: "URL Structure"
+      icon: "🔗"
+      order: 2
+      pages:
+        - title: "Permalinks"
+          url: "/permalinks/"
+          description: "URL structure and permalink configuration"
+          order: 1
+        - title: "Aliases"
+          url: "/aliases/"
+          description: "URL redirects and content migration"
+          order: 2
+
+    - title: "Styling & Assets"
+      icon: "🎨"
+      order: 3
+      pages:
+        - title: "Sass Processing"
+          url: "/sass/"
+          description: "Using Sass/SCSS with _sass directory structure"
+          order: 1
+        - title: "Syntax Highlighting"
+          url: "/syntax-highlighting/"
+          description: "Code highlighting with the highlight tag"
+          order: 2
+        - title: "Assets Management"
+          url: "/assets/"
+          description: "Managing static assets and files"
+          order: 3
+          external: false
+        - title: "Aurora Theme"
+          url: "/themes/aurora/"
+          description: "Modern aurora-inspired starter theme"
+          order: 4
+
+    - title: "Advanced Features"
+      icon: "⚡"
+      order: 4
+      pages:
+        - title: "Pagination"
+          url: "/pagination/"
+          description: "Automatic pagination for posts and content"
+          order: 1
+        - title: "Plugins"
+          url: "/plugins/"
+          description: "Using and developing custom plugins"
+          order: 2
+        - title: "Liquid Templates"
+          url: "/liquid/"
+          description: "Using Liquid templating language"
+          order: 3
+          external: false
+
+    - title: "Deployment"
+      icon: "🚀"
+      order: 5
+      pages:
+        - title: "Build Process"
+          url: "/build/"
+          description: "Understanding the build process"
+          order: 1
+          external: false
+        - title: "GitHub Pages"
+          url: "/deploy-github/"
+          description: "Deploy to GitHub Pages"
+          order: 2
+          external: false
+        - title: "Netlify"
+          url: "/deploy-netlify/"
+          description: "Deploy to Netlify"
+          order: 3
+          external: false
+
+    - title: "Reference"
+      icon: "📚"
+      order: 6
+      pages:
+        - title: "CLI Commands"
+          url: "/cli/"
+          description: "Command-line interface reference"
+          order: 1
+          external: false
+        - title: "API Reference"
+          url: "/api/"
+          description: "Complete API documentation"
+          order: 2
+          external: false
+        - title: "Troubleshooting"
+          url: "/troubleshooting/"
+          description: "Common issues and solutions"
+          order: 3
+          external: false
+
+# Quick navigation for common tasks
+quick_nav:
+  - title: "Create New Site"
+    url: "#quick-start"
+    description: "Create your first GenGen site"
+    icon: "➕"
+  - title: "Configuration"
+    url: "/configuration/"
+    description: "Configure your site"
+    icon: "⚙️"
+  - title: "Add Content"
+    url: "/pages/"
+    description: "Add pages and posts"
+    icon: "📝"
+  - title: "Deploy"
+    url: "/build/"
+    description: "Build and deploy your site"
+    icon: "🚀"
+
+# Footer navigation
+footer_nav:
+  - title: "GitHub"
+    url: "https://github.com/gengen/gengen"
+    external: true
+  - title: "Issues"
+    url: "https://github.com/gengen/gengen/issues"
+    external: true
+  - title: "Discussions"
+    url: "https://github.com/gengen/gengen/discussions"
+    external: true

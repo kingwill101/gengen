@@ -23,6 +23,19 @@ class Post extends Base {
 
   @override
   String link() {
-    return permalink().replaceFirst("_posts", "posts");
+    String permalinkResult = permalink();
+    
+    // Only replace _posts with posts for certain permalink formats
+    // The 'post' format should preserve the original path structure
+    String permalinkFormat = config["permalink"] as String? ?? "";
+    
+    // Check if using the 'post' format or a pattern that includes :path
+    if (permalinkFormat == "post" || permalinkFormat == PermalinkStructure.post) {
+      // For 'post' format, preserve the original path structure
+      return permalinkResult;
+    }
+    
+    // For other formats (date, pretty, etc.), replace _posts with posts
+    return permalinkResult.replaceFirst("_posts", "posts");
   }
 }

@@ -1,8 +1,8 @@
 ---
 layout: default
-title: "Happy Jekylling!"
+title: "Happy Writing!"
 ---
 
 ## You're ready to go!
 
-Start developing your Jekyll website.
+Start developing your gengen website.

@@ -2,7 +2,7 @@ import 'package:gengen/utilities.dart';
 
 class Tokenizer {
   final RegExp _frontMatterExp = RegExp(
-      r'^\s*[+-]{3}\s*([\s\S]*?)\s[+-]{3}\s*\n*([\s\S]*)',
+      r'^\s*[+-]{3}([\s\S]*?)[+-]{3}\s*\n*([\s\S]*)',
       dotAll: false,);
 
   Content parse(String content) {

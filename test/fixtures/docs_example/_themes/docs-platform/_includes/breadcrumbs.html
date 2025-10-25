@@ -1,0 +1,24 @@
+{% assign current_url = page.url %}
+{% assign section_title = nil %}
+{% assign page_title = page.title %}
+
+{% for section in site.data.docs.navigation.sidebar.sections %}
+  {% for entry in section.pages %}
+    {% if entry.url == current_url %}
+      {% assign section_title = section.title %}
+      {% assign page_title = entry.title %}
+    {% endif %}
+  {% endfor %}
+{% endfor %}
+
+<nav class="docs-breadcrumbs" aria-label="Breadcrumb">
+  <a href="/" class="docs-breadcrumbs__link">Home</a>
+  {% if section_title %}
+    <span class="docs-breadcrumbs__separator">/</span>
+    <span class="docs-breadcrumbs__crumb">{{ section_title }}</span>
+  {% endif %}
+  {% if page_title and page.url != '/' %}
+    <span class="docs-breadcrumbs__separator">/</span>
+    <span class="docs-breadcrumbs__crumb docs-breadcrumbs__crumb--current">{{ page_title }}</span>
+  {% endif %}
+</nav>

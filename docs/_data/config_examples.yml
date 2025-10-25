@@ -1,0 +1,183 @@
+# Configuration Examples for GenGen
+# These examples show different ways to configure plugins and site settings
+
+basic_site:
+  name: "Basic Site Configuration"
+  description: "Minimal configuration for a simple site"
+  config: |
+    title: "My Site"
+    url: "https://example.com"
+    
+    plugins:
+      enabled:
+        - core
+
+blog_site:
+  name: "Blog Site Configuration"
+  description: "Configuration for a blog with SEO features"
+  config: |
+    title: "My Blog"
+    url: "https://blog.example.com"
+    description: "A blog about interesting topics"
+    
+    plugins:
+      enabled:
+        - core
+        - seo
+        - content
+    
+    # RSS configuration
+    rss:
+      path: feed.xml
+      limit: 20
+      full_content: false
+    
+    # Pagination
+    pagination:
+      enabled: true
+      per_page: 5
+      permalink: "/page/:num/"
+
+portfolio_site:
+  name: "Portfolio Site Configuration"
+  description: "Configuration for a portfolio with custom styling"
+  config: |
+    title: "John Doe - Portfolio"
+    url: "https://johndoe.dev"
+    description: "Web developer and designer"
+    
+    plugins:
+      enabled:
+        - core
+        - assets
+        - seo
+    
+    # Sass configuration
+    sass:
+      style: compressed
+      source_map: false
+    
+    # Tailwind configuration
+    tailwind:
+      executable: "./tailwindcss"
+      input: "assets/css/tailwind.css"
+      output: "assets/css/styles.css"
+
+full_featured:
+  name: "Full-Featured Site Configuration"
+  description: "Complete configuration with all plugin groups enabled"
+  config: |
+    title: "Complete Site"
+    url: "https://complete.example.com"
+    description: "A fully-featured GenGen site"
+    
+    plugins:
+      enabled:
+        - core
+        - seo
+        - assets
+        - content
+    
+    # Individual plugin configurations
+    rss:
+      path: feed.xml
+      limit: 25
+      full_content: true
+    
+    sitemap:
+      path: sitemap.xml
+      include_posts: true
+      include_pages: true
+    
+    sass:
+      style: compressed
+      source_map: true
+      load_paths: ["_sass", "node_modules"]
+    
+    tailwind:
+      executable: "./node_modules/.bin/tailwindcss"
+      input: "assets/css/tailwind.css"
+      output: "assets/css/styles.css"
+    
+    pagination:
+      enabled: true
+      per_page: 8
+      permalink: "/blog/page/:num/"
+      title_suffix: " - Page :num"
+    
+    # Draft publishing for development
+    publish_drafts: false
+
+custom_plugins:
+  name: "Custom Plugin Selection"
+  description: "Selective plugin configuration without groups"
+  config: |
+    title: "Custom Site"
+    url: "https://custom.example.com"
+    
+    plugins:
+      enabled:
+        - MarkdownPlugin
+        - LiquidPlugin
+        - SassPlugin
+        - RssPlugin
+        - PaginationPlugin
+      disabled: []
+
+development_config:
+  name: "Development Configuration"
+  description: "Configuration optimized for development"
+  config: |
+    title: "Dev Site"
+    url: "http://localhost:4000"
+    
+    plugins:
+      enabled:
+        - core
+        - assets
+    
+    # Development settings
+    publish_drafts: true
+    
+    sass:
+      style: expanded
+      source_map: true
+    
+    # Disable external dependencies in development
+    plugins:
+      disabled:
+        - TailwindPlugin
+
+production_config:
+  name: "Production Configuration"
+  description: "Optimized configuration for production deployment"
+  config: |
+    title: "Production Site"
+    url: "https://mysite.com"
+    
+    plugins:
+      enabled:
+        - core
+        - seo
+        - assets
+        - content
+    
+    # Production optimizations
+    sass:
+      style: compressed
+      source_map: false
+    
+    rss:
+      path: feed.xml
+      limit: 20
+      full_content: false
+    
+    sitemap:
+      path: sitemap.xml
+      include_posts: true
+      include_pages: true
+    
+    pagination:
+      enabled: true
+      per_page: 10
+      permalink: "/page/:num/"

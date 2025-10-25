@@ -46,30 +46,6 @@ class Base with WatcherMixin {
     };
   }
 
-  Future<void> handleAlias(File value) async {
-    if (!value.existsSync()) return;
-    if (config.containsKey("aliases") && config["aliases"] is List) {
-      for (var alias in (config["aliases"] as List)) {
-        if ((alias as String).startsWith("/")) {
-          alias = alias.substring(1);
-        }
-
-        final aliasDestination = p.joinAll(
-            [destinationPath, p.setExtension(alias, p.extension(filePath))]);
-
-        try {
-          var dest = fs.file(aliasDestination);
-          await dest.create(recursive: true);
-          await dest.writeAsString(value.readAsStringSync());
-          log.fine("Created alias '$alias'");
-          print("\t\t  -> '${dest.absolute}'");
-        } on Exception catch (_, e) {
-          log.warning("Failed to create alias '$alias': $e");
-        }
-      }
-    }
-  }
-
   bool isPage = false;
   bool isStatic = false;
   Directory? destination;
@@ -166,9 +142,11 @@ class Base with WatcherMixin {
   String get destinationPath {
     var destiny = destination ?? site.destination;
 
-    if (isPage && !isIndex) {
-      name = setExtension("index", ext);
-    }
+    // TODO: Review this logic - it seems to be incorrectly modifying the name
+    // which affects permalink generation
+    // if (isPage && !isIndex) {
+    //   name = setExtension("index", ext);
+    // }
 
     return destiny.path;
   }
@@ -181,35 +159,43 @@ class Base with WatcherMixin {
     } else {
       await fs.file(source).copy(file.path);
     }
-    log.info("copied $source");
-    print("\t\t-> ${file.absolute}");
+    log.info("copied $source to ${file.absolute}");
   }
 
   String get filePath => join(destinationPath, link());
 
   Future<void> render() async {
+    final start = DateTime.now();
     log.info("attempting to render $relativePath");
     if (isPost || isPage || (isStatic && isSass)) {
       log.info("rendering $relativePath");
       await renderer.render();
     }
+    final duration = DateTime.now().difference(start);
+    log.info("render completed for $relativePath in ${duration.inMilliseconds}ms");
   }
 
   Future<void> write() async {
+    final start = DateTime.now();
     if (isStatic && isSass) {
       await copyWrite();
+      final duration = DateTime.now().difference(start);
+      log.info("write completed for $relativePath in ${duration.inMilliseconds}ms");
       return;
     }
-
+    log.info("trying to write $relativePath");
     File file = await fs.file(filePath).create(recursive: true);
 
     var fileContent = isPost || isPage ? renderer.content : content;
+    if (isPost) {
+      log.fine('Writing post ${relativePath} snippet: '
+          '${fileContent.substring(0, fileContent.length > 60 ? 60 : fileContent.length)}');
+    }
     await file.writeAsString(fileContent);
-    log.info("written $relativePath");
-    print("\t\t-> ${link()}");
-    print("\t\t-> ${file.absolute}");
-    //only call when path is null to prevent
-    await handleAlias(file);
+    final duration = DateTime.now().difference(start);
+    log.info("written $relativePath in ${duration.inMilliseconds}ms");
+    log.info("\t\t-> ${link()}");
+    log.info("\t\t-> ${file.absolute}");
   }
 
   Map<String, dynamic> _config() {

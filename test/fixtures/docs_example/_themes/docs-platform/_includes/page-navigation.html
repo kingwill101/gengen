@@ -1,0 +1,39 @@
+{% assign previous = nil %}
+{% assign next = nil %}
+{% assign found = false %}
+
+{% for section in site.data.docs.navigation.sidebar.sections %}
+  {% for entry in section.pages %}
+    {% if found == false %}
+      {% if entry.url == page.url %}
+        {% assign found = true %}
+        {% assign section_for_current = section %}
+        {% assign current_entry = entry %}
+      {% else %}
+        {% assign previous = entry %}
+      {% endif %}
+    {% elsif next == nil %}
+      {% assign next = entry %}
+    {% endif %}
+  {% endfor %}
+{% endfor %}
+
+<nav class="docs-pagination" aria-label="Page navigation">
+  {% if previous %}
+    <a class="docs-pagination__link docs-pagination__link--prev" href="{{ previous.url }}">
+      <span class="docs-pagination__label">Previous</span>
+      <span class="docs-pagination__title">{{ previous.title }}</span>
+    </a>
+  {% else %}
+    <span class="docs-pagination__placeholder docs-pagination__link--prev"></span>
+  {% endif %}
+
+  {% if next %}
+    <a class="docs-pagination__link docs-pagination__link--next" href="{{ next.url }}">
+      <span class="docs-pagination__label">Next</span>
+      <span class="docs-pagination__title">{{ next.title }}</span>
+    </a>
+  {% else %}
+    <span class="docs-pagination__placeholder docs-pagination__link--next"></span>
+  {% endif %}
+</nav>

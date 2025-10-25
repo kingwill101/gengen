@@ -1,0 +1,45 @@
+.callout {
+  border-radius: $border-radius;
+  padding: $spacing-md;
+  margin: $spacing-lg 0;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: $spacing-md;
+  border: 1px solid transparent;
+  background-color: rgba($primary-color, 0.08);
+  color: $text-color;
+
+  &__icon {
+    font-size: $font-size-xl;
+    line-height: 1;
+  }
+
+  &__title {
+    margin: 0 0 $spacing-xs;
+    font-size: $font-size-lg;
+  }
+
+  &__body > :last-child {
+    margin-bottom: 0;
+  }
+
+  &--info {
+    background-color: rgba($primary-color, 0.08);
+    border-color: rgba($primary-color, 0.2);
+  }
+
+  &--success {
+    background-color: rgba($success-color, 0.08);
+    border-color: rgba($success-color, 0.2);
+  }
+
+  &--warning {
+    background-color: rgba($warning-color, 0.12);
+    border-color: rgba($warning-color, 0.25);
+  }
+
+  &--danger {
+    background-color: rgba($danger-color, 0.12);
+    border-color: rgba($danger-color, 0.25);
+  }
+}

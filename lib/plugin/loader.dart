@@ -1,32 +1,52 @@
+import 'package:gengen/logging.dart';
+import 'package:gengen/exceptions.dart';
+import 'package:gengen/plugin/lua/lua_plugin.dart';
 import 'package:gengen/plugin/plugin.dart';
 import 'package:gengen/plugin/plugin_metadata.dart';
-import 'package:gengen/plugin/eval/eval_loader.dart' as eval;
 import 'package:path/path.dart' as p;
 
-abstract class PluginLoader {
-  final PluginMetadata metadata;
+typedef PluginInitializer = BasePlugin? Function(PluginMetadata metadata);
 
-  PluginLoader(this.metadata);
+PluginInitializer? _initializer;
 
-  List<PluginAsset> get langFiles;
-
-  List<PluginAsset> get assets;
-
-  Map<String, String> imports();
-
-  bool get isConverter;
-
-  bool get isGenerator;
-
-  BasePlugin wrap();
+void registerPluginInitializer(PluginInitializer initializer) {
+  _initializer = initializer;
 }
 
-
-
-BasePlugin initializePlugin(PluginMetadata metadata) {
-  final fileTypes = metadata.files.map((f) => p.extension(f.path));
-  if (fileTypes.contains('.dart')) {
-    return eval.EvalLoader(metadata).wrap();
+BasePlugin? initializePlugin(PluginMetadata metadata) {
+  if (_initializer != null) {
+    return _initializer!(metadata);
   }
-  throw Exception("Unknown plugin type");
+
+  if (_isLuaEntrypoint(metadata.entrypoint)) {
+    try {
+      return LuaPlugin(metadata);
+    } on PluginException {
+      rethrow;
+    } catch (error, stackTrace) {
+      throw PluginException(
+        'Failed to initialize Lua plugin "${metadata.name}"',
+        error,
+        stackTrace,
+      );
+    }
+  }
+
+  final fileTypes = metadata.files.map((f) => p.extension(f.path)).toSet();
+
+  if (fileTypes.contains('.dart')) {
+    log.warning(
+      'Plugin "${metadata.name}" contains Dart sources, but Dart-based plugins '
+      'are no longer supported.',
+    );
+  }
+
+  return null;
+}
+
+bool _isLuaEntrypoint(String entrypoint) {
+  final separatorIndex = entrypoint.lastIndexOf(':');
+  if (separatorIndex == -1) return false;
+  final filePart = entrypoint.substring(0, separatorIndex).trim();
+  return filePart.toLowerCase().endsWith('.lua');
 }

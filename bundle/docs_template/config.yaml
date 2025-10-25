@@ -1,0 +1,20 @@
+# Example documentation site powered by the docs-platform theme
+
+title: "Example Docs"
+description: "Reusable GenGen documentation scaffold"
+theme: "docs-platform"
+destination: "public"
+permalink: "pretty"
+date_format: "yyyy-MM-dd"
+
+plugins:
+  groups:
+    core:
+      - DraftPlugin
+      - MarkdownPlugin
+      - LiquidPlugin
+      - SassPlugin
+      - PaginationPlugin
+
+# Scope the site to the `examples/docs` directory when building from repo root
+source: "examples/docs"

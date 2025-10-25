@@ -1,6 +1,7 @@
 import 'package:gengen/commands/abstract_command.dart';
 import 'package:gengen/commands/arg_extension.dart';
 import 'package:gengen/logging.dart';
+import 'package:gengen/performance/benchmark.dart';
 import 'package:gengen/site.dart';
 
 class Build extends AbstractCommand {
@@ -10,9 +11,46 @@ class Build extends AbstractCommand {
   @override
   String get name => "build";
 
+  Build() {
+    argParser.addFlag(
+      'benchmark',
+      abbr: 'b',
+      help: 'Enable detailed performance benchmarking',
+      defaultsTo: false,
+    );
+    argParser.addFlag(
+      'parallel',
+      abbr: 'p',
+      help: 'Enable parallel processing',
+      defaultsTo: true,
+    );
+    argParser.addOption(
+      'concurrency',
+      abbr: 'c',
+      help: 'Maximum number of concurrent operations',
+      defaultsTo: '4',
+    );
+  }
+
   @override
   Future<void> start() async {
+    final enableBenchmark = argResults?['benchmark'] as bool? ?? false;
+    final enableParallel = argResults?['parallel'] as bool? ?? true;
+    final concurrency = int.tryParse(argResults?['concurrency'] as String? ?? '4') ?? 4;
+    
+    // Configure benchmarking
+    Benchmark.setEnabled(enableBenchmark);
+    Benchmark.reset();
+    Benchmark.start();
+    
     log.info(" Starting build\n");
+    if (enableBenchmark) {
+      log.info("Benchmarking enabled");
+    }
+    if (enableParallel) {
+      log.info("Parallel processing enabled (concurrency: $concurrency)");
+    }
+    
     try {
       // Check if a positional argument was provided as source directory
       if (argResults?.rest.isNotEmpty == true) {
@@ -22,12 +60,30 @@ class Build extends AbstractCommand {
         Site.init(overrides: {
           ...argResults?.map ?? {},
           'source': sourceDir,
+          'parallel': enableParallel,
+          'concurrency': concurrency,
         });
       }
       
       await site.process();
+
+      if (site.posts.isNotEmpty) {
+        final sample = site.posts.first.renderer.content;
+        log.fine('Sample renderer content: '
+            '${sample.substring(0, sample.length > 80 ? 80 : sample.length)}');
+      }
+      
+      Benchmark.stop();
       log.info("Build complete\n");
+      
+      if (enableBenchmark) {
+        Benchmark.printReport();
+      }
     } on Exception catch (e, s) {
+      Benchmark.stop();
+      if (enableBenchmark) {
+        Benchmark.printReport();
+      }
       log.severe(e.toString(), e, s);
     }
   }

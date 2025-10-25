@@ -19,4 +19,20 @@ this is the content
     String c = markdownToHtml(content.content);
     assert(c.isNotEmpty);
   });
+
+  test("no front matter", () {
+    String source = r'''
+---
+---
+
+For any Jekyll site, a *build session* consists of discrete phases in the following order --- *setting up plugins,
+reading source files, running generators, rendering templates*, and finally *writing files to disk*.
+
+While the phases above are self-explanatory, the one phase that warrants dissection is *the rendering phase*.
+
+    ''';
+    Content? content = toContent(source);
+    assert(content.frontMatter.isEmpty);
+    assert(content.content.isNotEmpty);
+  });
 }

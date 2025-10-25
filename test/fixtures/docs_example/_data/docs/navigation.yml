@@ -1,0 +1,45 @@
+sidebar:
+  sections:
+    - title: "Welcome"
+      order: 1
+      pages:
+        - title: "Overview"
+          url: "/"
+          description: "Get an overview of the documentation scaffold"
+          order: 1
+        - title: "Quick Start"
+          url: "/guides/quick-start/"
+          description: "Generate a docs site and deploy it"
+          order: 2
+    - title: "Guides"
+      order: 2
+      pages:
+        - title: "Content Authoring"
+          url: "/guides/content-authoring/"
+          description: "Write Markdown and Liquid for your docs"
+          order: 1
+    - title: "Reference"
+      order: 3
+      pages:
+        - title: "Configuration"
+          url: "/reference/configuration/"
+          description: "Available configuration options"
+          order: 1
+
+quick_nav:
+  - title: "Create Docs"
+    url: "/guides/quick-start/"
+    description: "Bootstrap the docs site"
+    icon: "⚡"
+  - title: "Author Content"
+    url: "/guides/content-authoring/"
+    description: "Learn front matter patterns"
+    icon: "✍️"
+
+footer_nav:
+  - title: "GenGen"
+    url: "https://github.com/gengen/gengen"
+    external: true
+  - title: "Report Issue"
+    url: "https://github.com/gengen/gengen/issues"
+    external: true
