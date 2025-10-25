@@ -72,9 +72,9 @@ Posts after the hero appear inside a responsive card grid:
 With `pagination.enabled: true` the hero/grid pulls from `page.paginate.items`. Aurora's `partials/pagination_nav.html` include consumes the plugin-provided fields (`current_page_path`, `page_paths`, `previous_page_path`, etc.) to render a responsive pager with ellipsis for large archives. Reuse it anywhere:
 
 ```liquid
-{% if page.paginate %}
-  {% render 'partials/pagination_nav', paginate: page.paginate %}
-{% endif %}
+{{ "{% if page.paginate %}" }}
+  {{ "{% render 'partials/pagination_nav', paginate: page.paginate %}" }}
+{{ "{% endif %}" }}
 ```
 
 The example site ships with `items_per_page: 9`, so additional pages (e.g. `/page/2/`) are generated automatically.
@@ -91,9 +91,9 @@ Aurora ships dedicated partials under `_includes/partials/media/`:
 
 | Shortcode | Usage | Notes |
 | --- | --- | --- |
-| `partials/media/youtube` | `{% render 'partials/media/youtube', id: 'VIDEO_ID', caption: 'Optional caption' %}` | Responsive 16:9 frame with aurora glow on hover |
-| `partials/media/twitter` | `{% render 'partials/media/twitter', url: 'https://twitter.com/...' %}` | Uses Twitter oEmbed; typography reset to match theme |
-| `partials/media/social_graph` | `{% render 'partials/media/social_graph', url: 'https://example.com/article' %}` | Displays Open Graph cards with thumbnail and gradients |
+| `partials/media/youtube` | `{{ "{% render 'partials/media/youtube', id: 'VIDEO_ID', caption: 'Optional caption' %}" }}` | Responsive 16:9 frame with aurora glow on hover |
+| `partials/media/twitter` | `{{ "{% render 'partials/media/twitter', url: 'https://twitter.com/...' %}" }}` | Uses Twitter oEmbed; typography reset to match theme |
+| `partials/media/social_graph` | `{{ "{% render 'partials/media/social_graph', url: 'https://example.com/article' %}" }}` | Displays Open Graph cards with thumbnail and gradients |
 
 All media components share the `.aurora-media` class and inherit card styling from `_sass/_media.scss`.
 

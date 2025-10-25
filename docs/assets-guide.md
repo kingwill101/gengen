@@ -22,7 +22,7 @@ GenGen treats everything outside the `_` prefixed directories as a static asset.
 Use the `asset_url` filter to generate links that respect the configured destination:
 
 ```liquid
-<link rel="stylesheet" href="{{ 'assets/css/site.css' | asset_url }}">
+{{ "{{ 'assets/css/site.css' | asset_url }}" }}
 ```
 
 ## Fingerprinting & Caching

@@ -5,6 +5,7 @@ import 'package:gengen/data/social_graph.dart';
 import 'package:gengen/logging.dart';
 import 'package:liquify/liquify.dart';
 import 'package:http/http.dart' as http;
+import 'package:markdown/markdown.dart' as md;
 
 class DataModule extends Module {
   @override
@@ -90,6 +91,17 @@ class DataModule extends Module {
 
     filters['group_by'] = (input, args, namedArgs) {
       return input;
+    };
+
+    filters['markdownify'] = (input, args, namedArgs) {
+      if (input == null) {
+        return '';
+      }
+      final source = input.toString();
+      return md.markdownToHtml(
+        source,
+        extensionSet: md.ExtensionSet.gitHubFlavored,
+      );
     };
   }
 }
