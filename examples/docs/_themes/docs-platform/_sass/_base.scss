@@ -1,0 +1,95 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: $font-family-base;
+  color: $text-color;
+  background-color: $bg-color;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.skip-link {
+  position: absolute;
+  left: -999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+
+  &:focus {
+    left: 1rem;
+    top: 1rem;
+    width: auto;
+    height: auto;
+    padding: $spacing-sm $spacing-md;
+    background-color: $primary-color;
+    color: white;
+    border-radius: $border-radius-sm;
+    z-index: $z-index-overlay;
+  }
+}
+
+h1, h2, h3, h4, h5, h6 {
+  @include heading-base;
+
+  &:first-child {
+    margin-top: 0;
+  }
+}
+
+h1 { font-size: $font-size-4xl; }
+h2 { font-size: $font-size-3xl; }
+h3 { font-size: $font-size-2xl; }
+h4 { font-size: $font-size-xl; }
+h5 { font-size: $font-size-lg; }
+h6 { font-size: $font-size-base; }
+
+p {
+  margin: 0 0 $spacing-md;
+}
+
+a {
+  color: $primary-color;
+  text-decoration: none;
+  transition: color $transition-base;
+
+  &:hover {
+    color: darken($primary-color, 8%);
+  }
+}
+
+code {
+  background: $code-bg;
+  padding: 0.2rem 0.4rem;
+  border-radius: $border-radius-sm;
+  font-size: 0.9em;
+}
+
+pre {
+  margin: $spacing-lg 0;
+  padding: $spacing-lg;
+  border-radius: $border-radius;
+  background-color: $code-bg;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: $spacing-lg 0;
+
+  th, td {
+    border-bottom: 1px solid $border-color;
+    padding: $spacing-sm $spacing-md;
+    text-align: left;
+  }
+
+  th {
+    background-color: $bg-muted;
+    font-weight: $font-weight-semibold;
+  }
+}

@@ -1,0 +1,9 @@
+---
+layout: post
+title: Posts
+---
+
+{% for post in site.posts %}
+{%- render 'partials/post_preview', post: post -%}
+{% endfor %}
+

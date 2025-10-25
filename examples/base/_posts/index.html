@@ -1,0 +1,27 @@
+---
+layout: page
+title: Archive
+description: Browse every story captured on Willsthoughts.
+wide: true
+---
+
+{% assign paginated = page.paginate | default: page.pagination %}
+{% if paginated %}
+  {% assign archive_posts = paginated.items %}
+{% else %}
+  {% assign archive_posts = site.posts %}
+{% endif %}
+
+{% if archive_posts %}
+  <section class="aurora-grid">
+    {% for post in archive_posts %}
+      {% render 'partials/post_card', post: post %}
+    {% endfor %}
+  </section>
+
+  {% if paginated and paginated.total_pages > 1 %}
+    {% render 'partials/pagination_nav', paginate: paginated %}
+  {% endif %}
+{% else %}
+  <p>No entries yet&mdash;check back soon.</p>
+{% endif %}

@@ -1,0 +1,11 @@
+title: "RSS & Sitemap Demo"
+description: "A demo site showcasing RSS feed and sitemap generation with GenGen"
+url: "https://example.com"
+
+# RSS and Sitemap plugins are automatically enabled
+# They generate:
+# - RSS feed at /feed.xml (20 most recent posts by default)
+# - XML sitemap at /sitemap.xml (all pages and posts)
+
+# You can customize the plugins by adding them manually to your site
+# if you need different settings than the defaults 

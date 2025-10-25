@@ -1,0 +1,11 @@
+{% assign meta_post = post | default: page %}
+{% if meta_post %}
+  <div class="aurora-post-meta">
+    {% if meta_post.date %}
+      <time datetime="{{ meta_post.date | date: "yyyy-MM-dd" }}">{{ meta_post.date | date: "MMMM dd, yyyy" }}</time>
+    {% endif %}
+    {% if meta_post.tags %}
+      {% render 'partials/tag_list', tags: meta_post.tags %}
+    {% endif %}
+  </div>
+{% endif %}

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><link rel="stylesheet" href="assets/css/styles.css">
+
+<link rel="stylesheet" href="/assets/css/post.css">
+
+</head>
+<body>
+
+<section>
+    <h3>Ubuntu: unresponsive touchpad at login</h3>
+    <p><p>I have been a Linux user for many years and now and then I come across an issue that I've never seen.</p>
+<p>My current Ubuntu install has been around for about 6 months and recently I noticed that my touchpad no longer worked
+whenever I got to the login screen.
+This I assume came about as a result of me switching between desktop environments (installed KDE for about a month now).
+The issue persisted between gdm and sddm which felt a bit weird, usually i find that switching between display managers fix these weird quirks.
+To cut a long story short, after doing a bit of research I found the following xorg config that ended up solving all my
+touchpad issues.</p>
+<p>For my system <code>lsb_release -a</code> returns</p>
+<pre><code>No LSB modules are available.
+Distributor ID: Ubuntu
+Description:    Ubuntu 20.10
+Release:        20.10
+Codename:       groovy
+</code></pre>
+<p>and <code>uname -ar</code> returns</p>
+<pre><code>Linux kingwill101-Inspiron-5491-2n1 5.10.7-051007-generic #202101122046 SMP Tue Jan 12 21:13:32 UTC 2021 x86_64 x86_64 x86_64 GNU/Linux
+</code></pre>
+<p>Not sure if my situation is unique in any shape but hope the solution works for you as well.</p>
+<h2 id="solution">Solution</h2>
+<p>Save the following to <code>/etc/X11/xorg.conf.d/20-touchpad.conf</code></p>
+<pre><code>Section "InputClass"
+        Identifier "libinput touchpad catchall"
+        MatchIsTouchpad "on"
+        MatchDevicePath "/dev/input/event*"
+        Driver "libinput"
+
+        Option "Tapping" "on"
+        Option "NaturalScrolling" "on"
+        Option "MiddleEmulation" "on"
+        Option "DisableWhileTyping" "on"
+EndSection
+
+</code></pre>
+<p>sources -</p>
+<p><a href="https://github.com/sddm/sddm/issues/657#issuecomment-241268283">https://github.com/sddm/sddm/issues/657#issuecomment-241268283</a>
+<a href="https://wiki.archlinux.org/index.php/Touchpad_Synaptics#Frequently_used_options">https://wiki.archlinux.org/index.php/Touchpad_Synaptics#Frequently_used_options</a></p>
+</p>
+</section><footer>
+    This is the footer
+</footer></body>
+</html>

@@ -1,0 +1,11 @@
+site:
+  title: "Aliases Example Site"
+  description: "Demonstrating GenGen aliases functionality"
+  url: "https://example.com"
+
+destination: public
+permalink: pretty
+
+# Basic site configuration for aliases example
+layout_dir: _layouts
+include_dir: _includes 

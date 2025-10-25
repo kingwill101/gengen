@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page.title | default: site.title }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .header { border-bottom: 2px solid #333; margin-bottom: 20px; }
+        .content { line-height: 1.6; }
+        .footer { border-top: 1px solid #ccc; margin-top: 40px; padding-top: 20px; }
+        .post-meta { color: #666; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>{{ site.title }}</h1>
+        <p>{{ site.description }}</p>
+    </div>
+    
+    <div class="content">
+        {{ content }}
+    </div>
+    
+    <div class="footer">
+        <p>&copy; {{ 'now' | date: '%Y' }} Heavy Test Site</p>
+    </div>
+</body>
+</html> 

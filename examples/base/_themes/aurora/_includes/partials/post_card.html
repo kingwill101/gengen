@@ -1,0 +1,12 @@
+{% assign card_post = post | default: page %}
+{% assign card_excerpt = card_post.excerpt %}
+<article class="aurora-card">
+  <a class="aurora-card__title" href="{{ card_post.permalink }}">
+    <h3>{{ card_post.title }}</h3>
+  </a>
+  {% render 'partials/post_meta', post: card_post %}
+  {% if card_excerpt %}
+    <p class="aurora-card__excerpt">{{ card_excerpt }}</p>
+  {% endif %}
+  <a class="aurora-card__link" href="{{ card_post.permalink }}">Continue Reading →</a>
+</article>

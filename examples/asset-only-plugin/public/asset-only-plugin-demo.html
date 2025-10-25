@@ -1,0 +1,81 @@
+<h1 id="asset-only-plugin-demo">Asset-Only Plugin Demo</h1>
+<p>This page demonstrates GenGen's asset-only plugin system. The syntax highlighter plugin was created <strong>without any Dart code</strong> - just CSS, JavaScript, and configuration!</p>
+<h2 id="features-provided-by-asset-only-plugin">Features Provided by Asset-Only Plugin</h2>
+<ol>
+<li><strong>Custom Monokai Theme</strong> - Dark syntax highlighting theme</li>
+<li><strong>Line Numbers</strong> - Automatic line numbering for code blocks</li>
+<li><strong>Copy Button</strong> - Click to copy code to clipboard</li>
+<li><strong>Custom Meta Tags</strong> - SEO and feature detection</li>
+<li><strong>Initialization Scripts</strong> - Automatic setup when page loads</li>
+</ol>
+<h2 id="example-code-block">Example Code Block</h2>
+<pre><code class="language-javascript">// This code block is styled by the asset-only plugin
+function greetUser(name) {
+    console.log(`Hello, ${name}!`);
+    
+    // The plugin automatically adds:
+    // - Monokai syntax highlighting
+    // - Line numbers on the left
+    // - Copy button in top-right corner
+    
+    return `Welcome to GenGen, ${name}!`;
+}
+
+// Try clicking the copy button!
+greetUser('Developer');
+</code></pre>
+<h2 id="python-example">Python Example</h2>
+<pre><code class="language-python"># Another example with Python syntax
+def fibonacci(n):
+    """Generate Fibonacci sequence up to n terms."""
+    if n <= 0:
+        return []
+    elif n == 1:
+        return [0]
+    elif n == 2:
+        return [0, 1]
+    
+    sequence = [0, 1]
+    for i in range(2, n):
+        sequence.append(sequence[i-1] + sequence[i-2])
+    
+    return sequence
+
+# Generate first 10 Fibonacci numbers
+result = fibonacci(10)
+print(f"First 10 Fibonacci numbers: {result}")
+</code></pre>
+<h2 id="how-it-works">How It Works</h2>
+<p>The asset-only plugin system automatically:</p>
+<ol>
+<li><strong>Detects asset files</strong> (CSS, JS) in the plugin directory</li>
+<li><strong>Copies them</strong> to <code>/assets/plugins/syntax-highlighter/</code></li>
+<li><strong>Injects CSS links</strong> into the <code><head></code> section</li>
+<li><strong>Injects JS scripts</strong> before <code></body></code></li>
+<li><strong>Adds custom HTML</strong> from the plugin configuration</li>
+<li><strong>Includes meta tags</strong> for feature detection</li>
+</ol>
+<h2 id="plugin-configuration">Plugin Configuration</h2>
+<p>This was achieved with just a <code>config.yaml</code> file:</p>
+<pre><code class="language-yaml">name: SyntaxHighlighter
+description: A pure asset-only plugin
+version: 1.0.0
+
+head_injection: |
+  <meta name="syntax-highlighter" content="enabled">
+
+body_injection: |
+  <script>
+    console.log('Syntax Highlighter Plugin loaded!');
+  </script>
+
+css_assets:
+  - monokai-theme.css
+  - line-numbers.css
+  - copy-button.css
+
+js_assets:
+  - highlight-init.js
+  - copy-button.js
+</code></pre>
+<p><strong>No Dart code required!</strong> Just static assets and configuration.</p>

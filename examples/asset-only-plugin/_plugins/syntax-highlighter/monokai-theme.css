@@ -1,0 +1,68 @@
+/* Monokai Theme for Syntax Highlighter Plugin */
+.hljs {
+  background: #272822;
+  color: #f8f8f2;
+  border-radius: 6px;
+  padding: 1rem;
+  overflow-x: auto;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-literal,
+.hljs-section,
+.hljs-link {
+  color: #f92672;
+}
+
+.hljs-function .hljs-keyword {
+  color: #66d9ef;
+}
+
+.hljs-subst {
+  color: #f8f8f2;
+}
+
+.hljs-string,
+.hljs-title,
+.hljs-name,
+.hljs-type,
+.hljs-attribute,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition,
+.hljs-variable,
+.hljs-template-tag,
+.hljs-template-variable {
+  color: #e6db74;
+}
+
+.hljs-comment,
+.hljs-quote,
+.hljs-deletion,
+.hljs-meta {
+  color: #75715e;
+}
+
+.hljs-number,
+.hljs-regexp,
+.hljs-literal {
+  color: #ae81ff;
+}
+
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-class .hljs-title {
+  color: #a6e22e;
+}
+
+.hljs-emphasis {
+  font-style: italic;
+}
+
+.hljs-strong {
+  font-weight: bold;
+} 

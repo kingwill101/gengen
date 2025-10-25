@@ -1,0 +1,34 @@
+/* Copy Button for Code Blocks */
+.code-block-wrapper {
+  position: relative;
+}
+
+.copy-button {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #f8f8f2;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.copy-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.copy-button.copied {
+  background: #a6e22e;
+  color: #272822;
+  border-color: #a6e22e;
+}
+
+.copy-button.copied::after {
+  content: " ✓";
+} 

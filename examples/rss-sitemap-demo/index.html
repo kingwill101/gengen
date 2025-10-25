@@ -1,0 +1,74 @@
+---
+title: "RSS & Sitemap Demo - Home"
+layout: default
+---
+
+<h1>Welcome to the RSS & Sitemap Demo</h1>
+
+<p>This demonstration site shows how GenGen automatically generates RSS feeds and XML sitemaps for your content.</p>
+
+<h2>🚀 What's Generated</h2>
+
+<p>When you build this site, GenGen automatically creates:</p>
+
+<ul>
+    <li><strong><a href="/feed.xml">RSS Feed</a></strong> - Subscribe to content updates</li>
+    <li><strong><a href="/sitemap.xml">XML Sitemap</a></strong> - Help search engines discover your content</li>
+</ul>
+
+<h2>📝 Recent Posts</h2>
+
+<div style="border-left: 4px solid #007acc; padding-left: 20px; margin: 20px 0;">
+    {% for post in site.posts limit:10 %}
+    <article style="margin-bottom: 20px;">
+        <h3><a href="{{ post.url }}">{{ post.title }}</a></h3>
+        <p style="color: #666; font-size: 14px;">
+            {{ post.date | date: "%B %d, %Y" }}
+            {% if post.author %} by {{ post.author }}{% endif %}
+        </p>
+        {% if post.excerpt %}
+        <p>{{ post.excerpt }}</p>
+        {% endif %}
+        <p><a href="{{ post.url }}">Read more →</a></p>
+    </article>
+    {% endfor %}
+</div>
+
+<h2>🔧 How It Works</h2>
+
+<p>Both plugins are enabled by default and require no configuration:</p>
+
+<ol>
+    <li><strong>RssPlugin</strong> scans your posts and generates <code>/feed.xml</code></li>
+    <li><strong>SitemapPlugin</strong> scans all content and generates <code>/sitemap.xml</code></li>
+    <li>Both files are created in your output directory after rendering</li>
+</ol>
+
+<h2>⚙️ Customization</h2>
+
+<p>You can customize these plugins when using GenGen as a library:</p>
+
+<pre><code>// Custom RSS settings
+RssPlugin(
+  outputPath: 'my-feed.xml',
+  maxPosts: 50,
+)
+
+// Custom sitemap settings
+SitemapPlugin(
+  outputPath: 'my-sitemap.xml',
+)</code></pre>
+
+<p>For pages, you can also customize sitemap settings in the front matter:</p>
+
+<pre><code>---
+title: My Page
+sitemap_priority: 0.8
+sitemap_changefreq: weekly
+---</code></pre>
+
+<h2>📡 Subscribe</h2>
+
+<p>RSS readers can subscribe to this site's feed at: <strong><a href="/feed.xml">/feed.xml</a></strong></p>
+
+<p>Search engines will discover your content through: <strong><a href="/sitemap.xml">/sitemap.xml</a></strong></p> 

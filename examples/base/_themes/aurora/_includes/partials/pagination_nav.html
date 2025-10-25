@@ -1,0 +1,54 @@
+{% assign show_pagination = false %}
+{% if paginate %}
+  {% if paginate.has_previous %}
+    {% assign show_pagination = true %}
+  {% endif %}
+  {% if paginate.has_next %}
+    {% assign show_pagination = true %}
+  {% endif %}
+{% endif %}
+{% if show_pagination %}
+  <nav class="aurora-pagination" aria-label="Pagination">
+    {% if paginate.previous_page_path %}
+      <a class="aurora-pagination__link aurora-pagination__link--prev" href="{{ paginate.previous_page_path }}">
+        <span aria-hidden="true">&larr;</span>
+        <span class="aurora-pagination__label">Previous</span>
+      </a>
+    {% endif %}
+
+    <ul class="aurora-pagination__list">
+      {% assign trail = paginate.page_trail %}
+      {% if trail %}
+        {% for entry in trail %}
+          {% if entry == 'gap' %}
+            <li class="aurora-pagination__ellipsis" aria-hidden="true">&hellip;</li>
+          {% else %}
+            {% assign page_num = entry %}
+            {% assign path = paginate.path_for(page_num) %}
+            {% if path == nil %}
+              {% if page_num == 1 %}
+                {% assign path = '/' %}
+              {% else %}
+                {% assign path = '/page/' | append: page_num | append: '/' %}
+              {% endif %}
+            {% endif %}
+            <li>
+              {% if page_num == paginate.current_page %}
+                <span class="aurora-pagination__link is-current">{{ page_num }}</span>
+              {% else %}
+                <a class="aurora-pagination__link" href="{{ path }}">{{ page_num }}</a>
+              {% endif %}
+            </li>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+    </ul>
+
+    {% if paginate.next_page_path %}
+      <a class="aurora-pagination__link aurora-pagination__link--next" href="{{ paginate.next_page_path }}">
+        <span class="aurora-pagination__label">Next</span>
+        <span aria-hidden="true">&rarr;</span>
+      </a>
+    {% endif %}
+  </nav>
+{% endif %}

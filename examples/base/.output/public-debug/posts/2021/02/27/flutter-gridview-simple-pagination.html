@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><link rel="stylesheet" href="assets/css/styles.css">
+
+<link rel="stylesheet" href="/assets/css/post.css">
+
+</head>
+<body>
+
+<section>
+    <h3>Flutter gridview simple pagination</h3>
+    <p><p>In this post i'll cover how to do a quick and dirty pagination using the <code>GridView</code> widget in Flutter.
+This approach will also work with other components such as the <code>ListView</code> or just a collection of widgets
+layed out in a <code>Column</code> or <code>Row</code>, with a few tweaks of course.</p>
+<p>If you just want to see how it works, you can have a look at it <a href="https://dartpad.dev/28695a1ef33ea1cdb48dcee41c64786a?null_safety=true">here</a> running on dartpad.</p>
+<p>So pagination as the name states, we want to break up a list of items into multiple pages. This would require us knowing how many items
+we want to show on the screen at any given time. So if we have 100 products to display in our shopping app and we
+want the user to only see 10 items, our variables would look something like</p>
+<pre><code class="language-dart">int totalProducts = 100;
+int productsPerPage = 10;
+</code></pre>
+<p>And to find out how many pages our app will have we'll do</p>
+<pre><code class="language-dart">int pageCount = totalProducts/productsPerPage;
+</code></pre>
+<p>And of course we are gonna need to keep track of the current page being showed.</p>
+<pre><code class="language-dart">int currentPage = 0;
+</code></pre>
+<p>Also while we are at it, let's generate a list of products to show our users</p>
+<pre><code class="language-dart">class Product {
+  final int id;
+  final String name;
+  Product(this.id, this.name);
+}
+
+final List<Product> myProducts = 
+  List.generate(100, (index) => Product(index,"Product $index")).toList();
+</code></pre>
+<p>Now that we have our list of products and we know how many items we want to show, let's create our <code>GridView</code> using <code>GridView.builder()</code>.</p>
+<p>By default <code>GridView.builder</code> has 2 required parameters, a <code>SliverGridDelegate gridDelegate</code> a <code>IndexedWidgetBuilder itemBuilder</code>
+and of course we need to tell the builder how many items we'll be providing which we'll pass to <code>int itemCount</code>. With that we have</p>
+<pre><code class="language-dart"> GridView.builder(
+...
+    itemCount: productsPerPage,
+    itemBuilder: (BuildContext ctx, index) {
+      return Container(
+        alignment: Alignment.center,
+        child: Text(myProducts[index + (currentPage * productsPerPage)].name),
+...
+      );
+    })
+</code></pre>
+<p>Notice that the use of <code>myProducts[index + (currentPage * productsPerPage)]</code> is how we access the current page.</p>
+<p>And if your current page is 0(our first page) we'll be doing the following for each index</p>
+<pre><code class="language-dart">//index = 0
+myProducts[0 + (0 * 10)] //1st item in myProducts
+//index = 1
+myProducts[1 + (0 * 10)] //2nd item in myProducts
+//index = 2
+myProducts[2 + (0 * 10)] //3rd item in myProducts
+</code></pre>
+<p>So if our current page is page 5, we'll be doing the following for each index</p>
+<pre><code class="language-dart">//index = 0
+myProducts[0 + (5 * 10)] //50th item in myProducts
+//index = 1
+myProducts[1 + (5 * 10)] //51st item in myProducts
+//index = 2
+myProducts[2 + (5 * 10)] //52nd item in myProducts
+</code></pre>
+<p>And so on for each page.</p>
+<p>Now that we have our our <code>GridView</code> running let's add buttons to navigate our list of products</p>
+<pre><code class="language-dart">Row(
+    mainAxisAlignment: MainAxisAlignment.center,
+    crossAxisAlignment: CrossAxisAlignment.center,
+    children: [
+      TextButton(
+        child: Text("Previous page"),
+        onPressed: previousPage,
+      ),
+      SizedBox(width: 10),
+      TextButton(
+        child: Text("Next page"),
+        onPressed: nextPage,
+      )
+    ])
+</code></pre>
+<p>Of course to change page our  <code>previousPage</code> and <code>nextPage</code> methods will be decrementing and incrementing the value of our <code>currentPage</code> variable</p>
+<pre><code class="language-dart">previousPage() {
+  setState(() {
+    currentPage -= 1;
+  });
+}
+
+nextPage() {
+  setState(() {
+    currentPage += 1;
+  });
+}
+</code></pre>
+<p>So now let's make sure that we do not attempt to show more pages than we have, let's add boundaries!</p>
+<pre><code class="language-dart">
+  num pageCount() {
+    return totalProducts / productsPerPage;
+  }
+
+  nextPage() {
+    if ((currentPage + 1) < pageCount()) {
+      setState(() {
+        currentPage += 1;
+      });
+    }
+  }
+
+</code></pre>
+<p>also let's not go below zero 🥶</p>
+<pre><code class="language-dart">
+  previousPage() {
+    //lets not go bellow 0 :-)
+    if (currentPage != 0) {
+      setState(() {
+        currentPage -= 1;
+      });
+    }
+  }
+
+</code></pre>
+<p>We can also go a bit further and disable our buttons when the next index will be out of range.</p>
+<pre><code class="language-dart"> Row(
+...
+    children: [
+        TextButton(
+            child: Text("Previous page"),
+            onPressed: (currentPage - 1) < 0 ? null: previousPage,
+        ),
+      ...
+      TextButton(
+            child: Text("Next page"),
+            onPressed: (currentPage + 1) < pageCount()
+            ? nextPage
+                : null,
+        )
+    ]
+)
+</code></pre>
+<p>The final result</p>
+<p><img src="/flutter_pagination.gif" alt="image alt text" /></p>
+<p>And that pretty much covers the basics of building a simple paginator when using the <code>GridView</code> in Flutter.
+Of course I know this will not work for every use case, but I hope it will provide you the starting point you need to build some awesome widgets!</p>
+</p>
+</section><footer>
+    This is the footer
+</footer></body>
+</html>

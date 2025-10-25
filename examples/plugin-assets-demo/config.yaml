@@ -1,0 +1,5 @@
+title: Plugin Assets Demo
+description: Demonstrating GenGen's automatic plugin asset injection
+url: http://localhost:4000
+source: .
+destination: public 

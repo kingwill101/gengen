@@ -1,0 +1,31 @@
+/* Line Numbers for Code Blocks */
+.hljs-line-numbers {
+  position: relative;
+  padding-left: 3.5rem;
+}
+
+.hljs-line-numbers::before {
+  content: counter(line);
+  counter-increment: line;
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3rem;
+  background: rgba(0, 0, 0, 0.2);
+  color: #75715e;
+  text-align: right;
+  padding-right: 0.5rem;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.hljs {
+  counter-reset: line;
+}
+
+.hljs .line {
+  display: block;
+  counter-increment: line;
+} 

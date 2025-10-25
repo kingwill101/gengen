@@ -1,0 +1,11 @@
+title: "Tailwind CSS Demo"
+description: "A demo site showing TailwindPlugin usage in GenGen"
+url: "http://localhost:4000"
+
+# Tailwind CSS is automatically processed by the TailwindPlugin
+# The plugin will look for:
+# - Input file: assets/css/tailwind.css (by default)
+# - Tailwind executable: ./tailwindcss (by default)
+# - Output file: assets/css/styles.css (by default)
+
+# You can customize these paths if needed in your own plugin configuration 

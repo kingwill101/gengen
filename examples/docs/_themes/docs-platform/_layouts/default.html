@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% render 'head' %}
+</head>
+{% assign is_home = page.url == '/' or page.layout == 'home' %}
+<body class="docs-body{% if is_home %} docs-body--home{% endif %}">
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  {% render 'header', is_home: is_home %}
+
+  {% if is_home %}
+    <main id="main-content" class="docs-home">
+      <section class="home-hero">
+        <div class="home-hero__content">
+          <h1>{{ page.title | default: site.title }}</h1>
+          {% if page.description %}
+            <p class="home-hero__description">{{ page.description }}</p>
+          {% endif %}
+          {% if site.data.docs.navigation.quick_nav %}
+            <div class="home-hero__actions">
+              {% for action in site.data.docs.navigation.quick_nav %}
+                <a class="button button--primary" href="{{ action.url }}">
+                  {{ action.icon }} {{ action.title }}
+                </a>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </div>
+        <div class="home-hero__illustration">
+          <div class="hero-graphic"></div>
+        </div>
+      </section>
+
+      <section class="home-sections">
+        {{ content }}
+      </section>
+    </main>
+  {% else %}
+    <main id="main-content" class="docs-main">
+      {% render 'breadcrumbs' %}
+
+      <div class="docs-layout">
+        {% render 'sidebar' %}
+
+        <article class="docs-article">
+          {% render 'page-header' %}
+          <div class="docs-article__body">
+            {{ content }}
+          </div>
+          {% render 'page-navigation' %}
+        </article>
+
+        {% render 'toc' %}
+      </div>
+    </main>
+  {% endif %}
+
+  {% render 'footer' %}
+  {% render 'scripts' %}
+</body>
+</html>

@@ -1,0 +1,100 @@
+title: "Plugin Configuration Demo"
+url: "http://localhost:4000"
+description: "Demonstrating GenGen's configurable plugin system"
+
+# Plugin configuration examples
+plugins:
+  # Enable only core plugins (default)
+  enabled:
+    - core
+  
+  # Optionally disable specific plugins
+  disabled: []
+  
+  # Define custom plugin groups or override defaults
+  groups:
+    core:
+      - DraftPlugin
+      - MarkdownPlugin
+      - LiquidPlugin
+    seo:
+      - RssPlugin
+      - SitemapPlugin
+    assets:
+      - SassPlugin
+      - TailwindPlugin
+    content:
+      - PaginationPlugin
+      - AliasPlugin
+    
+    # Custom group example
+    blog:
+      - RssPlugin
+      - PaginationPlugin
+      - AliasPlugin
+
+# Individual plugin configurations
+rss:
+  path: feed.xml
+  limit: 20
+  full_content: false
+
+sitemap:
+  path: sitemap.xml
+  include_posts: true
+  include_pages: true
+
+sass:
+  style: compressed
+  source_map: false
+  load_paths: ["_sass"]
+
+tailwind:
+  executable: "./tailwindcss"
+  input: "assets/css/tailwind.css"
+  output: "assets/css/styles.css"
+
+pagination:
+  enabled: true
+  per_page: 10
+  permalink: "/page/:num/"
+  title_suffix: " - Page :num"
+
+# Draft publishing
+publish_drafts: false
+
+# Example configurations (commented out):
+
+# 1. Enable all plugins:
+# plugins:
+#   enabled:
+#     - core
+#     - seo
+#     - assets
+#     - content
+
+# 2. Enable specific plugins only:
+# plugins:
+#   enabled:
+#     - MarkdownPlugin
+#     - LiquidPlugin
+#     - SassPlugin
+
+# 3. Enable groups but disable specific plugins:
+# plugins:
+#   enabled:
+#     - core
+#     - assets
+#   disabled:
+#     - TailwindPlugin
+
+# 4. Use custom groups:
+# plugins:
+#   enabled:
+#     - blog
+#   groups:
+#     blog:
+#       - MarkdownPlugin
+#       - LiquidPlugin
+#       - RssPlugin
+#       - PaginationPlugin 

@@ -1,0 +1,9 @@
+{% assign tweet_url = url | default: 'https://twitter.com/' %}
+{% assign query = 'url=' | append: tweet_url %}
+{% assign request = 'https://publish.twitter.com/oembed?' | append: query %}
+{% assign tweet = request | get_json %}
+<div class="aurora-media aurora-media--twitter">
+  <div class="aurora-media__frame aurora-media__frame--tweet">
+    {{ tweet.html }}
+  </div>
+</div>

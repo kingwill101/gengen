@@ -1,0 +1,10 @@
+{% assign ytHost = 'www.youtube.com' %}
+{% assign id = id | default: 0 %}
+{% assign width = width | default: 560 %}
+{% assign height = height | default: 315 %}
+{% assign class = class | default: '' %}
+{% assign title = title | default: 'YouTube Video' %}
+<iframe
+        width="{{ width }}" height="{{ height }}" src="https://{{ ytHost }}/embed/{{ id }} "
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowfullscreen title="{{ title }}"></iframe>

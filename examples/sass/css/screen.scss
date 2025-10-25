@@ -1,0 +1,26 @@
+@use "variables" as *;
+@use "mixins" as *;
+
+body {
+  font-size: $font-size-base;
+  line-height: $line-height-base;
+  color: #333;
+  margin: 0;
+  padding: 20px;
+}
+
+.btn {
+  @include button($primary-color);
+}
+
+.btn-success {
+  @include button($success-color);
+}
+
+.card {
+  @include border-radius($border-radius);
+  padding: 1rem;
+  margin: 1rem 0;
+  border: 1px solid #ddd;
+  background: white;
+}

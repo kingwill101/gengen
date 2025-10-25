@@ -1,0 +1,28 @@
+{% assign nav_source = "Home::/|Archive::/posts/|About::/about.html" %}
+{% assign nav_items = nav_source | split: "|" %}
+<header class="aurora-header">
+  <div class="aurora-container aurora-header__inner">
+    <a class="aurora-brand" href="/">{{ site.title }}</a>
+    <button class="aurora-nav__toggle" aria-expanded="false" aria-controls="primary-navigation">
+      <span class="aurora-nav__toggle-bar"></span>
+      <span class="aurora-nav__toggle-bar"></span>
+      <span class="aurora-nav__toggle-bar"></span>
+      <span class="aurora-nav__sr">Toggle navigation</span>
+    </button>
+    <nav id="primary-navigation" class="aurora-nav">
+      {% assign current_url = page.permalink | default: page.url | default: '' %}
+      <ul>
+        {% for item in nav_items %}
+          {% assign pair = item | split: "::" %}
+          {% assign label = pair[0] %}
+          {% assign url = pair[1] %}
+          <li>
+            <a class="aurora-nav__link" data-nav-url="{{ url }}" href="{{ url }}">
+              {{ label }}
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    </nav>
+  </div>
+</header>

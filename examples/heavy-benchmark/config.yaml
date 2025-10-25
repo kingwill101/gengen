@@ -1,0 +1,16 @@
+title: "Heavy Test Site"
+description: "A test site with many posts and pages for benchmarking"
+baseurl: ""
+url: ""
+
+# Build settings
+markdown: markdown
+highlighter: rouge
+
+# Pagination
+paginate: 10
+paginate_path: "/page/:num/"
+
+# Performance settings  
+parallel: true
+clean: false 

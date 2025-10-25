@@ -1,0 +1,14 @@
+---
+layout: default
+---
+
+<section class="aurora-container aurora-article">
+  {% render 'partials/post_header', post: page %}
+  <article class="aurora-article__body">
+    {{ content }}
+  </article>
+  <footer class="aurora-article__footer">
+    <p>Filed under:</p>
+    {% render 'partials/tag_list', tags: page.tags %}
+  </footer>
+</section>

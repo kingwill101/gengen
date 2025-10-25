@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if page.title %}{{ page.title }} - {% endif %}{{ site.title }}</title>
+    <meta name="description" content="{{ page.description | default: site.description }}">
+    
+    <!-- Tailwind CSS will be compiled to this location -->
+    <link href="/assets/css/styles.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <nav class="bg-white shadow-sm border-b">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <a href="/" class="text-2xl font-bold text-gray-800">{{ site.title }}</a>
+                <div class="text-sm text-gray-600">Powered by GenGen + Tailwind CSS</div>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        {{ content }}
+    </main>
+
+    <footer class="bg-gray-800 text-white py-8 mt-16">
+        <div class="container mx-auto px-4 text-center">
+            <p>&copy; 2024 {{ site.title }}. Built with GenGen and Tailwind CSS.</p>
+        </div>
+    </footer>
+</body>
+</html> 

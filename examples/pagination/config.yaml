@@ -1,0 +1,67 @@
+# GenGen Pagination Example Configuration
+# This configuration demonstrates the powerful pagination features
+# that mirror Jekyll's paginate-v2 plugin capabilities
+
+site:
+  title: "GenGen Pagination Demo"
+  description: "A comprehensive demonstration of GenGen's pagination features"
+  author: "GenGen Team"
+  website: "https://gengen.dev"
+  
+# Theme configuration
+theme: default
+
+# Build settings
+destination: public
+layout_dir: _layouts
+template_dir: _templates
+include_dir: _includes
+themes_dir: _themes
+
+# File processing
+markdown_extensions:
+  - .md
+  - .markdown
+
+# Permalink structure for posts
+permalink: "posts/:title/"  # Creates clean URLs like /posts/post-title/
+
+# Exclude files from processing
+exclude:
+  - README.md
+  - config.*
+  - package.json
+  - node_modules
+
+# Pagination Configuration
+# This is where the magic happens - configure how your content gets paginated
+pagination:
+  # Enable pagination (default: true)
+  enabled: true
+  
+  # Number of items per page (default: 5)
+  # This controls how many posts appear on each paginated page
+  items_per_page: 8
+  
+  # Collection to paginate (default: 'posts')
+  # Can be 'posts' or 'pages' - determines which content gets paginated
+  collection: posts
+  
+  # Permalink pattern for pagination pages (default: '/page/:num/')
+  # :num gets replaced with the page number (2, 3, 4, etc.)
+  # Page 1 is always the index page
+  permalink: '/page/:num/'
+  
+  # Index page name (default: 'index')
+  # The template file that serves as the pagination template
+  indexpage: index
+  
+# Output configuration
+output:
+  posts_dir: posts
+  
+# Development settings
+show_drafts: false
+
+# Block list for security
+block_list: [] 

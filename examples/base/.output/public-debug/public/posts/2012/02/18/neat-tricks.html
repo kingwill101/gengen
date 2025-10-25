@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><link rel="stylesheet" href="assets/css/styles.css">
+
+<link rel="stylesheet" href="/assets/css/post.css">
+
+</head>
+<body>
+
+<section>
+    <h3>Neat Tricks</h3>
+    <p><p>For the longest while I have been thinking of documenting neat little snippets/patterns i find interesting, but you know the heart is willing but lazy takes over :D. Here's the first entry into what will hopefully be a continued documentation of my life of a developer.</p>
+<p>Todays snippet is from my current "weekend" project. While this isn't new so to speak, it's a pattern i have never really thought of using.</p>
+<pre><code class="language-php">public function file_path(string $path)
+{
+    $patterns = [
+        resource_path('views/vendor/laropify/' . $path),
+        #Check user-overridden theme files
+        __DIR__ . '/../resources/views' . '/' . $path,
+        # Check default package themes
+        resource_path('views/laropify' . '/' . $path) # Check user-created themes in the application
+    ];
+
+    while (count($patterns)) {
+        $pattern = array_shift($patterns);
+
+        if (file_exists($pattern)) {
+            return $pattern;
+        }
+
+        $userOverrideMatches = glob($pattern . "*.*");
+        if (count($userOverrideMatches) > 0) {
+            return $userOverrideMatches[0];
+        }
+    }
+
+    logger()->error("Asset not found: $path", [
+        "paths" => $patterns
+    ]);
+
+    throw new \Exception("$path not found");
+}
+</code></pre>
+</p>
+</section><footer>
+    This is the footer
+</footer></body>
+</html>

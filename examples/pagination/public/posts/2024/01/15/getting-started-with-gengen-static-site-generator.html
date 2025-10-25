@@ -1,0 +1,104 @@
+<h1>$1</h1>
+
+Welcome to <strong>$1</strong>, a modern static site generator that brings the power of Jekyll to the Dart ecosystem! In this comprehensive guide, we'll walk you through everything you need to know to create your first static website.
+
+<h2>$1</h2>
+
+GenGen is a static site generator inspired by Jekyll, built from the ground up in Dart. It offers:
+
+- <strong>$1</strong>: Use familiar Jekyll syntax and patterns
+- <strong>$1</strong>: Advanced pagination features similar to jekyll-paginate-v2
+- <strong>$1</strong>: Extensible architecture with built-in plugins
+- <strong>$1</strong>: Built with Dart for performance and reliability
+- <strong>$1</strong>: Full support for Liquid templating language
+
+<h2>$1</h2>
+
+Getting started with GenGen is straightforward. Make sure you have Dart installed, then:
+
+```bash
+<h1>$1</h1>
+git clone https://github.com/your-org/gengen.git
+cd gengen
+
+<h1>$1</h1>
+dart pub get
+
+<h1>$1</h1>
+dart compile exe bin/gengen.dart -o gengen
+```
+
+<h2>$1</h2>
+
+Create a new directory for your site and add a basic configuration:
+
+```yaml
+<h1>$1</h1>
+site:
+ title: "My Awesome Blog"
+ description: "A blog built with GenGen"
+
+theme: default
+pagination:
+ enabled: true
+ items_per_page: 5
+```
+
+<h2>$1</h2>
+
+A typical GenGen site follows this structure:
+
+```
+my-site/
+├── config.yaml
+├── index.html
+├── _posts/
+│ ├── 2024-01-15-my-first-post.md
+│ └── 2024-01-16-another-post.md
+├── _layouts/
+│ └── default.html
+└── _includes/
+ └── header.html
+```
+
+<h2>$1</h2>
+
+Create a new file in the `_posts` directory:
+
+```markdown
+---
+title: "My First Post"
+date: 2024-01-15
+tags: [blog, first-post]
+---
+
+<h1>$1</h1>
+
+This is my first post using GenGen. The generator supports:
+
+- Markdown content
+- Front matter
+- Liquid templating
+- And much more!
+```
+
+<h2>$1</h2>
+
+Once you have your content ready, build your site:
+
+```bash
+./gengen build
+```
+
+Your generated site will be available in the `public` directory (or whatever you've configured as your destination).
+
+<h2>$1</h2>
+
+Now that you have the basics down, explore these advanced features:
+
+1. <strong>$1</strong>: Learn how to paginate your posts
+2. <strong>$1</strong>: Customize your site's appearance
+3. <strong>$1</strong>: Extend functionality with plugins
+4. <strong>$1</strong>: Use YAML data files for dynamic content
+
+Happy building with GenGen! 🚀 

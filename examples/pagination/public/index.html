@@ -1,0 +1,191 @@
+<!-- 
+ GenGen Pagination Template Demo
+ ===============================
+ 
+ This template demonstrates the complete pagination feature set available in GenGen.
+ The pagination system mirrors Jekyll's paginate-v2 plugin with full compatibility.
+ 
+ Key Variables Available:
+ - page.paginate.items: Array of items for current page
+ - page.paginate.current_page: Current page number
+ - page.paginate.total_pages: Total number of pages
+ - page.paginate.items_per_page: Items per page
+ - page.paginate.total_items: Total number of items
+ - page.paginate.has_previous: Boolean - has previous page
+ - page.paginate.has_next: Boolean - has next page
+ - page.paginate.page_trail: Array for navigation (e.g., [1,2,3,4,5])
+-->
+
+<div class="pagination-demo">
+ <!-- Header with pagination info -->
+ <header class="demo-header">
+ <h1><var>$1</var></h1>
+ <p class="lead"><var>$1</var></p>
+ 
+ <!-- Pagination status -->
+ <div class="pagination-status">
+ <span class="badge">
+ Page <processed> page.paginate.current_page </processed> of <processed> page.paginate.total_pages </processed>
+ </span>
+ <span class="badge">
+ Showing <processed> page.paginate.items.size </processed> of <processed> page.paginate.total_items </processed> posts
+ </span>
+ </div>
+ </header>
+
+ <!-- Main content area -->
+ <main class="content-area">
+ 
+ <!-- Check if we have paginated items -->
+ {% if page.paginate.items.size > 0 %}
+ 
+ <!-- Posts grid -->
+ <div class="posts-grid">
+ {% for post in page.paginate.items %}
+ <article class="post-card">
+ <!-- Post header -->
+ <header class="post-header">
+ <h2 class="post-title">
+ <a href="<var>$1</var>"><var>$1</var></a>
+ </h2>
+ 
+ <!-- Post metadata -->
+ <div class="post-meta">
+ <time class="post-date">
+ Published: <var>$1</var>
+ </time>
+ 
+ {% if post.tags.size > 0 %}
+ <div class="post-tags">
+ {% for tag in post.tags %}
+ <span class="tag"><processed> tag </processed></span>
+ {% endfor %}
+ </div>
+ {% endif %}
+ </div>
+ </header>
+ 
+ <!-- Post excerpt -->
+ <div class="post-content">
+ {% if post.excerpt %}
+ <p><processed> post.excerpt | strip_html | truncatewords: 30 </processed></p>
+ {% else %}
+ <p><processed> post.content | strip_html | truncatewords: 30 </processed></p>
+ {% endif %}
+ </div>
+ 
+ <!-- Read more link -->
+ <footer class="post-footer">
+ <a href="<var>$1</var>" class="read-more">
+ Read More →
+ </a>
+ </footer>
+ </article>
+ {% endfor %}
+ </div>
+ 
+ {% else %}
+ 
+ <!-- No posts message -->
+ <div class="no-posts">
+ <h2>No posts found</h2>
+ <p>It looks like there are no posts to display.</p>
+ </div>
+ 
+ {% endif %}
+ 
+ </main>
+
+ <!-- Pagination navigation -->
+ <nav class="pagination-nav" aria-label="Pagination Navigation">
+ 
+ <!-- Previous page link -->
+ {% if page.paginate.has_previous %}
+ <a href="{% if page.paginate.current_page == 2 %}/{% else %}/page/<processed> page.paginate.current_page | minus: 1 </processed>/{% endif %}" 
+ class="pagination-link pagination-prev" 
+ rel="prev">
+ ← Previous
+ </a>
+ {% else %}
+ <span class="pagination-link pagination-prev disabled">
+ ← Previous
+ </span>
+ {% endif %}
+ 
+ <!-- Page numbers -->
+ <div class="pagination-numbers">
+ {% for page_num in page.paginate.page_trail %}
+ {% if page_num == page.paginate.current_page %}
+ <!-- Current page -->
+ <span class="pagination-number current" aria-current="page">
+ <processed> page_num </processed>
+ </span>
+ {% elsif page_num == '...' %}
+ <!-- Ellipsis -->
+ <span class="pagination-ellipsis">
+ <processed> page_num </processed>
+ </span>
+ {% else %}
+ <!-- Other pages -->
+ <a href="{% if page_num == 1 %}/{% else %}/page/<processed> page_num </processed>/{% endif %}" 
+ class="pagination-number">
+ <processed> page_num </processed>
+ </a>
+ {% endif %}
+ {% endfor %}
+ </div>
+ 
+ <!-- Next page link -->
+ {% if page.paginate.has_next %}
+ <a href="/page/<processed> page.paginate.current_page | plus: 1 </processed>/" 
+ class="pagination-link pagination-next" 
+ rel="next">
+ Next →
+ </a>
+ {% else %}
+ <span class="pagination-link pagination-next disabled">
+ Next →
+ </span>
+ {% endif %}
+ 
+ </nav>
+ 
+ <!-- Debug information (remove in production) -->
+ <details class="pagination-debug">
+ <summary>🔍 Pagination Debug Info</summary>
+ <div class="debug-content">
+ <h4>Pagination Variables:</h4>
+ <ul>
+ <li><strong>Current Page:</strong> <processed> page.paginate.current_page </processed></li>
+ <li><strong>Total Pages:</strong> <processed> page.paginate.total_pages </processed></li>
+ <li><strong>Items Per Page:</strong> <processed> page.paginate.items_per_page </processed></li>
+ <li><strong>Total Items:</strong> <processed> page.paginate.total_items </processed></li>
+ <li><strong>Has Previous:</strong> <processed> page.paginate.has_previous </processed></li>
+ <li><strong>Has Next:</strong> <processed> page.paginate.has_next </processed></li>
+ <li><strong>Page Trail:</strong> <processed> page.paginate.page_trail | join: ', ' </processed></li>
+ <li><strong>Items on this page:</strong> <processed> page.paginate.items.size </processed></li>
+ </ul>
+ </div>
+ </details>
+ 
+</div>
+
+<!-- Include pagination styles -->
+<style>
+ /<em>$1</em>/
+ .pagination-demo { max-width: 1200px; margin: 0 auto; padding: 20px; }
+ .posts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin: 20px 0; }
+ .post-card { border: 1px solid #ddd; border-radius: 8px; padding: 20px; }
+ .post-title a { text-decoration: none; color: #333; }
+ .post-title a:hover { color: #0066cc; }
+ .post-meta { margin: 10px 0; color: #666; font-size: 14px; }
+ .post-tags { margin-top: 10px; }
+ .tag { background: #f0f0f0; padding: 2px 8px; border-radius: 4px; font-size: 12px; margin-right: 5px; }
+ .pagination-nav { display: flex; justify-content: center; align-items: center; gap: 10px; margin: 40px 0; }
+ .pagination-link { padding: 8px 16px; text-decoration: none; border: 1px solid #ddd; border-radius: 4px; }
+ .pagination-link:hover { background: #f5f5f5; }
+ .pagination-link.disabled { color: #ccc; cursor: not-allowed; }
+ .pagination-numbers { display: flex; gap: 5px; }
+ .pagination-number { padding: 8px 12px; text-decoration: none; border: 1px solid #ddd; border-radius: 4px; }
+ .pagination-number.current { background: #0066cc; color: white; border-color: #0066cc; }
+</style> 

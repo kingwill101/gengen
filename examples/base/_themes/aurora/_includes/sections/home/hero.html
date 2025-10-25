@@ -1,0 +1,23 @@
+{% assign hero_post = post | default: page %}
+{% if hero_post %}
+  {% assign hero_image = hero_post.hero_image | default: hero_post.cover_image %}
+  {% assign hero_excerpt = hero_post.excerpt %}
+  <section class="aurora-hero">
+    <div class="aurora-container aurora-hero__inner">
+      <div class="aurora-hero__content">
+        <p class="aurora-hero__eyebrow">Featured Story</p>
+        <h1>{{ hero_post.title }}</h1>
+        {% render 'partials/post_meta', post: hero_post %}
+        {% if hero_excerpt %}
+          <p class="aurora-hero__excerpt">{{ hero_excerpt }}</p>
+        {% endif %}
+        <a class="aurora-button" href="{{ hero_post.permalink }}">Read Story</a>
+      </div>
+      <div class="aurora-hero__media{% unless hero_image %} aurora-hero__media--placeholder{% endunless %}">
+        {% if hero_image %}
+          <img src="{{ hero_image }}" alt="{{ hero_post.title }}">
+        {% endif %}
+      </div>
+    </div>
+  </section>
+{% endif %}

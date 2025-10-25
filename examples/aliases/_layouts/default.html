@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if page.title %}{{ page.title }} - {% endif %}{{ site.title }}</title>
+    {% if page.description %}
+    <meta name="description" content="{{ page.description }}">
+    {% endif %}
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            max-width: 800px; 
+            margin: 0 auto; 
+            padding: 20px; 
+            line-height: 1.6;
+        }
+        .header { 
+            border-bottom: 2px solid #eee; 
+            margin-bottom: 20px; 
+            padding-bottom: 10px; 
+        }
+        .aliases-info {
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 20px 0;
+            font-size: 0.9em;
+        }
+        .aliases-list {
+            list-style: none;
+            padding: 0;
+        }
+        .aliases-list li {
+            background: #e8f4f8;
+            margin: 5px 0;
+            padding: 5px 10px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1><a href="/">{{ site.title }}</a></h1>
+        <p>{{ site.description }}</p>
+    </div>
+
+    <main>
+        {{ content }}
+    </main>
+
+    {% if page.aliases %}
+    <div class="aliases-info">
+        <h3>📎 This page is also available at:</h3>
+        <ul class="aliases-list">
+        {% for alias in page.aliases %}
+            <li><code>{{ alias }}</code></li>
+        {% endfor %}
+        </ul>
+        <p><em>All these URLs show the same content!</em></p>
+    </div>
+    {% endif %}
+</body>
+</html> 

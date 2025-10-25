@@ -1,0 +1,14 @@
+
+name: SyntaxHighlighter  
+description: A pure asset-only plugin
+version: 1.0.0
+
+files:
+  - name: all-css
+    path: '*.css'
+  - name: all-js  
+    path: '*.js'
+
+head_injection: |
+  <meta name="syntax-highlighter" content="enabled">
+

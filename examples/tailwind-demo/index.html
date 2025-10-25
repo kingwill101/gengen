@@ -1,0 +1,40 @@
+---
+title: "Tailwind CSS with GenGen"
+layout: default
+---
+
+<div class="hero">
+  <h1 class="text-4xl font-bold mb-4">{{ page.title }}</h1>
+  <p class="text-xl">This demo shows how to use Tailwind CSS with GenGen</p>
+</div>
+
+<div class="container mx-auto px-4 py-8">
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="card">
+      <h3 class="text-2xl font-semibold mb-3 text-gray-800">Easy Setup</h3>
+      <p class="text-gray-600">TailwindPlugin is automatically included in GenGen. Just add your Tailwind CSS file and executable.</p>
+    </div>
+    
+    <div class="card">
+      <h3 class="text-2xl font-semibold mb-3 text-gray-800">Auto Compilation</h3>
+      <p class="text-gray-600">CSS is compiled automatically after rendering, ensuring your styles are ready for production.</p>
+    </div>
+    
+    <div class="card">
+      <h3 class="text-2xl font-semibold mb-3 text-gray-800">Customizable</h3>
+      <p class="text-gray-600">Configure input, output paths and executable location to fit your project structure.</p>
+    </div>
+  </div>
+
+  <div class="mt-12 text-center">
+    <h2 class="text-3xl font-bold mb-6 text-gray-800">Getting Started</h2>
+    <div class="bg-gray-100 rounded-lg p-6 text-left">
+      <ol class="list-decimal list-inside space-y-2 text-gray-700">
+        <li>Download the Tailwind CSS standalone CLI from <a href="https://tailwindcss.com/blog/standalone-cli" class="text-blue-600 hover:underline">tailwindcss.com</a></li>
+        <li>Place the <code class="bg-gray-200 px-2 py-1 rounded">tailwindcss</code> executable in your project root</li>
+        <li>Create <code class="bg-gray-200 px-2 py-1 rounded">assets/css/tailwind.css</code> with your Tailwind directives</li>
+        <li>Build your site - TailwindPlugin will automatically compile your CSS!</li>
+      </ol>
+    </div>
+  </div>
+</div> 

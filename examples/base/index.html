@@ -1,0 +1,79 @@
+---
+layout: default
+---
+
+{% assign paginated = page.paginate %}
+{% assign posts_list = site.posts %}
+{% assign has_posts = false %}
+{% assign render_hero = false %}
+{% assign hero_post = nil %}
+{% assign skip_first = false %}
+
+{% if paginated %}
+  {% assign posts_list = paginated.items %}
+  {% assign has_posts = paginated.has_items %}
+  {% if paginated.is_first_page and paginated.hero %}
+    {% assign render_hero = true %}
+    {% assign hero_post = paginated.hero %}
+    {% assign skip_first = paginated.has_list_items %}
+  {% endif %}
+{% else %}
+  {% assign has_posts = posts_list and posts_list.size > 0 %}
+  {% if has_posts %}
+    {% assign render_hero = true %}
+    {% assign hero_post = posts_list | first %}
+    {% assign skip_first = posts_list.size > 1 %}
+  {% endif %}
+{% endif %}
+
+{% if render_hero and hero_post %}
+  {% render 'sections/home/hero', post: hero_post %}
+{% endif %}
+
+{% assign show_list = false %}
+{% if has_posts %}
+  {% if render_hero %}
+    {% if skip_first %}
+      {% assign show_list = true %}
+    {% endif %}
+  {% else %}
+    {% assign show_list = true %}
+  {% endif %}
+{% endif %}
+
+{% if show_list %}
+  <section class="aurora-section-heading">
+    <div class="aurora-container aurora-section-heading__inner">
+      <div>
+        <h2>Latest Stories</h2>
+        <p>Catch up on fresh perspectives, culture, and technology musings.</p>
+      </div>
+      <a class="aurora-button aurora-section-heading__cta" href="/posts/">View Archive</a>
+    </div>
+  </section>
+  <section class="aurora-grid">
+    {% for post in posts_list %}
+      {% if render_hero and skip_first %}
+        {% unless forloop.first %}
+          {% render 'partials/post_card', post: post %}
+        {% endunless %}
+      {% else %}
+        {% render 'partials/post_card', post: post %}
+      {% endif %}
+    {% endfor %}
+  </section>
+{% endif %}
+
+{% assign render_pagination = false %}
+{% if paginated %}
+  {% if paginated.has_next %}
+    {% assign render_pagination = true %}
+  {% endif %}
+  {% if paginated.has_previous %}
+    {% assign render_pagination = true %}
+  {% endif %}
+{% endif %}
+
+{% if render_pagination %}
+  {% render 'partials/pagination_nav' with paginated as paginate %}
+{% endif %}

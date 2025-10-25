@@ -1,0 +1,19 @@
+{% assign target_url = url | default: 'https://example.com' %}
+{% assign graph = target_url | social_graph %}
+{% if graph %}
+  <div class="aurora-media aurora-media--link">
+    <a class="aurora-media__link-card" href="{{ graph.url }}">
+      {% if graph.image %}
+        <div class="aurora-media__thumbnail">
+          <img src="{{ graph.image }}" alt="{{ graph.title }}">
+        </div>
+      {% endif %}
+      <div class="aurora-media__details">
+        {% if graph.site_name %}
+          <span class="aurora-media__source">{{ graph.site_name }}</span>
+        {% endif %}
+        <span class="aurora-media__title">{{ graph.title }}</span>
+      </div>
+    </a>
+  </div>
+{% endif %}

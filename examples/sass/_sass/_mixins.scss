@@ -1,0 +1,13 @@
+@mixin border-radius($radius) {
+  border-radius: $radius;
+}
+
+@mixin button($bg-color: #007bff) {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background-color: $bg-color;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  text-decoration: none;
+}

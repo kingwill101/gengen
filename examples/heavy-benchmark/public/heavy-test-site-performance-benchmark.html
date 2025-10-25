@@ -1,0 +1,20 @@
+<h1>$1</h1>
+
+This site contains <strong>$1</strong> and <strong>$1</strong> generated for performance testing of the GenGen static site generator.
+
+<h2>$1</h2>
+
+{% for post in site.posts limit:10 %}
+- [<var>$1</var>](<var>$1</var>) - <processed> post.date | date: '%B %d, %Y' </processed>
+{% endfor %}
+
+<h2>$1</h2>
+
+- <strong>$1</strong> <processed> site.posts | size </processed>
+- <strong>$1</strong> <processed> site.pages | size </processed>
+- <strong>$1</strong> tech, programming, web-dev, mobile, ai, blockchain, design, productivity
+- <strong>$1</strong> Parallel processing performance testing
+
+<h2>$1</h2>
+
+This site is designed to test the performance improvements of parallel processing in GenGen's build system.

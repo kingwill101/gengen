@@ -1,0 +1,17 @@
+{% assign yt_id = id | default: '' %}
+{% assign yt_title = title | default: 'YouTube Video' %}
+{% if yt_id != '' %}
+  <div class="aurora-media aurora-media--youtube">
+    <div class="aurora-media__frame">
+      <iframe
+        src="https://www.youtube.com/embed/{{ yt_id | strip }}"
+        title="{{ yt_title }}"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowfullscreen>
+      </iframe>
+    </div>
+    {% if caption %}
+      <p class="aurora-media__caption">{{ caption }}</p>
+    {% endif %}
+  </div>
+{% endif %}
