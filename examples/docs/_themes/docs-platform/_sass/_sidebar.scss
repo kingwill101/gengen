@@ -1,3 +1,6 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
 .docs-sidebar {
   position: sticky;
   top: calc(#{$header-height} + #{$spacing-md});

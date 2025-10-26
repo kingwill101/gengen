@@ -1,3 +1,5 @@
+@use 'variables' as *;
+
 @mixin responsive($breakpoint) {
   @media (max-width: $breakpoint) {
     @content;

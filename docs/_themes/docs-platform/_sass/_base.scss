@@ -1,4 +1,8 @@
-*,
+@use 'sass:color';
+@use 'variables' as *;
+@use 'mixins' as *;
+
+*, 
 *::before,
 *::after {
   box-sizing: border-box;
@@ -58,7 +62,7 @@ a {
   transition: color $transition-base;
 
   &:hover {
-    color: darken($primary-color, 8%);
+    color: color.adjust($primary-color, $lightness: -8%);
   }
 }
 

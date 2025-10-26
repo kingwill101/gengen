@@ -1,3 +1,5 @@
+@use 'variables' as *;
+
 .callout {
   border-radius: $border-radius;
   padding: $spacing-md;
