@@ -23,7 +23,7 @@
 /// }
 /// ```
 
-library gengen;
+library;
 
 // Core library exports
 export 'gengen_library.dart';

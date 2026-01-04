@@ -58,7 +58,7 @@ class Reader {
   }
 
   Future<void> readPosts() async {
-    Site.instance.posts = await PostReader().readPosts(
+    Site.instance.posts = PostReader().readPosts(
       Site.instance.postPath,
     );
   }

@@ -142,7 +142,7 @@ end
           isA<PluginException>().having(
             (error) => error.message,
             'message',
-            contains('hook \"convert\"'),
+            contains('hook "convert"'),
           ),
         ),
       );

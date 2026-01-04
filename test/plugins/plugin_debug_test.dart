@@ -234,7 +234,7 @@ Just some regular markdown content here.
       try {
         final result = await liquidPlugin.convert(problematicPost.content, problematicPost);
         print('Liquid plugin result length: ${result.length}');
-        print('Liquid plugin result: "${result}"');
+        print('Liquid plugin result: "$result"');
         
         if (result.isEmpty) {
           print('ERROR: Liquid plugin returned empty string!');

@@ -1,4 +1,4 @@
-import 'package:args/args.dart';
+import 'package:artisanal/args.dart';
 
 extension ArgResultExtension on ArgResults {
   Map<String, dynamic> get map => _config();

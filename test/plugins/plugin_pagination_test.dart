@@ -130,12 +130,12 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Post $i has unique cont
 
 > Quote from post $i: "This is a meaningful quote that adds value."
 
-\`\`\`dart
+```dart
 // Code example from post $i
 void main() {
   print('Hello from post $i');
 }
-\`\`\`
+```
 ''');
     }
 
@@ -209,15 +209,15 @@ pagination:
   });
 
   group('Pagination Plugin Tests', () {
-    late Level _previousLogLevel;
+    late Level previousLogLevel;
 
     setUp(() {
-      _previousLogLevel = Logger.root.level;
+      previousLogLevel = Logger.root.level;
       Logger.root.level = Level.SEVERE;
     });
 
     tearDown(() {
-      Logger.root.level = _previousLogLevel;
+      Logger.root.level = previousLogLevel;
       if (memoryFileSystem.directory(projectRoot).existsSync()) {
         memoryFileSystem.directory(projectRoot).deleteSync(recursive: true);
       }

@@ -51,7 +51,7 @@ class Configuration {
     "markdown_extensions": <String>[],
     'permalink': "date",
     'publish_drafts': false,
-    "config": <String>["_config.yaml"],
+    "config": <String>["_config.yaml", "config.yaml"],
     "output": {"posts_dir": "posts"},
     "data": <String, dynamic>{},
     "date_format": "yyyy-MM-dd HH:mm:ss",

@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:args/command_runner.dart';
+import 'package:artisanal/args.dart';
 import 'package:gengen/commands/arg_extension.dart';
 import 'package:gengen/site.dart';
 import 'package:path/path.dart';

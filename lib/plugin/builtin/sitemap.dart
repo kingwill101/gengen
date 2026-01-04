@@ -1,3 +1,4 @@
+import 'package:gengen/models/base.dart';
 import 'package:gengen/plugin/plugin.dart';
 import 'package:gengen/plugin/plugin_metadata.dart';
 import 'package:gengen/site.dart';
@@ -48,7 +49,7 @@ class SitemapPlugin extends BasePlugin {
       final site = Site.instance;
       
       // Collect all content: posts and pages (exclude drafts)
-      final allContent = <dynamic>[];
+      final allContent = <Base>[];
       
       // Add posts (exclude drafts and index pages)
       allContent.addAll(
@@ -79,7 +80,7 @@ class SitemapPlugin extends BasePlugin {
     }
   }
 
-  String _generateSitemapXml(Site site, List<dynamic> content) {
+  String _generateSitemapXml(Site site, List<Base> content) {
     final config = site.config;
     final siteUrl = config.get<String>('url') ?? 'http://localhost:4000';
     
@@ -99,13 +100,15 @@ class SitemapPlugin extends BasePlugin {
     // Add entries for each piece of content
     for (final item in content) {
       final loc = '$siteUrl/${item.link()}';
-      final changefreq = item.isPost ? 'weekly' : 'monthly';
-      final priority = item.isPost ? '0.7' : '0.5';
+      final changefreq =
+          item.isPost ? defaultPostChangeFreq : defaultPageChangeFreq;
+      final priority =
+          item.isPost ? defaultPostPriority : defaultPagePriority;
       
       buffer.writeln('  <url>');
       buffer.writeln('    <loc>${_escapeXml(loc)}</loc>');
-      buffer.writeln('    <changefreq>$changefreq</changefreq>');
-      buffer.writeln('    <priority>$priority</priority>');
+      buffer.writeln('    <changefreq>${_escapeXml(changefreq)}</changefreq>');
+      buffer.writeln('    <priority>${priority.toStringAsFixed(1)}</priority>');
       buffer.writeln('  </url>');
     }
     

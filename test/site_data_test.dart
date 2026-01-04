@@ -1,5 +1,6 @@
 import 'package:file/memory.dart';
 import 'package:gengen/site.dart';
+import 'package:gengen/models/base.dart';
 import 'package:gengen/fs.dart' as gengen_fs;
 import 'package:gengen/logging.dart';
 import 'package:gengen/configuration.dart';
@@ -139,26 +140,26 @@ About us page.
       expect(siteData['workingDir'], isA<String>());
 
       // Verify content collections
-      expect(siteData['posts'], isA<List>());
-      expect(siteData['pages'], isA<List>());
-      expect(siteData['staticFiles'], isA<List>());
+      expect(siteData['posts'], isA<List<Map<String, dynamic>>>());
+      expect(siteData['pages'], isA<List<Map<String, dynamic>>>());
+      expect(siteData['staticFiles'], isA<List<Base>>());
 
       // Verify posts data
-      final posts = siteData['posts'] as List;
+      final posts = siteData['posts'] as List<Map<String, dynamic>>;
       expect(posts.length, equals(2));
 
       // Verify pages data  
-      final pages = siteData['pages'] as List;
+      final pages = siteData['pages'] as List<Map<String, dynamic>>;
       expect(pages.length, greaterThanOrEqualTo(2));
 
       // Verify layouts
-      expect(siteData['layouts'], isA<Map>());
+      expect(siteData['layouts'], isA<Map<String, dynamic>>());
 
       // Verify plugins
-      expect(siteData['plugins'], isA<List>());
+      expect(siteData['plugins'], isA<List<Map<String, dynamic>>>());
 
       // Verify configuration
-      expect(siteData['config'], isA<Map>());
+      expect(siteData['config'], isA<Map<String, dynamic>>());
     });
 
     test('data getter should provide access to _data directory contents', () async {
@@ -174,14 +175,14 @@ About us page.
       final siteData = site.data;
 
       // Verify users data
-      expect(siteData['users'], isA<Map>());
-      final users = siteData['users'] as Map;
+      expect(siteData['users'], isA<Map<String, dynamic>>());
+      final users = siteData['users'] as Map<String, dynamic>;
       expect(users.containsKey('tom'), isTrue);
       expect(users['tom']['name'], equals('Tom Preston-Werner'));
 
       // Verify navigation data
-      expect(siteData['navigation'], isA<List>());
-      final navigation = siteData['navigation'] as List;
+      expect(siteData['navigation'], isA<List<Map<String, dynamic>>>());
+      final navigation = siteData['navigation'] as List<Map<String, dynamic>>;
       expect(navigation.length, equals(2));
     });
 
@@ -233,13 +234,22 @@ About us page.
       final siteData = await site.dump();
 
       // Verify basic structure exists even with empty site
-      expect(siteData['posts'], isA<List>());
-      expect(siteData['pages'], isA<List>());
-      expect(siteData['staticFiles'], isA<List>());
-      
-      expect((siteData['posts'] as List).isEmpty, isTrue);
-      expect((siteData['pages'] as List).isEmpty, isTrue);
-      expect((siteData['staticFiles'] as List).isEmpty, isTrue);
+      expect(siteData['posts'], isA<List<Map<String, dynamic>>>());
+      expect(siteData['pages'], isA<List<Map<String, dynamic>>>());
+      expect(siteData['staticFiles'], isA<List<Base>>());
+
+      expect(
+        (siteData['posts'] as List<Map<String, dynamic>>).isEmpty,
+        isTrue,
+      );
+      expect(
+        (siteData['pages'] as List<Map<String, dynamic>>).isEmpty,
+        isTrue,
+      );
+      expect(
+        (siteData['staticFiles'] as List<Base>).isEmpty,
+        isTrue,
+      );
 
       // Configuration and basic info should still be present
       expect(siteData['source'], equals(emptySourcePath));
@@ -263,7 +273,7 @@ About us page.
       final siteData = site.data;
       
       // Should return empty map when no _data directory exists
-      expect(siteData, isA<Map>());
+      expect(siteData, isA<Map<String, dynamic>>());
       expect(siteData.isEmpty, isTrue);
     });
 
@@ -316,8 +326,8 @@ About us page.
       expect(context1['posts'].length, equals(context2['posts'].length));
       expect(context1['pages'].length, equals(context2['pages'].length));
       
-      final posts1 = context1['posts'] as List;
-      final posts2 = context2['posts'] as List;
+      final posts1 = context1['posts'] as List<dynamic>;
+      final posts2 = context2['posts'] as List<dynamic>;
       
       // Verify post order is consistent
       for (int i = 0; i < posts1.length; i++) {
@@ -338,16 +348,16 @@ About us page.
       final siteData = await site.dump();
 
       // Verify plugins are included
-      expect(siteData['plugins'], isA<List>());
-      final plugins = siteData['plugins'] as List;
+      expect(siteData['plugins'], isA<List<Map<String, dynamic>>>());
+      final plugins = siteData['plugins'] as List<Map<String, dynamic>>;
       
       // Should have at least the built-in plugins
       expect(plugins.length, greaterThan(0));
       
       // Each plugin should have basic metadata - just verify it's a Map with some content
       for (final plugin in plugins) {
-        expect(plugin, isA<Map>());
-        final pluginData = plugin as Map;
+        expect(plugin, isA<Map<String, dynamic>>());
+        final pluginData = plugin;
         expect(pluginData.isNotEmpty, isTrue);
       }
     });
@@ -380,16 +390,16 @@ About us page.
       final siteData = site.data;
 
       // Verify JSON data is properly parsed
-      expect(siteData['config'], isA<Map>());
-      final config = siteData['config'] as Map;
+      expect(siteData['config'], isA<Map<String, dynamic>>());
+      final config = siteData['config'] as Map<String, dynamic>;
       expect(config['site_name'], equals('Test Site'));
       expect(config['version'], equals('1.0.0'));
       expect(config['features']['search'], isTrue);
       expect(config['features']['comments'], isFalse);
 
       // Verify YAML data is still present
-      expect(siteData['users'], isA<Map>());
-      expect(siteData['navigation'], isA<List>());
+      expect(siteData['users'], isA<Map<String, dynamic>>());
+      expect(siteData['navigation'], isA<List<Map<String, dynamic>>>());
     });
   });
 } 

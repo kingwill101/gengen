@@ -5,13 +5,11 @@ import 'package:gengen/plugin/plugin.dart';
 import 'package:gengen/plugin/plugin_metadata.dart';
 import 'package:gengen/liquid/template.dart';
 import 'package:gengen/site.dart';
-import 'package:gengen/logging.dart';
 import 'package:gengen/models/base.dart';
 import 'package:gengen/utilities.dart';
 import 'package:liquify/liquify.dart' as liquify show TemplateNotFoundException;
-import 'package:liquify/src/grammar/shared.dart'
-    as liquify_shared
-    show ParsingException;
+import 'package:liquify/parser.dart'
+    as liquify_shared;
 
 class LiquidPlugin extends BasePlugin {
   final root = ContentRoot();
@@ -73,7 +71,7 @@ class LiquidPlugin extends BasePlugin {
     Map<String, dynamic>? extraData,
     String? templateName,
   }) async {
-    var template = await GenGenTempate.r(
+    var template = GenGenTempate.r(
       content,
       data: {'page': page.to_liquid, 'site': site.map, ...?extraData},
       contentRoot: root,
@@ -133,7 +131,7 @@ class LiquidPlugin extends BasePlugin {
         ? 'No include directories were registered.'
         : 'Checked: ${searchRoots.join(', ')}';
 
-    return 'Include \"$missing\" referenced from $templateName while rendering ${page.source} could not be found. $rootsNote';
+    return 'Include "$missing" referenced from $templateName while rendering ${page.source} could not be found. $rootsNote';
   }
 
   String _formatParsingErrorMessage(

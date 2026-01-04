@@ -49,7 +49,14 @@ void main() {
       expect(config.get<bool>('publish_drafts'), isFalse);
       expect(config.get<String>('date_format'), 'yyyy-MM-dd HH:mm:ss');
       expect(config.get<Map<String, dynamic>>('output')!['posts_dir'], 'posts');
-      expect(config.get<Map<String, dynamic>>('data'), {});
+      expect(
+        config.get<Map<String, dynamic>>('data'),
+        equals(<String, dynamic>{}),
+      );
+
+      final configFiles = config.get<List<dynamic>>('config') ?? const [];
+      expect(configFiles, contains('_config.yaml'));
+      expect(configFiles, contains('config.yaml'));
 
       // Source should be the realProjectRoot as that's p.current when Configuration reads defaults.
       expect(config.source, equals(realProjectRoot));

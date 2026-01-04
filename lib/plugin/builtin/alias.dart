@@ -43,6 +43,7 @@
 /// aliases: ["/2020/01/old-post.html", "/archive/legacy.html"]
 /// ```
 /// Absolute paths (starting with `/`) are treated as relative to the output directory.
+library;
 
 /// ## Usage Examples
 ///

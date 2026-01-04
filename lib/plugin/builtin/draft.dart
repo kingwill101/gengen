@@ -119,6 +119,7 @@
 ///
 /// - [GenGen Configuration](../../docs/configuration.md) - Full configuration options
 /// - [Post Creation](../../docs/posts.md) - Guide to creating posts and drafts
+library;
 
 import 'dart:async';
 import 'package:gengen/fs.dart' as gengen_fs;

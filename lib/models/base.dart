@@ -74,7 +74,7 @@ class Base with WatcherMixin {
   bool get isMarkdown {
     final result =
         markdownExtensions.contains(ext) || containsMarkdown(content);
-    log.info("isMarkdown check for ${this.source}: $result");
+    log.info("isMarkdown check for $source: $result");
     return result;
   }
 
@@ -188,7 +188,7 @@ class Base with WatcherMixin {
 
     var fileContent = isPost || isPage ? renderer.content : content;
     if (isPost) {
-      log.fine('Writing post ${relativePath} snippet: '
+      log.fine('Writing post $relativePath snippet: '
           '${fileContent.substring(0, fileContent.length > 60 ? 60 : fileContent.length)}');
     }
     await file.writeAsString(fileContent);

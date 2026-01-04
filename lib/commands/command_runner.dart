@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:args/command_runner.dart';
+import 'package:artisanal/args.dart';
 import 'package:gengen/commands/build.dart';
 import 'package:gengen/commands/dump.dart';
 import 'package:gengen/commands/new.dart';

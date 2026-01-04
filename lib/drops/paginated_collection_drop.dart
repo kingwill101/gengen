@@ -1,5 +1,5 @@
 import 'package:gengen/drops/document_drop.dart';
-import 'package:liquify/src/drop.dart';
+import 'package:liquify/liquify.dart';
 
 class PaginatedCollectionDrop extends Drop {
   final Map<String, String> _pagePaths;

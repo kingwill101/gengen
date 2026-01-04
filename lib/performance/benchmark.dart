@@ -164,7 +164,7 @@ class Benchmark {
     
     // Parallelization opportunities
     if (totalFiles > 4) {
-      print('  Parallelization opportunity: ${totalFiles} files could be processed in parallel');
+      print('  Parallelization opportunity: $totalFiles files could be processed in parallel');
     }
   }
 

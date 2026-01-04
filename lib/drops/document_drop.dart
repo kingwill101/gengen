@@ -1,6 +1,5 @@
 import 'package:gengen/models/base.dart';
 import 'package:gengen/utilities.dart';
-import 'package:intl/intl.dart';
 import 'package:liquify/liquify.dart';
 import 'package:markdown/markdown.dart' as md;
 
@@ -48,7 +47,11 @@ class DocumentDrop extends Drop {
       case #title:
         return content.config["title"];
       case #permalink:
-        return content.link();
+        final link = content.link();
+        if (link.startsWith('/')) {
+          return link;
+        }
+        return '/$link';
       case #excerpt:
         if (content.isMarkdown) {
           return extractExcerpt(md.markdownToHtml(content.content));

@@ -1,3 +1,5 @@
+import 'package:gengen/configuration.dart';
+import 'package:gengen/models/base.dart';
 import 'package:gengen/plugin/plugin.dart';
 import 'package:gengen/plugin/plugin_metadata.dart';
 import 'package:gengen/site.dart';
@@ -70,7 +72,7 @@ class RssPlugin extends BasePlugin {
   }
 
   /// Generates RSS 2.0 compliant XML
-  String _generateRssXml(dynamic config, List<dynamic> posts) {
+  String _generateRssXml(Configuration config, List<Base> posts) {
     final siteTitle = config.get<String>('title') ?? 'GenGen Site';
     final siteDescription = config.get<String>('description') ?? 'A GenGen powered site';
     final siteUrl = config.get<String>('url') ?? 'http://localhost:4000';
@@ -95,8 +97,8 @@ class RssPlugin extends BasePlugin {
     // Add items
     for (final post in posts) {
       buffer.writeln('    <item>');
-      
-      final title = post.config['title']?.toString() ?? 'Untitled';
+      final postConfig = post.config;
+      final title = postConfig['title']?.toString() ?? 'Untitled';
       buffer.writeln('      <title>${_escapeXml(title)}</title>');
       
       final postUrl = '$siteUrl${post.link()}';
@@ -105,33 +107,34 @@ class RssPlugin extends BasePlugin {
       
       // Description (content or excerpt)
       String? description;
-      if (includeFullContent && post.content != null) {
+      if (includeFullContent && post.content.isNotEmpty) {
         description = post.content;
-      } else if (post.config['excerpt'] != null && post.config['excerpt'].toString().isNotEmpty) {
-        description = post.config['excerpt'].toString();
-      } else if (post.content != null) {
+      } else {
+        final excerpt = postConfig['excerpt']?.toString();
+        if (excerpt != null && excerpt.isNotEmpty) {
+          description = excerpt;
+        } else if (post.content.isNotEmpty) {
         description = _generateExcerpt(post.content);
       }
-      
+      }
+
       if (description != null && description.isNotEmpty) {
         buffer.writeln('      <description>${_escapeXml(description)}</description>');
       }
       
       // Publication date
-      if (post.date != null) {
-        buffer.writeln('      <pubDate>${_formatRssDate(post.date)}</pubDate>');
-      }
+      buffer.writeln('      <pubDate>${_formatRssDate(post.date)}</pubDate>');
       
       // Author
-      final author = post.config['author']?.toString();
+      final author = postConfig['author']?.toString();
       if (author != null && author.isNotEmpty) {
         buffer.writeln('      <author>${_escapeXml(author)}</author>');
       }
       
       // Categories
-      final categories = post.config['categories'];
-      if (categories != null && categories is List) {
-        for (final category in categories) {
+      final categories = postConfig['categories'];
+      if (categories is List) {
+        for (final category in categories.cast<Object?>()) {
           buffer.writeln('      <category>${_escapeXml(category.toString())}</category>');
         }
       }

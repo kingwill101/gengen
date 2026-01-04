@@ -4,7 +4,7 @@
 /// These plugins are automatically registered when using GenGen, but can also be
 /// used manually when building custom plugin configurations.
 
-library gengen.plugin.builtin;
+library;
 
 export 'builtin/alias.dart';
 export 'builtin/draft.dart';

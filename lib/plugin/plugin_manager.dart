@@ -26,7 +26,7 @@ class PluginManager {
 
   /// Gets the list of enabled plugins based on configuration
   static List<BasePlugin> getEnabledPlugins(Map<String, dynamic> config) {
-    final pluginConfig = config['plugins'] as Map<String, dynamic>? ?? {};
+    final pluginConfig = _normalizePluginConfig(config['plugins']);
     final enabled = Set<String>.from(pluginConfig['enabled'] as List? ?? []);
     final disabled = Set<String>.from(pluginConfig['disabled'] as List? ?? []);
     final groups = Map<String, dynamic>.from(pluginConfig['groups'] as Map? ?? {});
@@ -101,7 +101,7 @@ class PluginManager {
 
   /// Gets plugin information for debugging
   static Map<String, dynamic> getPluginInfo(Map<String, dynamic> config) {
-    final pluginConfig = config['plugins'] as Map<String, dynamic>? ?? {};
+    final pluginConfig = _normalizePluginConfig(config['plugins']);
     final enabled = Set<String>.from(pluginConfig['enabled'] as List? ?? []);
     final disabled = Set<String>.from(pluginConfig['disabled'] as List? ?? []);
     final groups = Map<String, dynamic>.from(pluginConfig['groups'] as Map? ?? {});
@@ -113,5 +113,70 @@ class PluginManager {
       'groups': groups,
       'active_plugins': getEnabledPlugins(config).map((p) => p.metadata.name).toList()..sort(),
     };
+}
+
+  static Map<String, dynamic> _normalizePluginConfig(dynamic raw) {
+    final baseGroups = defaultGroups.map(
+      (key, value) => MapEntry(key, List<String>.from(value)),
+    );
+
+    final result = <String, dynamic>{
+      'enabled': <String>['core'],
+      'disabled': <String>[],
+      'groups': baseGroups,
+    };
+
+    if (raw is Iterable) {
+      result['enabled'].addAll(raw.map((e) => e.toString()));
+      result['enabled'] = result['enabled'].toSet().toList();
+      return result;
+    }
+
+    if (raw is Map) {
+      final explicitEnabled = raw.containsKey('enabled');
+      final map = Map<String, dynamic>.from(raw); // loose copy
+
+      if (map.containsKey('enabled')) {
+        final enabled = _normalizeStringList(map['enabled']);
+        result['enabled'] = enabled.isEmpty ? <String>[] : enabled;
+      }
+
+      if (map.containsKey('disabled')) {
+        result['disabled'] = _normalizeStringList(map['disabled']);
+      }
+
+      if (map.containsKey('groups')) {
+        final groups = <String, List<String>>{};
+        final rawGroups = map['groups'];
+        if (rawGroups is Map) {
+          rawGroups.forEach((key, value) {
+            groups[key.toString()] = _normalizeStringList(value);
+          });
+        }
+        result['groups'] = {...baseGroups, ...groups};
+      }
+
+      final enabled = _normalizeStringList(result['enabled']);
+      result['enabled'] =
+          enabled.isEmpty && !explicitEnabled ? <String>['core'] : enabled;
+      result['disabled'] = _normalizeStringList(result['disabled']);
+      return result;
+    }
+
+    result['enabled'] = _normalizeStringList(result['enabled']);
+    if ((result['enabled'] as List).isEmpty) {
+      result['enabled'] = <String>['core'];
+    }
+    return result;
   }
-} 
+
+  static List<String> _normalizeStringList(dynamic value) {
+    if (value is Iterable) {
+      return value.map((e) => e.toString()).toSet().toList();
+    }
+    if (value != null) {
+      return [value.toString()];
+    }
+    return <String>[];
+  }
+}

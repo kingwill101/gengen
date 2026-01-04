@@ -2,6 +2,7 @@
 ///
 /// The main GenGen class that provides a clean, simple API for using GenGen
 /// as a library rather than a CLI tool.
+library;
 
 import 'dart:async';
 import 'package:file/local.dart';

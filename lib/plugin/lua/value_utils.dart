@@ -1,5 +1,4 @@
 import 'package:lualike/lualike.dart';
-import 'package:lualike/src/lua_string.dart';
 
 Value wrapDynamic(dynamic value) {
   if (value is Value) return value;

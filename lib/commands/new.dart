@@ -1,4 +1,4 @@
-import 'package:args/command_runner.dart';
+import 'package:artisanal/args.dart';
 import 'package:gengen/bundle/bundle_data.dart';
 import 'package:gengen/commands/abstract_command.dart';
 import 'package:gengen/fs.dart';

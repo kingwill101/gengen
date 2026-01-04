@@ -7,7 +7,7 @@ import 'package:gengen/utilities.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart' as p;
 
-import '../logging.dart';
+import 'package:gengen/logging.dart';
 
 class PermalinkStructure {
   static const String date = ":categories/:year/:month/:day/:title:output_ext";
@@ -62,7 +62,7 @@ extension PermalinkExtension on Base {
       
       // If the original pattern ended with '/', add index.html
       if (endsWithSlash) {
-        processedPermalink = processedPermalink + 'index.html';
+        processedPermalink = '${processedPermalink}index.html';
       }
       
       return p.normalize(processedPermalink);
@@ -77,10 +77,10 @@ extension PermalinkExtension on Base {
       
       // If the original pattern ended with '/', add index.html
       if (endsWithSlash) {
-        processedPermalink = processedPermalink + 'index.html';
+        processedPermalink = '${processedPermalink}index.html';
       } else if (!processedPermalink.contains('.') && processedPermalink.isNotEmpty) {
         // If no extension and not empty, treat as directory and add index.html
-        processedPermalink = processedPermalink + '/index.html';
+        processedPermalink = '$processedPermalink/index.html';
       }
       
       return p.normalize(processedPermalink);
@@ -99,10 +99,10 @@ extension PermalinkExtension on Base {
     // Handle clean URLs: if permalink ends with '/' or has no extension, 
     // append 'index.html' to create proper directory structure
     if (literalPath.endsWith('/')) {
-      literalPath = literalPath + 'index.html';
+      literalPath = '${literalPath}index.html';
     } else if (!literalPath.contains('.') && literalPath.isNotEmpty) {
       // If no extension and not empty, treat as directory and add index.html
-      literalPath = literalPath + '/index.html';
+      literalPath = '$literalPath/index.html';
     }
     
     return literalPath;
@@ -204,7 +204,7 @@ extension PermalinkExtension on Base {
         String formattedWeekNumber = weekNumber.toString().padLeft(2, '0');
         permalink = permalink.replaceAll(':week', formattedWeekNumber);
       } catch (e, stack) {
-        log.warning('Error parsing date for ${source}: $e', e, stack);
+        log.warning('Error parsing date for $source: $e', e, stack);
         // For files without valid dates, fall back to a simpler permalink structure
         // Manually build the 'none' structure without date tokens
         String fallbackPermalink = PermalinkStructure.none

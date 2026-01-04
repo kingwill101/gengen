@@ -38,7 +38,7 @@ class PluginHead extends AbstractTag {
   }
 
   @override
-  FutureOr evaluateAsync(Evaluator evaluator, Buffer buffer) {
+  FutureOr<dynamic> evaluateAsync(Evaluator evaluator, Buffer buffer) {
     return evaluate(evaluator, buffer);
   }
 
@@ -78,7 +78,7 @@ class PluginBody extends AbstractTag {
   }
 
   @override
-  FutureOr evaluateAsync(Evaluator evaluator, Buffer buffer) {
+  FutureOr<dynamic> evaluateAsync(Evaluator evaluator, Buffer buffer) {
     return evaluate(evaluator, buffer);
   }
 

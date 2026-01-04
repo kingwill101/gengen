@@ -193,7 +193,7 @@ Test content with empty categories
           frontMatter: {
             'title': 'Empty Category Post',
             'date': '2023-07-15',
-            'categories': [],
+            'categories': <String>[],
           },
         );
 
@@ -1190,7 +1190,7 @@ Empty test content
           frontMatter: {
             'title': '',
             'date': '2023-08-25',
-            'categories': [],
+            'categories': <String>[],
           },
         );
 
@@ -1496,7 +1496,7 @@ Empty test content
         frontMatter: {
           'title': '',
           'date': '2023-08-25',
-          'categories': [],
+          'categories': <String>[],
         },
       );
 

@@ -2,6 +2,7 @@
 ///
 /// This file defines custom exception classes used throughout the GenGen library
 /// to provide meaningful error messages and enable proper error handling.
+library;
 
 /// Base exception class for all GenGen-specific errors.
 class GenGenException implements Exception {

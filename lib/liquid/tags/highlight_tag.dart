@@ -20,7 +20,7 @@ class Highlight extends AbstractTag with CustomTagParser {
   }
 
   @override
-  FutureOr evaluateAsync(Evaluator evaluator, Buffer buffer) {
+  FutureOr<dynamic> evaluateAsync(Evaluator evaluator, Buffer buffer) {
     return evaluate(evaluator, buffer);
   }
 

@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:gengen/fs.dart';
 import 'package:gengen/liquid/modules/data_module.dart';
@@ -10,7 +9,6 @@ import 'package:gengen/liquid/tags/include.dart';
 import 'package:gengen/liquid/tags/link.dart' as link;
 import 'package:gengen/liquid/tags/plugin_assets.dart';
 import 'package:gengen/liquid/tags/seo.dart';
-import 'package:gengen/logging.dart';
 import 'package:gengen/site.dart';
 import 'package:gengen/utilities.dart';
 import 'package:glob/glob.dart';

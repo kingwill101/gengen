@@ -143,6 +143,7 @@
 /// - [GenGen Pagination Example](../../examples/pagination/) - Complete working example
 /// - [Jekyll paginate-v2 docs](https://github.com/sverrirs/jekyll-paginate-v2) - Original plugin
 /// - [Liquid Templates](https://shopify.github.io/liquid/) - Template syntax reference
+library;
 
 import 'dart:async';
 import 'package:collection/collection.dart';
@@ -401,7 +402,7 @@ class PaginationPlugin extends BasePlugin {
       );
 
       final currentItems = pagination.currentPageItems
-          .map((item) => item.to_liquid as DocumentDrop)
+          .map((item) => item.to_liquid)
           .toList();
       final pageTrail = _generatePageTrail(pageNum, totalPages);
 
