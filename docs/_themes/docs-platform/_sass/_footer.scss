@@ -1,0 +1,39 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+.docs-footer {
+  margin-top: $spacing-2xl;
+  border-top: 1px solid rgba($border-color, 0.9);
+  background: rgba($bg-muted, 0.7);
+}
+
+.docs-footer__inner {
+  @include container;
+  padding: $spacing-xl 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-lg;
+  align-items: center;
+  justify-content: space-between;
+  font-size: $font-size-sm;
+  color: $text-muted;
+}
+
+.docs-footer__brand p {
+  margin: 0 0 $spacing-xs;
+}
+
+.docs-footer__nav {
+  display: flex;
+  gap: $spacing-md;
+  flex-wrap: wrap;
+}
+
+.docs-footer__link {
+  color: $text-muted;
+  font-weight: $font-weight-medium;
+
+  &:hover {
+    color: $primary-color;
+  }
+}

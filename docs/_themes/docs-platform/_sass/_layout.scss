@@ -1,41 +1,50 @@
+@use 'sass:color';
 @use 'variables' as *;
 @use 'mixins' as *;
 
 .docs-body {
-  background: linear-gradient(180deg, rgba(248, 250, 252, 0.9), rgba(255, 255, 255, 1));
+  background-color: $bg-color;
+  background-image:
+    radial-gradient(circle at 12% 8%, rgba($accent-color, 0.16), transparent 42%),
+    radial-gradient(circle at 88% 12%, rgba($primary-color, 0.18), transparent 45%),
+    linear-gradient(180deg, rgba($bg-muted, 0.9), $bg-color 40%);
 
   &--home {
-    background: radial-gradient(circle at top, rgba(59, 130, 246, 0.08), transparent 45%),
-                $bg-color;
+    background-image:
+      radial-gradient(circle at 18% 12%, rgba($accent-color, 0.2), transparent 40%),
+      radial-gradient(circle at 80% 8%, rgba($primary-color, 0.2), transparent 42%),
+      linear-gradient(180deg, rgba($bg-muted, 0.9), $bg-color 45%);
   }
 }
 
 .docs-main {
-  padding: $spacing-xl 0 $spacing-2xl;
+  padding: $spacing-2xl 0 $spacing-2xl;
 }
 
 .docs-layout {
   @include container;
   display: grid;
-  grid-template-columns: $sidebar-width minmax(0, 1fr) $toc-width;
-  gap: $spacing-xl;
+  grid-template-columns: minmax(220px, $sidebar-width) minmax(0, 1fr) minmax(200px, $toc-width);
+  gap: $spacing-2xl;
   align-items: start;
 }
 
 .docs-article {
-  background-color: $bg-color;
+  background-color: $surface-color;
   border-radius: $border-radius-lg;
-  box-shadow: $shadow-sm;
-  border: 1px solid rgba($border-color, 0.6);
+  box-shadow: $shadow;
+  border: 1px solid rgba($border-color, 0.8);
   overflow: hidden;
 
   &__header {
     padding: $spacing-xl;
     border-bottom: 1px solid $border-color;
+    background: linear-gradient(180deg, rgba($primary-color, 0.08), rgba($bg-color, 0.2));
   }
 
   &__meta {
     display: flex;
+    flex-wrap: wrap;
     gap: $spacing-sm;
     margin-bottom: $spacing-sm;
   }
@@ -48,9 +57,32 @@
 
   &__body {
     padding: $spacing-xl;
+    font-size: $font-size-base;
+    line-height: 1.8;
+    max-width: 76ch;
+    margin: 0 auto;
 
     > *:first-child {
       margin-top: 0;
+    }
+
+    h2 {
+      margin-top: $spacing-2xl;
+      padding-bottom: $spacing-xs;
+      border-bottom: 1px solid rgba($border-color, 0.7);
+    }
+
+    h3 {
+      margin-top: $spacing-xl;
+    }
+
+    a {
+      text-decoration: underline;
+      text-decoration-color: rgba($accent-color, 0.4);
+
+      &:hover {
+        text-decoration-color: rgba($accent-color, 0.8);
+      }
     }
 
     img {
@@ -78,6 +110,10 @@
     }
   }
 
+  &__separator {
+    color: rgba($text-muted, 0.6);
+  }
+
   &__crumb--current {
     color: $text-color;
     font-weight: $font-weight-medium;
@@ -90,13 +126,14 @@
   gap: $spacing-md;
   padding: $spacing-xl;
   border-top: 1px solid $border-color;
+  background: linear-gradient(180deg, rgba($bg-muted, 0.6), rgba($bg-color, 0.4));
 
   &__link {
     display: block;
     padding: $spacing-md;
     border: 1px solid $border-color;
     border-radius: $border-radius;
-    background-color: $bg-color;
+    background-color: $surface-color;
     transition: box-shadow $transition-base, transform $transition-base;
 
     &:hover {
@@ -139,24 +176,41 @@
   padding: $spacing-2xl 0 $spacing-2xl;
 }
 
+.home-lede {
+  font-size: $font-size-lg;
+  color: $text-muted;
+  max-width: 60ch;
+}
+
 .home-hero {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: $spacing-2xl;
   padding: $spacing-2xl;
   border-radius: $border-radius-lg;
-  background: linear-gradient(135deg, rgba($primary-color, 0.12), rgba($accent-color, 0.12));
-  border: 1px solid rgba($primary-color, 0.2);
+  background: linear-gradient(135deg, rgba($primary-color, 0.08), rgba($accent-color, 0.12));
+  border: 1px solid rgba($primary-color, 0.15);
   margin-bottom: $spacing-2xl;
   position: relative;
   overflow: hidden;
+  box-shadow: $shadow;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 20% 20%, rgba($accent-color, 0.18), transparent 60%),
+      radial-gradient(circle at 85% 30%, rgba($primary-color, 0.18), transparent 55%);
+    opacity: 0.9;
+  }
 
   &__content {
     position: relative;
     z-index: 1;
 
     h1 {
-      font-size: $font-size-5xl;
+      font-size: clamp(2.4rem, 2vw + 2rem, 3.5rem);
       margin-bottom: $spacing-md;
     }
 
@@ -172,10 +226,6 @@
     display: flex;
     flex-wrap: wrap;
     gap: $spacing-sm;
-
-    .button {
-      @include button-primary;
-    }
   }
 
   &__illustration {
@@ -188,11 +238,12 @@
   width: 100%;
   height: 100%;
   border-radius: $border-radius-lg;
-  background: radial-gradient(circle at 20% 20%, rgba($primary-color, 0.18), transparent 60%),
-              radial-gradient(circle at 80% 30%, rgba($accent-color, 0.18), transparent 55%),
-              linear-gradient(135deg, rgba(15, 23, 42, 0.06), rgba(37, 99, 235, 0.12));
-  border: 1px solid rgba($primary-color, 0.15);
-  box-shadow: $shadow;
+  background:
+    radial-gradient(circle at 15% 20%, rgba($accent-color, 0.32), transparent 65%),
+    radial-gradient(circle at 70% 70%, rgba($primary-color, 0.2), transparent 60%),
+    linear-gradient(135deg, rgba(15, 23, 42, 0.08), rgba(31, 42, 68, 0.2));
+  border: 1px solid rgba($primary-color, 0.2);
+  box-shadow: $shadow-sm;
 }
 
 .home-sections {
@@ -218,12 +269,283 @@
       margin-top: 0;
       color: $primary-color;
     }
+
+    .docs-page {
+      padding: $spacing-sm 0;
+      border-bottom: 1px dashed rgba($border-color, 0.7);
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      h4 {
+        margin: 0 0 $spacing-xs;
+        font-size: $font-size-base;
+      }
+
+      p {
+        margin: 0;
+        color: $text-muted;
+        font-size: $font-size-sm;
+      }
+    }
+  }
+}
+
+.home-quickstart {
+  margin: $spacing-xl 0 $spacing-2xl;
+  padding: $spacing-lg $spacing-xl;
+  border-radius: $border-radius-lg;
+  border: 1px solid rgba($primary-color, 0.16);
+  background: $surface-color;
+  box-shadow: $shadow-sm;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $spacing-lg;
+}
+
+.home-quickstart__label {
+  font-size: $font-size-sm;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-weight: $font-weight-semibold;
+  color: $primary-color;
+}
+
+.home-quickstart__steps {
+  display: grid;
+  gap: $spacing-sm;
+  margin: 0;
+  padding-left: 1.2rem;
+
+  li {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacing-sm;
+    align-items: center;
+    color: $text-color;
+  }
+
+  span {
+    font-weight: $font-weight-semibold;
+    color: $primary-color;
+  }
+
+  code {
+    background: $code-bg;
+    color: $code-text;
+    border-radius: 999px;
+    padding: 0.2rem 0.7rem;
+  }
+}
+
+.home-paths {
+  margin: $spacing-2xl 0;
+
+  header {
+    margin-bottom: $spacing-lg;
+
+    p {
+      margin: $spacing-sm 0 0;
+      color: $text-muted;
+      max-width: 50ch;
+    }
+  }
+}
+
+.home-paths__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: $spacing-lg;
+}
+
+.home-card {
+  @include card;
+  padding: $spacing-lg;
+  display: grid;
+  gap: $spacing-xs;
+  text-decoration: none;
+  color: inherit;
+  transition: transform $transition-base, box-shadow $transition-base;
+  position: relative;
+  overflow: hidden;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: $shadow-lg;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 3px;
+    background: linear-gradient(90deg, rgba($accent-color, 0.7), rgba($primary-color, 0.7));
+    opacity: 0;
+    transition: opacity $transition-base;
+  }
+
+  &:hover::after {
+    opacity: 1;
+  }
+
+  h3 {
+    margin: 0;
+  }
+
+  p {
+    margin: 0;
+    color: $text-muted;
+  }
+}
+
+.home-card__eyebrow {
+  font-size: $font-size-xs;
+  letter-spacing: 0.2em;
+  color: $secondary-color;
+  text-transform: uppercase;
+}
+
+.home-highlights {
+  margin: $spacing-2xl 0;
+  padding: $spacing-2xl;
+  border-radius: $border-radius-lg;
+  background: $surface-color;
+  border: 1px solid rgba($border-color, 0.9);
+  box-shadow: $shadow-sm;
+}
+
+.home-highlights__grid {
+  display: grid;
+  gap: $spacing-xl;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+
+  h3 {
+    margin-top: 0;
+  }
+
+  p {
+    color: $text-muted;
+    margin-bottom: 0;
+  }
+}
+
+.home-callout {
+  margin: $spacing-2xl 0;
+  padding: $spacing-2xl;
+  border-radius: $border-radius-lg;
+  background: linear-gradient(135deg, rgba($primary-color, 0.08), rgba($accent-color, 0.14));
+  border: 1px solid rgba($primary-color, 0.16);
+  text-align: center;
+
+  p {
+    color: $text-muted;
+  }
+}
+
+.home-callout__links {
+  margin-top: $spacing-lg;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: $spacing-sm;
+}
+
+.home-cta {
+  margin-top: $spacing-2xl;
+  text-align: center;
+  font-weight: $font-weight-medium;
+}
+
+.docs-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-semibold;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+
+  &--info {
+    background: rgba($primary-color, 0.12);
+    color: $primary-color;
+    border-color: rgba($primary-color, 0.2);
+  }
+
+  &--success {
+    background: rgba($success-color, 0.12);
+    color: $success-color;
+    border-color: rgba($success-color, 0.2);
+  }
+
+  &--warning {
+    background: rgba($warning-color, 0.2);
+    color: color.adjust($warning-color, $lightness: -12%);
+    border-color: rgba($warning-color, 0.3);
+  }
+
+  &--danger {
+    background: rgba($danger-color, 0.16);
+    color: $danger-color;
+    border-color: rgba($danger-color, 0.3);
+  }
+}
+
+.docs-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-xs;
+  font-size: $font-size-xs;
+  color: $text-muted;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.docs-article,
+.docs-sidebar,
+.docs-toc__inner,
+.home-hero {
+  animation: rise-in 0.6s ease both;
+}
+
+.docs-sidebar {
+  animation-delay: 0.05s;
+}
+
+.docs-toc__inner {
+  animation-delay: 0.1s;
+}
+
+.home-hero {
+  animation-delay: 0.08s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .docs-article,
+  .docs-sidebar,
+  .docs-toc__inner,
+  .home-hero {
+    animation: none;
   }
 }
 
 @include responsive($breakpoint-lg) {
   .docs-layout {
-    grid-template-columns: $sidebar-width minmax(0, 1fr);
+    grid-template-columns: minmax(220px, $sidebar-width) minmax(0, 1fr);
     gap: $spacing-lg;
   }
 
@@ -237,6 +559,11 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
+  .home-quickstart {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
   .docs-sidebar {
     position: sticky;
     top: calc(#{$header-height} + #{$spacing-sm});
@@ -244,6 +571,7 @@
 
   .docs-article__body {
     padding: $spacing-lg;
+    max-width: 100%;
   }
 }
 
@@ -266,6 +594,11 @@
   }
 
   .home-hero {
+    padding: $spacing-xl;
+  }
+
+  .home-highlights,
+  .home-callout {
     padding: $spacing-xl;
   }
 }

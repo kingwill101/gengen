@@ -10,6 +10,7 @@
   border: 1px solid transparent;
   background-color: rgba($primary-color, 0.08);
   color: $text-color;
+  box-shadow: $shadow-sm;
 
   &__icon {
     font-size: $font-size-xl;
@@ -28,20 +29,24 @@
   &--info {
     background-color: rgba($primary-color, 0.08);
     border-color: rgba($primary-color, 0.2);
+    border-left: 3px solid rgba($primary-color, 0.6);
   }
 
   &--success {
     background-color: rgba($success-color, 0.08);
     border-color: rgba($success-color, 0.2);
+    border-left: 3px solid rgba($success-color, 0.6);
   }
 
   &--warning {
     background-color: rgba($warning-color, 0.12);
     border-color: rgba($warning-color, 0.25);
+    border-left: 3px solid rgba($warning-color, 0.7);
   }
 
   &--danger {
     background-color: rgba($danger-color, 0.12);
     border-color: rgba($danger-color, 0.25);
+    border-left: 3px solid rgba($danger-color, 0.7);
   }
 }

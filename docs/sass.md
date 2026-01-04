@@ -13,7 +13,7 @@ GenGen automatically compiles `.scss` and `.sass` files using the Dart Sass comp
 
 ## Directory Structure
 
-{% highlight text %}
+```text
 your-site/
 ├── _sass/
 │   ├── _mixins.scss         # Reusable mixins
@@ -23,7 +23,7 @@ your-site/
 └── _themes/
     └── your-theme/
         └── _sass/           # Theme Sass files
-{% endhighlight %}
+```
 
 ## Import Paths
 
@@ -35,28 +35,28 @@ GenGen automatically configures import paths:
 ## Usage
 
 **`_sass/_mixins.scss`**:
-{% highlight scss %}
+```scss
 @mixin border-radius($radius) {
   -webkit-border-radius: $radius;
   -moz-border-radius: $radius;
   border-radius: $radius;
 }
-{% endhighlight %}
+```
 
 **`css/main.scss`**:
-{% highlight scss %}
+```scss
 @use "mixins" as *;
 
 .button {
   @include border-radius(4px);
 }
-{% endhighlight %}
+```
 
 ## Configuration
 
-{% highlight yaml %}
+```yaml
 sass_dir: "_sass"
-{% endhighlight %}
+```
 
 ## Compilation
 

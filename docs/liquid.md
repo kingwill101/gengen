@@ -11,6 +11,12 @@ nav_order: 3
 
 GenGen uses Liquid as its templating language. Pages, layouts, and includes can mix Markdown with Liquid variables, filters, and tags.
 
+## Rendering Order
+
+GenGen renders Liquid before Markdown conversion. This lets Liquid output Markdown that will be converted into HTML.
+
+If you need to show Liquid syntax literally in a page, wrap it with `{% raw %}` and `{% endraw %}` or set `render_with_liquid: false` in the page front matter.
+
 ## Core Concepts
 
 - `{{ ... }}` outputs data such as `page.title` or `site.posts`.

@@ -15,17 +15,19 @@ GenGen includes built-in syntax highlighting powered by the `highlight` package.
 
 The highlight tag supports many programming languages:
 
-{% highlight liquid %}
+```liquid
 {% raw %}{% highlight language %}
 your code here
 {% endhighlight %}{% endraw %}
-{% endhighlight %}
+```
+
+> Tip: Liquid is rendered before Markdown. Use `{% raw %}` blocks for literal Liquid examples, or set `render_with_liquid: false` in front matter to disable Liquid processing for a page.
 
 ## Supported Languages
 
 ### YAML Configuration
 
-{% highlight yaml %}
+```yaml
 # GenGen configuration example
 title: "My GenGen Site"
 description: "A static site built with GenGen"
@@ -43,11 +45,11 @@ markdown_extensions:
 site:
   author: "Your Name"
   email: "contact@example.com"
-{% endhighlight %}
+```
 
 ### Dart Code
 
-{% highlight dart %}
+```dart
 import 'dart:io';
 
 class SiteGenerator {
@@ -77,11 +79,11 @@ class SiteGenerator {
     }
   }
 }
-{% endhighlight %}
+```
 
 ### JavaScript
 
-{% highlight javascript %}
+```javascript
 // GenGen plugin example
 class CustomPlugin {
   constructor(config) {
@@ -110,11 +112,11 @@ class CustomPlugin {
 }
 
 module.exports = CustomPlugin;
-{% endhighlight %}
+```
 
 ### HTML Templates
 
-{% highlight html %}
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -144,11 +146,11 @@ module.exports = CustomPlugin;
     </footer>
 </body>
 </html>
-{% endhighlight %}
+```
 
 ### CSS/SCSS Styles
 
-{% highlight scss %}
+```scss
 // Variables
 $primary-color: #2563eb;
 $text-color: #1e293b;
@@ -183,11 +185,11 @@ body {
     @include button-style(#64748b);
   }
 }
-{% endhighlight %}
+```
 
 ### JSON Data
 
-{% highlight json %}
+```json
 {
   "site": {
     "title": "GenGen Documentation",
@@ -219,11 +221,11 @@ body {
     }
   ]
 }
-{% endhighlight %}
+```
 
 ### Shell Scripts
 
-{% highlight bash %}
+```bash
 #!/bin/bash
 
 # GenGen build script
@@ -259,11 +261,11 @@ find public -name "*.html" | sed 's|public/||' | sed 's|/index.html|/|' > public
 
 echo "✅ Build completed successfully!"
 echo "📁 Output directory: $(pwd)/public"
-{% endhighlight %}
+```
 
 ### Python Scripts
 
-{% highlight python %}
+```python
 #!/usr/bin/env python3
 """
 GenGen deployment script
@@ -327,7 +329,7 @@ if __name__ == "__main__":
     if deployer.build_site():
         if args.netlify_site_id:
             deployer.deploy_to_netlify(args.netlify_site_id)
-{% endhighlight %}
+```
 
 ## Advanced Features
 
@@ -335,16 +337,16 @@ if __name__ == "__main__":
 
 When no language is specified, the highlight tag defaults to plain text:
 
-{% highlight %}
+```text
 This is plain text without syntax highlighting.
 It's useful for showing output or simple text content.
-{% endhighlight %}
+```
 
 ### Liquid Template Code
 
 To show Liquid template code itself, use the `liquid` language:
 
-{% highlight liquid %}
+```liquid
 <!-- Show current page title -->
 <h1>{{ page.title }}</h1>
 
@@ -359,7 +361,7 @@ To show Liquid template code itself, use the `liquid` language:
 
 <!-- Include partial -->
 {% include 'sidebar' %}
-{% endhighlight %}
+```
 
 ## Usage Tips
 

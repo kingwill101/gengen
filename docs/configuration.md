@@ -23,7 +23,7 @@ GenGen looks for configuration files in your site's root directory:
 
 Configuration files use YAML format:
 
-{% highlight yaml %}
+```yaml
 # Site Information
 title: "My GenGen Site"
 url: "https://example.com"
@@ -37,7 +37,7 @@ permalink: date
 markdown_extensions:
   - .md
   - .markdown
-{% endhighlight %}
+```
 
 ## Core Configuration Options
 
@@ -45,7 +45,7 @@ markdown_extensions:
 
 Basic information about your site:
 
-{% highlight yaml %}
+```yaml
 # Site title (used in templates and metadata)
 title: "My GenGen Site"
 
@@ -64,13 +64,13 @@ site:
   social:
     twitter: "@username"
     github: "username"
-{% endhighlight %}
+```
 
 ### Build Settings
 
 Control how GenGen processes and outputs your site:
 
-{% highlight yaml %}
+```yaml
 # Source directory (default: current directory)
 source: "."
 
@@ -79,7 +79,7 @@ destination: "public"
 
 # Theme to use (default: "default")
 theme: "default"
-{% endhighlight %}
+```
 
 ### Directory Structure
 

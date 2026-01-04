@@ -31,7 +31,9 @@ plugins:
 GenGen organizes plugins into logical groups for easier management:
 
 {% for group in site.data.plugins.groups %}
-- **{{ group[0] }}**: {{ group[1].description }}
+{% assign group_key = group[0] %}
+{% assign group_data = group[1] %}
+- **{{ group_key }}**: {{ group_data.description }}
 {% endfor %}
 
 ### Default Configuration
@@ -45,8 +47,8 @@ plugins:
 {% endfor %}
   disabled: {{ site.data.plugins.defaults.disabled | jsonify }}
   groups:
-{% for group in site.data.plugins.groups %}    {{ group[0] }}:
-{% for plugin in group[1].plugins %}      - {{ plugin.class_name }}
+{% for group in site.data.plugins.groups %}{% assign group_data = group[1] %}    {{ group[0] }}:
+{% for plugin in group_data.plugins %}      - {{ plugin.class_name }}
 {% endfor %}
 {% endfor %}
 ```
@@ -54,9 +56,10 @@ plugins:
 ### Configuration Examples
 
 {% for example in site.data.plugins.examples %}
-**{{ example[1].description }}:**
+{% assign example_data = example[1] %}
+**{{ example_data.description }}:**
 ```yaml
-{{ example[1].config | jsonify }}
+{{ example_data.config | jsonify }}
 ```
 {% endfor %}
 
@@ -65,11 +68,12 @@ plugins:
 GenGen comes with several built-in plugins that provide core functionality:
 
 {% for group in site.data.plugins.groups %}
-### {{ group[1].name }}
+{% assign group_data = group[1] %}
+### {{ group_data.name }}
 
-{{ group[1].description }}
+{{ group_data.description }}
 
-{% for plugin in group[1].plugins %}
+{% for plugin in group_data.plugins %}
 #### {{ plugin.name }}
 {{ plugin.description }}
 
@@ -130,12 +134,13 @@ GenGen provides a command-line interface for managing plugins:
 Here are some common configuration patterns:
 
 {% for example in site.data.config_examples %}
-### {{ example[1].name }}
+{% assign example_data = example[1] %}
+### {{ example_data.name }}
 
-{{ example[1].description }}
+{{ example_data.description }}
 
 ```yaml
-{{ example[1].config }}
+{{ example_data.config }}
 ```
 
 {% endfor %}

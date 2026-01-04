@@ -1,13 +1,15 @@
 {% assign is_home = include.is_home | default: false %}
+{% assign site_title = site.title | default: site.data.site.name | default: 'GenGen' %}
+{% assign site_tagline = site.data.site.tagline | default: site.description %}
 <header class="docs-header{% if is_home %} docs-header--home{% endif %}">
   <div class="docs-header__inner">
     <div class="docs-header__brand">
       <a class="brand-link" href="/">
         <span class="brand-logo">📘</span>
         <span class="brand-text">
-          <span class="brand-title">{{ site.title }}</span>
-          {% if site.description %}
-            <span class="brand-subtitle">{{ site.description }}</span>
+          <span class="brand-title">{{ site_title }}</span>
+          {% if site_tagline %}
+            <span class="brand-subtitle">{{ site_tagline }}</span>
           {% endif %}
         </span>
       </a>

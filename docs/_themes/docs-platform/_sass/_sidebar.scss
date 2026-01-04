@@ -5,14 +5,17 @@
   position: sticky;
   top: calc(#{$header-height} + #{$spacing-md});
   align-self: start;
-  background-color: rgba($bg-color, 0.92);
+  background-color: rgba($surface-color, 0.94);
   border-radius: $border-radius-lg;
-  border: 1px solid $border-color;
+  border: 1px solid rgba($border-color, 0.9);
   box-shadow: $shadow-sm;
   overflow: hidden;
+  backdrop-filter: blur(14px);
+  max-height: calc(100vh - #{$header-height} - #{$spacing-lg});
 
   &__inner {
     padding: $spacing-lg $spacing-md;
+    overflow-y: auto;
   }
 
   &__title {
@@ -46,11 +49,11 @@
   &__section {
     h2 {
       margin: 0 0 $spacing-sm;
-      font-size: $font-size-sm;
+      font-size: $font-size-xs;
       font-weight: $font-weight-semibold;
       color: $text-muted;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.08em;
       display: inline-flex;
       align-items: center;
       gap: $spacing-xs;
@@ -72,15 +75,18 @@
     padding: $spacing-sm $spacing-md;
     border-radius: $border-radius-sm;
     color: $text-color;
-    transition: background-color $transition-base, color $transition-base;
+    transition: background-color $transition-base, color $transition-base, border-color $transition-base;
+    border: 1px solid transparent;
 
     &:hover {
       color: $primary-color;
       background-color: rgba($primary-color, 0.08);
+      border-color: rgba($primary-color, 0.14);
     }
 
     &.is-active {
       background-color: rgba($primary-color, 0.12);
+      border-color: rgba($primary-color, 0.24);
       color: $primary-color;
       font-weight: $font-weight-semibold;
     }
@@ -101,11 +107,12 @@
   align-self: start;
 
   &__inner {
-    background-color: rgba($bg-color, 0.92);
+    background-color: rgba($surface-color, 0.94);
     border-radius: $border-radius-lg;
     border: 1px solid $border-color;
     box-shadow: $shadow-sm;
     padding: $spacing-lg $spacing-md;
+    backdrop-filter: blur(14px);
   }
 
   &__title {
@@ -120,17 +127,35 @@
   &__list {
     font-size: $font-size-sm;
 
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    li + li {
+      margin-top: $spacing-xs;
+    }
+
     a {
       display: block;
-      padding: $spacing-xs 0;
+      padding: $spacing-xs 0 $spacing-xs $spacing-sm;
       color: $text-muted;
       transition: color $transition-base;
+      border-left: 2px solid transparent;
 
       &:hover {
         color: $primary-color;
+        border-left-color: rgba($primary-color, 0.4);
       }
     }
   }
+}
+
+.toc-empty {
+  margin: 0;
+  color: $text-muted;
+  font-size: $font-size-sm;
 }
 
 @include responsive($breakpoint-md) {
@@ -142,6 +167,15 @@
 @include responsive($breakpoint-sm) {
   .docs-sidebar {
     width: 100%;
+    position: fixed;
+    left: $spacing-md;
+    right: $spacing-md;
+    top: calc(#{$header-height} + #{$spacing-md});
+    bottom: $spacing-md;
+    transform: translateY(-12px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity $transition-base, transform $transition-base;
 
     &__toggle {
       display: inline-flex;
@@ -154,5 +188,24 @@
       background: transparent;
       cursor: pointer;
     }
+  }
+
+  .docs-sidebar.is-open {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  body.sidebar-open::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.35);
+    backdrop-filter: blur(2px);
+    z-index: $z-index-overlay;
+  }
+
+  .docs-sidebar {
+    z-index: $z-index-modal;
   }
 }
