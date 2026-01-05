@@ -6,9 +6,7 @@ site:
 exclude:
   - README.md
   - config.*
-  - _posts/*
-include:
-  - _posts/music/Society_and_Dancehall.md
+include: []
 destination: .output
 layout_dir: _layouts
 template_dir: _templates

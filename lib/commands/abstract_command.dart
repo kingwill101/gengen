@@ -17,6 +17,11 @@ abstract class AbstractCommand extends Command<void> {
     argParser.addOption("theme", help: "site theme", defaultsTo: "default");
     argParser.addOption("themes_dir", help: "Directory containing themes");
     argParser.addOption("destination", help: "Output directory");
+    argParser.addFlag(
+      "safe",
+      help:
+          "Enable safe mode (skip Lua plugins unless allowlisted with safe_plugins).",
+    );
   }
 
   @override
