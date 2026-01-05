@@ -11,13 +11,18 @@ class Renderer {
   }
 
   Future<String> render() async {
+    final liquidPlugin = site.plugins.whereType<LiquidPlugin>().firstOrNull;
+    if (liquidPlugin != null) {
+      content = await liquidPlugin.renderContent(content, base);
+    }
+
     for (final plugin in site.plugins) {
       if (plugin is LiquidPlugin) continue;
       content = await plugin.convert(content, base);
     }
-    final liquidPlugin = site.plugins.whereType<LiquidPlugin>().firstOrNull;
+
     if (liquidPlugin != null) {
-      content = await liquidPlugin.convert(content, base);
+      content = await liquidPlugin.renderLayouts(content, base);
     }
 
     return content;

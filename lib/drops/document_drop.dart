@@ -9,11 +9,17 @@ class DocumentDrop extends Drop {
   @override
   List<Symbol> get invokable => <Symbol>[
     #content,
+    #output,
     #title,
     #permalink,
+    #url,
+    #relative_path,
+    #path,
     #excerpt,
     #date,
     #summary,
+    #next,
+    #previous,
   ];
 
   DocumentDrop(this.content);
@@ -22,6 +28,13 @@ class DocumentDrop extends Drop {
   Map<String, dynamic> get attrs => {
     ...content.frontMatter,
     "layout": content.layout,
+    "collection": content.collectionLabel,
+    "collection_label": content.collectionLabel,
+    "relative_path": content.relativePath,
+    "path": content.relativePath,
+    "url": _url(),
+    "next": content.next?.to_liquid,
+    "previous": content.previous?.to_liquid,
     "debug": {"source": content.source, "name": content.name},
   };
 
@@ -44,6 +57,8 @@ class DocumentDrop extends Drop {
     switch (symbol) {
       case #content:
         return content.renderer.content;
+      case #output:
+        return content.renderer.content;
       case #title:
         return content.config["title"];
       case #permalink:
@@ -52,6 +67,11 @@ class DocumentDrop extends Drop {
           return link;
         }
         return '/$link';
+      case #url:
+        return _url();
+      case #relative_path:
+      case #path:
+        return content.relativePath;
       case #excerpt:
         if (content.isMarkdown) {
           return extractExcerpt(md.markdownToHtml(content.content));
@@ -61,8 +81,24 @@ class DocumentDrop extends Drop {
         return content.date;
       case #summary:
         return extractExcerpt(content.content);
+      case #next:
+        return content.next?.to_liquid;
+      case #previous:
+        return content.previous?.to_liquid;
       default:
         return null;
     }
+  }
+
+  String _url() {
+    var link = content.link();
+    if (link.startsWith('/')) {
+      link = link.substring(1);
+    }
+    if (link.endsWith('/index.html')) {
+      final trimmed = link.substring(0, link.length - 'index.html'.length);
+      return '/$trimmed';
+    }
+    return '/$link';
   }
 }

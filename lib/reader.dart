@@ -1,6 +1,7 @@
 import 'package:gengen/entry_filter.dart';
 import 'package:gengen/fs.dart';
 import 'package:gengen/readers/data_reader.dart';
+import 'package:gengen/readers/collection_reader.dart';
 import 'package:gengen/readers/layout_reader.dart';
 import 'package:gengen/readers/page_reader.dart';
 import 'package:gengen/readers/plugin_reader.dart';
@@ -53,6 +54,7 @@ class Reader {
       }
     }
     await readPosts();
+    await readCollections();
     readPages(dotPages);
     readStaticFiles(dotStaticFiles);
   }
@@ -61,6 +63,10 @@ class Reader {
     Site.instance.posts = PostReader().readPosts(
       Site.instance.postPath,
     );
+  }
+
+  Future<void> readCollections() async {
+    Site.instance.setCollections(CollectionReader().read());
   }
 
   Future<void> read() async {

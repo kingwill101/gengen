@@ -1,12 +1,12 @@
 /// # GenGen Draft Plugin
 ///
 /// This plugin provides comprehensive draft post functionality for GenGen static sites.
-/// It handles draft posts that are stored in the `_draft` directory and provides 
+/// It handles draft posts that are stored in the `_drafts` directory and provides 
 /// filtering based on the `publish_drafts` configuration setting.
 ///
 /// ## Features
 ///
-/// - **Draft Directory Support**: Reads posts from the `_draft` directory
+/// - **Draft Directory Support**: Reads posts from the `_drafts` directory
 /// - **Configuration Control**: Respects the `publish_drafts` setting
 /// - **Development Mode**: Easy toggling between draft and production builds
 /// - **Draft Metadata**: Automatically marks draft posts with `draft: true`
@@ -20,7 +20,7 @@
 /// ```yaml
 /// # Draft configuration
 /// publish_drafts: false        # Set to true to include drafts in build (default: false)
-/// draft_dir: "_draft"          # Directory for draft posts (default: "_draft")
+/// draft_dir: "_drafts"         # Directory for draft posts (default: "_drafts")
 /// ```
 ///
 /// ## Usage Scenarios
@@ -38,11 +38,11 @@
 ///
 /// ## Draft Post Methods
 ///
-/// ### Method 1: _draft Directory
-/// Place your draft posts in the `_draft` directory:
+/// ### Method 1: _drafts Directory
+/// Place your draft posts in the `_drafts` directory:
 ///
 /// ```
-/// _draft/
+/// _drafts/
 ///   - 2024-12-20-my-draft-post.md
 ///   - 2024-12-21-another-draft.md
 /// ```
@@ -91,7 +91,7 @@
 ///
 /// ## How It Works
 ///
-/// 1. **Draft Reading**: During the `afterRead` phase, reads posts from the `_draft` directory
+/// 1. **Draft Reading**: During the `afterRead` phase, reads posts from the `_drafts` directory
 /// 2. **Draft Marking**: Automatically sets `draft: true` for posts in the draft directory
 /// 3. **Draft Filtering**: During the `beforeRender` phase, filters drafts based on `publish_drafts` setting
 /// 4. **Collection Management**: Manages draft posts in the site's post collection
@@ -112,7 +112,7 @@
 ///
 /// This plugin is designed to be compatible with other static site generators:
 /// - Uses standard `draft: true` front matter convention
-/// - Follows common `_draft` directory naming
+/// - Follows common `_drafts` directory naming
 /// - Respects `publish_drafts` configuration pattern
 ///
 /// ## See Also
@@ -132,7 +132,7 @@ import 'package:path/path.dart' as p;
 
 /// The main draft plugin that provides comprehensive draft post functionality.
 ///
-/// This plugin handles both posts in the `_draft` directory and posts marked
+  /// This plugin handles both posts in the `_drafts` directory and posts marked
 /// with `draft: true` in their front matter. It provides filtering based on
 /// the `publish_drafts` configuration setting.
 ///
@@ -150,7 +150,8 @@ class DraftPlugin extends BasePlugin {
   PluginMetadata get metadata => PluginMetadata(
     name: 'DraftPlugin',
     version: '1.0.0',
-    description: 'Handles draft post functionality including reading from _draft directory and filtering',
+    description:
+        'Handles draft post functionality including reading from _drafts directory and filtering',
   );
 
   /// Hook that runs after all content has been read.
@@ -161,10 +162,8 @@ class DraftPlugin extends BasePlugin {
   Future<void> afterRead() async {
     logger.info('(${metadata.name}) Reading draft posts');
 
-    final draftDir = site.config.get<String>('draft_dir', defaultValue: '_draft')!;
-    
     // Check if draft directory exists
-    final draftPath = site.inSourceDir(draftDir);
+    final draftPath = site.draftPath;
     if (!gengen_fs.fs.directory(draftPath).existsSync()) {
       logger.info('(${metadata.name}) No draft directory found at $draftPath');
       return;
@@ -172,7 +171,7 @@ class DraftPlugin extends BasePlugin {
 
     // Read draft posts using the existing PostReader
     final postReader = PostReader();
-    final draftPosts = postReader.readPosts(draftPath);
+    final draftPosts = postReader.readDrafts(draftPath);
     
     if (draftPosts.isEmpty) {
       logger.info('(${metadata.name}) No draft posts found');

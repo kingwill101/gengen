@@ -158,8 +158,8 @@ bool isBinaryFile(String filePath) {
 }
 
 bool containsLiquid(String content) {
-  final RegExp liquidSyntax = RegExp(r'{[{%][\s\S]*?[%}]}');
-  return liquidSyntax.hasMatch(content);
+  if (content.isEmpty) return false;
+  return content.contains('{%') || content.contains('{{');
 }
 
 bool containsMarkdown(String content) {

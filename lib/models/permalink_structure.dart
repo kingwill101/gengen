@@ -7,6 +7,7 @@ import 'package:gengen/utilities.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart' as p;
 
+import 'package:gengen/fs.dart';
 import 'package:gengen/logging.dart';
 
 class PermalinkStructure {
@@ -33,12 +34,39 @@ class PermalinkStructure {
 
 extension PermalinkExtension on Base {
   String permalink() {
+    if (!isPost) {
+      final explicitPermalink = _explicitPermalink();
+      if (explicitPermalink != null && explicitPermalink.isNotEmpty) {
+        return p.normalize(_applyPermalink(explicitPermalink));
+      }
+      return p.normalize(_pagePermalinkFromSource());
+    }
+
     if (config.isEmpty || !config.containsKey("permalink")) {
       return p.normalize(buildPermalink());
     }
 
     String entryPermalink = config["permalink"] as String? ?? "";
+    return p.normalize(_applyPermalink(entryPermalink));
+  }
 
+  URL permalinkURL() {
+    return URL(
+      template: config["permalink"] as String? ?? PermalinkStructure.none,
+      placeholders: permalinkPlaceholders(),
+    );
+  }
+
+  String? _explicitPermalink() {
+    final value = frontMatter['permalink'] ??
+        dirConfig['permalink'] ??
+        defaultMatter['permalink'];
+    if (value == null) return null;
+    final resolved = value.toString();
+    return resolved.isEmpty ? null : resolved;
+  }
+
+  String _applyPermalink(String entryPermalink) {
     // Only apply date-based permalinks to posts
     // Pages and other files should use simpler permalink structures
     if (!isPost && entryPermalink == "date") {
@@ -48,44 +76,45 @@ extension PermalinkExtension on Base {
         return 'posts/index.html';
       }
       // For other non-posts, use the 'none' structure
-      return p.normalize(buildPermalink(PermalinkStructure.none));
+      return buildPermalink(PermalinkStructure.none);
     }
 
     var structures = PermalinkStructure.map();
     if (structures.containsKey(entryPermalink)) {
       entryPermalink = structures[entryPermalink]!;
-      
+
       // Check if the pattern ends with '/' BEFORE calling buildPermalink
       bool endsWithSlash = entryPermalink.endsWith('/');
-      
+
       String processedPermalink = buildPermalink(entryPermalink);
-      
+
       // If the original pattern ended with '/', add index.html
       if (endsWithSlash) {
         processedPermalink = '${processedPermalink}index.html';
       }
-      
-      return p.normalize(processedPermalink);
+
+      return processedPermalink;
     }
-    
+
     // If it contains tokens, process it as a template
     if (entryPermalink.contains(':')) {
       // Check if the pattern ends with '/' BEFORE processing
       bool endsWithSlash = entryPermalink.endsWith('/');
-      
+
       String processedPermalink = buildPermalink(entryPermalink);
-      
+
       // If the original pattern ended with '/', add index.html
       if (endsWithSlash) {
         processedPermalink = '${processedPermalink}index.html';
-      } else if (!processedPermalink.contains('.') && processedPermalink.isNotEmpty) {
-        // If no extension and not empty, treat as directory and add index.html
-        processedPermalink = '$processedPermalink/index.html';
+      } else if (!processedPermalink.contains('.') &&
+          processedPermalink.isNotEmpty) {
+        // If no extension and not empty, treat as a file and add .html
+        processedPermalink = '$processedPermalink.html';
       }
-      
-      return p.normalize(processedPermalink);
+
+      return processedPermalink;
     }
-    
+
     // If it's not a known structure and has no tokens, treat it as a literal path
     // Remove leading slash if present to ensure relative path
     String literalPath = entryPermalink.startsWith('/')
@@ -96,23 +125,22 @@ extension PermalinkExtension on Base {
       return 'index.html';
     }
 
-    // Handle clean URLs: if permalink ends with '/' or has no extension, 
+    // Handle clean URLs: if permalink ends with '/' or has no extension,
     // append 'index.html' to create proper directory structure
     if (literalPath.endsWith('/')) {
       literalPath = '${literalPath}index.html';
     } else if (!literalPath.contains('.') && literalPath.isNotEmpty) {
-      // If no extension and not empty, treat as directory and add index.html
-      literalPath = '$literalPath/index.html';
+      // If no extension and not empty, treat as a file and add .html
+      literalPath = '$literalPath.html';
     }
-    
+
     return literalPath;
   }
 
-  URL permalinkURL() {
-    return URL(
-      template: config["permalink"] as String? ?? PermalinkStructure.none,
-      placeholders: permalinkPlaceholders(),
-    );
+  String _pagePermalinkFromSource() {
+    final relative = relativePath;
+    final withoutExt = p.withoutExtension(relative);
+    return '${withoutExt.isEmpty ? 'index' : withoutExt}.html';
   }
 
   String buildPermalink([String permalink = PermalinkStructure.none]) {
@@ -147,15 +175,20 @@ extension PermalinkExtension on Base {
       categories = "posts";
     }
 
+    final rawName =
+        p.withoutExtension(p.basename(source)).replaceAll(RegExp(r'\.*$'), '');
+
     permalink = permalink
         .replaceAll(':categories', categories)
         .replaceAll(':slugified_categories', slugifyList(tags))
+        .replaceAll(':collection', collectionLabel)
         .replaceAll(':title', normalizedTitle)
-        .replaceAll(':path', p.relative(p.dirname(source), from: site.root))
+        .replaceAll(':path', pathPlaceholder)
         .replaceAll(
           ':basename',
           normalize(p.withoutExtension(p.basename(source))),
         )
+        .replaceAll(':name', rawName)
         .replaceAll(':output_ext', '.html');
 
     // Clean up any leading slashes that might be created by empty categories
@@ -163,56 +196,78 @@ extension PermalinkExtension on Base {
       permalink = permalink.substring(1);
     }
 
+    final hasDateTokens = RegExp(
+      r':year|:month|:day|:short_year|:i_month|:short_month|:long_month|:i_day|:y_day|:w_year|:w_day|:short_day|:long_day|:hour|:minute|:second|:week',
+    ).hasMatch(permalink);
+
+    DateTime? parsedDate;
+    var invalidDate = false;
+
     if (config.containsKey('date') && config['date'] != null) {
       try {
-        DateTime parsedDate = parseDate(
-          config['date'] as String,
-          format: site.config.get("date_format"),
-        );
-
-        permalink = permalink
-            .replaceAll(':year', parsedDate.year.toString())
-            .replaceAll(':month', parsedDate.month.toString().padLeft(2, '0'))
-            .replaceAll(':day', parsedDate.day.toString().padLeft(2, '0'))
-            .replaceAll(':short_year', parsedDate.year.toString().substring(2))
-            .replaceAll(':i_month', parsedDate.month.toString())
-            .replaceAll(':short_month', DateFormat('MMM').format(parsedDate))
-            .replaceAll(':long_month', DateFormat('MMMM').format(parsedDate))
-            .replaceAll(':i_day', parsedDate.day.toString())
-            .replaceAll(
-              ':y_day',
-              int.parse(
-                DateFormat('D').format(parsedDate),
-              ).toString().padLeft(3, '0'),
-            )
-            .replaceAll(':w_year', DateFormat('kk').format(parsedDate))
-            .replaceAll(':w_day', parsedDate.weekday.toString())
-            .replaceAll(':short_day', DateFormat('E').format(parsedDate))
-            .replaceAll(':long_day', DateFormat('EEEE').format(parsedDate))
-            .replaceAll(':hour', DateFormat('HH').format(parsedDate))
-            .replaceAll(':minute', DateFormat('mm').format(parsedDate))
-            .replaceAll(':second', DateFormat('ss').format(parsedDate));
-
-        // Calculate the first day of the year
-        DateTime firstDayOfYear = DateTime(parsedDate.year, 1, 1);
-
-        // Calculate the number of days from the first day of the year
-        int dayOfYear = parsedDate.difference(firstDayOfYear).inDays;
-
-        // Determine the week number (week 1 starts on January 1st)
-        int weekNumber = (dayOfYear / 7).ceil() + 1;
-        String formattedWeekNumber = weekNumber.toString().padLeft(2, '0');
-        permalink = permalink.replaceAll(':week', formattedWeekNumber);
+        final dateValue = config['date'];
+        if (dateValue is DateTime) {
+          parsedDate = dateValue;
+        } else {
+          parsedDate = parseDate(
+            dateValue.toString(),
+            format: site.config.get("date_format"),
+          );
+        }
       } catch (e, stack) {
+        invalidDate = true;
         log.warning('Error parsing date for $source: $e', e, stack);
-        // For files without valid dates, fall back to a simpler permalink structure
-        // Manually build the 'none' structure without date tokens
-        String fallbackPermalink = PermalinkStructure.none
-            .replaceAll(':categories', categories)
-            .replaceAll(':title', normalizedTitle)
-            .replaceAll(':output_ext', '.html');
-        return fallbackPermalink;
       }
+    } else if (hasDateTokens && (isPost || isCollection)) {
+      try {
+        parsedDate = fs.file(source).statSync().modified;
+      } catch (e) {
+        log.warning('Error reading file date for $source: $e');
+      }
+    }
+
+    if (parsedDate != null) {
+      permalink = permalink
+          .replaceAll(':year', parsedDate.year.toString())
+          .replaceAll(':month', parsedDate.month.toString().padLeft(2, '0'))
+          .replaceAll(':day', parsedDate.day.toString().padLeft(2, '0'))
+          .replaceAll(':short_year', parsedDate.year.toString().substring(2))
+          .replaceAll(':i_month', parsedDate.month.toString())
+          .replaceAll(':short_month', DateFormat('MMM').format(parsedDate))
+          .replaceAll(':long_month', DateFormat('MMMM').format(parsedDate))
+          .replaceAll(':i_day', parsedDate.day.toString())
+          .replaceAll(
+            ':y_day',
+            int.parse(
+              DateFormat('D').format(parsedDate),
+            ).toString().padLeft(3, '0'),
+          )
+          .replaceAll(':w_year', DateFormat('kk').format(parsedDate))
+          .replaceAll(':w_day', parsedDate.weekday.toString())
+          .replaceAll(':short_day', DateFormat('E').format(parsedDate))
+          .replaceAll(':long_day', DateFormat('EEEE').format(parsedDate))
+          .replaceAll(':hour', DateFormat('HH').format(parsedDate))
+          .replaceAll(':minute', DateFormat('mm').format(parsedDate))
+          .replaceAll(':second', DateFormat('ss').format(parsedDate));
+
+      // Calculate the first day of the year
+      DateTime firstDayOfYear = DateTime(parsedDate.year, 1, 1);
+
+      // Calculate the number of days from the first day of the year
+      int dayOfYear = parsedDate.difference(firstDayOfYear).inDays;
+
+      // Determine the week number (week 1 starts on January 1st)
+      int weekNumber = (dayOfYear / 7).ceil() + 1;
+      String formattedWeekNumber = weekNumber.toString().padLeft(2, '0');
+      permalink = permalink.replaceAll(':week', formattedWeekNumber);
+    } else if (invalidDate || hasDateTokens) {
+      // For files without valid dates, fall back to a simpler permalink structure
+      // Manually build the 'none' structure without date tokens
+      String fallbackPermalink = PermalinkStructure.none
+          .replaceAll(':categories', categories)
+          .replaceAll(':title', normalizedTitle)
+          .replaceAll(':output_ext', '.html');
+      return fallbackPermalink;
     }
 
     return permalink;
@@ -257,15 +312,38 @@ extension PermalinkExtension on Base {
 
     placeholders['categories'] = categories;
     placeholders['slugified_categories'] = slugifyList(tags);
-    placeholders['path'] = p.relative(p.dirname(source), from: site.root);
-    placeholders['basename'] = normalize(
-      p.withoutExtension(p.basename(source)),
-    );
+    placeholders['collection'] = collectionLabel;
+    placeholders['path'] = pathPlaceholder;
+    placeholders['basename'] =
+        normalize(p.withoutExtension(p.basename(source)));
+    placeholders['name'] =
+        p.withoutExtension(p.basename(source)).replaceAll(RegExp(r'\.*$'), '');
     placeholders['output_ext'] = '.html';
 
+    DateTime? parsedDate;
     if (config.containsKey('date') && config['date'] != null) {
       try {
-        DateTime parsedDate = DateTime.parse(config['date'] as String? ?? "");
+        final dateValue = config['date'];
+        if (dateValue is DateTime) {
+          parsedDate = dateValue;
+        } else {
+          parsedDate = parseDate(
+            dateValue.toString(),
+            format: site.config.get("date_format"),
+          );
+        }
+      } catch (e, stack) {
+        log.warning('Error parsing date: $e', e, stack);
+      }
+    } else if (isPost || isCollection) {
+      try {
+        parsedDate = fs.file(source).statSync().modified;
+      } catch (e) {
+        log.warning('Error reading file date for $source: $e');
+      }
+    }
+
+    if (parsedDate != null) {
         placeholders['year'] = parsedDate.year.toString();
         placeholders['month'] = parsedDate.month.toString().padLeft(2, '0');
         placeholders['day'] = parsedDate.day.toString().padLeft(2, '0');
@@ -298,9 +376,6 @@ extension PermalinkExtension on Base {
         int weekNumber = (dayOfYear / 7).ceil() + 1;
         String formattedWeekNumber = weekNumber.toString().padLeft(2, '0');
         placeholders['week'] = formattedWeekNumber;
-      } catch (e, stack) {
-        log.warning('Error parsing date: $e', e, stack);
-      }
     }
 
     return placeholders;

@@ -46,7 +46,25 @@ mixin PathMixin {
 
   String get assetsPath => pathFor(config.get<String>("asset_dir") ?? "");
 
-  String get postPath => pathFor(config.get<String>("post_dir") ?? "");
+  String get collectionsDir =>
+      config.get<String>("collections_dir", defaultValue: "") ?? "";
+
+  String get collectionsPath =>
+      collectionsDir.isEmpty ? root : pathFor(collectionsDir);
+
+  String get postPath {
+    final postDir = config.get<String>("post_dir") ?? "";
+    final combined =
+        collectionsDir.isEmpty ? postDir : join(collectionsDir, postDir);
+    return pathFor(combined);
+  }
+
+  String get draftPath {
+    final draftDir = config.get<String>("draft_dir") ?? "";
+    final combined =
+        collectionsDir.isEmpty ? draftDir : join(collectionsDir, draftDir);
+    return pathFor(combined);
+  }
 
   String get dataPath => pathFor(config.get<String>("data_dir") ?? "");
 
@@ -71,6 +89,8 @@ mixin PathMixin {
         "sassPath": sassPath,
         "assetsPath": assetsPath,
         "postPath": postPath,
+        "draftPath": draftPath,
+        "collectionsPath": collectionsPath,
         "dataPath": dataPath,
         "pluginPath: ": pluginPath,
         "themesDir": themesDir,

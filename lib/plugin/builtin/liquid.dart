@@ -24,32 +24,43 @@ class LiquidPlugin extends BasePlugin {
   @override
   FutureOr<String> convert(String content, Base page) async {
     logger.info('(${metadata.name}) ${page.source}');
+    final rendered = await renderContent(content, page);
+    return await renderLayouts(rendered, page);
+  }
 
-    final layoutName = page.config['layout'] as String?;
-    final requiresLiquid = containsLiquid(content) || layoutName != null;
-
-    if (!requiresLiquid) {
+  Future<String> renderContent(String content, Base page) async {
+    final renderWithLiquid = page.config['render_with_liquid'] != false;
+    if (!renderWithLiquid || !containsLiquid(content)) {
       return content;
     }
 
     logger.info('(${metadata.name}) converting ${page.source}');
-    return await _renderWithLayout(content, page, layoutName);
+    final rendered =
+        await _renderLiquid(content, page, templateName: page.source);
+    page.renderer.content = rendered;
+    return rendered;
   }
 
-  Future<String> _renderWithLayout(
+  Future<String> renderLayouts(String content, Base page) async {
+    final layoutName = page.config['layout'] as String?;
+    if (layoutName == null) return content;
+
+    logger.info('(${metadata.name}) applying layouts for ${page.source}');
+    return _renderLayouts(content, page, layoutName);
+  }
+
+  Future<String> _renderLayouts(
     String content,
     Base page,
     String? initialLayout,
   ) async {
-    content = await _renderLiquid(content, page, templateName: page.source);
-    page.renderer.content = content;
     String? layoutName = initialLayout;
 
     while (layoutName != null) {
-      var layoutPath = _findLayoutPath(layoutName);
+      final layoutPath = _findLayoutPath(layoutName);
       if (layoutPath == null) break;
 
-      var layout = site.layouts[layoutPath];
+      final layout = site.layouts[layoutPath];
       if (layout == null) break;
 
       content = await _renderLiquid(
@@ -163,4 +174,5 @@ class LiquidPlugin extends BasePlugin {
 
     return '$targetLine\n$pointer';
   }
+
 }

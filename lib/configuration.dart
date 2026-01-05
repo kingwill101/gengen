@@ -38,7 +38,8 @@ class Configuration {
       'analysis_options.yaml',
     ],
     "post_dir": "_posts",
-    "draft_dir": "_draft",
+    "draft_dir": "_drafts",
+    "collections_dir": "",
     "themes_dir": "_themes",
     "layout_dir": "_layouts",
     "plugin_dir": "_plugins",
@@ -51,8 +52,13 @@ class Configuration {
     "markdown_extensions": <String>[],
     'permalink': "date",
     'publish_drafts': false,
+    "future": false,
+    "unpublished": false,
+    "strict_front_matter": false,
     "config": <String>["_config.yaml", "config.yaml"],
     "output": {"posts_dir": "posts"},
+    "collections": <String, dynamic>{},
+    "defaults": <dynamic>[],
     "data": <String, dynamic>{},
     "date_format": "yyyy-MM-dd HH:mm:ss",
     "plugins": {
@@ -204,8 +210,10 @@ class Configuration {
     List<String> resolvedFiles = [];
 
     String? siteSource = overrides["source"] as String?;
+    String? overrideSource;
 
     if (overrides.containsKey('source') && siteSource != null) {
+      overrideSource = siteSource;
       if (isRelative(overrides["source"] as String)) {
         _config["source"] = absolute(siteSource);
       } else {
@@ -252,13 +260,22 @@ class Configuration {
 
     _config = deepMerge(_config, overrides);
 
+    if (overrideSource != null) {
+      _config["source"] =
+          isRelative(overrideSource) ? absolute(overrideSource) : overrideSource;
+    }
+
     checkIncludeExclude(_config);
 
     _addDefaultIncludes();
     _addDefaultExcludes();
 
+    if (isRelative(source)) {
+      _config["source"] = absolute(source);
+    }
+
     if (isRelative(destination)) {
-      _config["destination"] = join(source, destination);
+      _config["destination"] = join(_config["source"] as String, destination);
     } else {
       _config["destination"] = destination;
     }

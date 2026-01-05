@@ -2,11 +2,14 @@ import 'dart:async';
 import 'package:collection/collection.dart';
 
 import 'package:gengen/configuration.dart';
+import 'package:gengen/drops/collection_drop.dart';
+import 'package:gengen/drops/static_file_drop.dart';
 import 'package:gengen/fs.dart';
 import 'package:gengen/hook.dart';
 import 'package:gengen/layout.dart';
 import 'package:gengen/logging.dart';
 import 'package:gengen/models/base.dart';
+import 'package:gengen/models/collection.dart';
 import 'package:gengen/performance/benchmark.dart';
 import 'package:gengen/plugin/builtin/pagination.dart';
 import 'package:gengen/path.dart';
@@ -27,6 +30,7 @@ class Site with PathMixin {
   final List<Base> _posts = [];
   final List<Base> _pages = [];
   final List<Base> _static = [];
+  final Map<String, ContentCollection> _collections = {};
   List<BasePlugin> _plugins = [];
 
   static Site? _instance;
@@ -90,11 +94,32 @@ class Site with PathMixin {
 
   List<Base> get staticFiles => _static;
 
+  Map<String, ContentCollection> get collections => _collections;
+
+  Iterable<Base> get collectionDocuments =>
+      _collections.values.expand((collection) => collection.docs);
+
+  Iterable<Base> get collectionFiles =>
+      _collections.values.expand((collection) => collection.files);
+
+  Iterable<Base> get collectionItems =>
+      collectionDocuments.followedBy(collectionFiles);
+
+  Iterable<Base> get collectionOutputItems => _collections.values
+      .where((collection) => collection.output)
+      .expand((collection) => collection.itemsToWrite);
+
   List<BasePlugin> get plugins => _plugins;
 
   set posts(List<Base> posts) {
     _posts.clear();
     _posts.addAll(posts);
+  }
+
+  void setCollections(Map<String, ContentCollection> collections) {
+    _collections
+      ..clear()
+      ..addAll(collections);
   }
 
   Reader get reader => _reader;
@@ -124,6 +149,7 @@ class Site with PathMixin {
     _posts.clear();
     _pages.clear();
     _static.clear();
+    _collections.clear();
 
     await Benchmark.timeAsync(
       'hook_after_init',
@@ -199,7 +225,12 @@ class Site with PathMixin {
   }
 
   Future<void> write() async {
-    final items = [...staticFiles, ...posts, ...pages];
+    final items = [
+      ...staticFiles,
+      ...posts.where((post) => post.shouldWrite),
+      ...pages,
+      ...collectionOutputItems.where((item) => item.shouldWrite),
+    ];
 
     Benchmark.increment('files_processed', items.length);
     log.info('writing ${items.length} items');
@@ -213,7 +244,12 @@ class Site with PathMixin {
   }
 
   Future<void> render() async {
-    final items = [...staticFiles, ...posts, ...pages];
+    final items = [
+      ...staticFiles,
+      ...posts,
+      ...collectionDocuments,
+      ...pages,
+    ];
 
     for (var item in items) {
       await item.render();
@@ -221,7 +257,7 @@ class Site with PathMixin {
   }
 
   Future<void> watch() async {
-    for (var value in [...staticFiles, ...posts, ...pages]) {
+    for (var value in [...staticFiles, ...posts, ...pages, ...collectionItems]) {
       value.watch();
     }
 
@@ -245,7 +281,12 @@ class Site with PathMixin {
 
   Map<String, dynamic> get map {
     posts.sort((a, b) => b.date.compareTo(a.date));
-    final filteredPosts = posts.where((post) => !post.isIndex).toList();
+    final includeUnpublished =
+        config.get<bool>('unpublished', defaultValue: false) ?? false;
+    final filteredPosts = posts
+        .where((post) =>
+            !post.isIndex && (includeUnpublished || post.isPublished))
+        .toList();
 
     // Get pagination data from PaginationPlugin
     final paginationPlugin = _plugins.whereType<PaginationPlugin>().firstOrNull;
@@ -254,11 +295,32 @@ class Site with PathMixin {
         ? Map<String, dynamic>.from(paginationDrop.attrs)
         : const <String, dynamic>{};
 
+    final collectionAliases = <String, List<dynamic>>{};
+    final collectionList = _collections.values
+        .map((collection) => CollectionDrop(collection))
+        .toList()
+      ..sort((a, b) => a.label.compareTo(b.label));
+    for (final entry in _collections.entries) {
+      final items = entry.value.docs.map((e) => e.to_liquid).toList();
+      collectionAliases[entry.key] = items;
+    }
+
+    final documents = [
+      ...filteredPosts.map((e) => e.to_liquid),
+      ..._collections.values.expand((c) => c.docs).map((e) => e.to_liquid),
+      ..._collections.values
+          .expand((c) => c.files)
+          .map((e) => StaticFileDrop(e)),
+    ];
+
     return {
       ...config.all,
+      ...collectionAliases,
       'feed_meta': '',
       'pages': pages.map((e) => e.to_liquid).toList(),
       'posts': filteredPosts.map((e) => e.to_liquid).toList(),
+      'collections': collectionList,
+      'documents': documents,
       'paginate': paginationData,
       'pagination': paginationData,
       'time': DateTime.now(),

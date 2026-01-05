@@ -24,6 +24,21 @@ class Build extends AbstractCommand {
       help: 'Enable parallel processing',
       defaultsTo: true,
     );
+    argParser.addFlag(
+      'future',
+      help: 'Include content with future dates',
+      defaultsTo: false,
+    );
+    argParser.addFlag(
+      'unpublished',
+      help: 'Include unpublished content',
+      defaultsTo: false,
+    );
+    argParser.addFlag(
+      'drafts',
+      help: 'Include drafts in the build',
+      defaultsTo: false,
+    );
     argParser.addOption(
       'concurrency',
       abbr: 'c',
@@ -52,19 +67,25 @@ class Build extends AbstractCommand {
     }
     
     try {
+      final overrides = {...argResults?.map ?? <String, dynamic>{}};
+      overrides['parallel'] = enableParallel;
+      overrides['concurrency'] = concurrency;
+
+      final includeDrafts = argResults?['drafts'] as bool? ?? false;
+      if (includeDrafts) {
+        overrides['publish_drafts'] = true;
+      }
+
       // Check if a positional argument was provided as source directory
       if (argResults?.rest.isNotEmpty == true) {
         final sourceDir = argResults!.rest.first;
         log.info("Using source directory: $sourceDir");
-        Site.resetInstance();
-        Site.init(overrides: {
-          ...argResults?.map ?? {},
-          'source': sourceDir,
-          'parallel': enableParallel,
-          'concurrency': concurrency,
-        });
+        overrides['source'] = sourceDir;
       }
-      
+
+      Site.resetInstance();
+      Site.init(overrides: overrides);
+
       await site.process();
 
       if (site.posts.isNotEmpty) {

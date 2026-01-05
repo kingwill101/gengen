@@ -6,6 +6,7 @@ import 'package:gengen/liquid/tags/avatar.dart';
 import 'package:gengen/liquid/tags/feed_meta.dart';
 import 'package:gengen/liquid/tags/highlight_tag.dart';
 import 'package:gengen/liquid/tags/include.dart';
+import 'package:gengen/liquid/tags/include_relative.dart';
 import 'package:gengen/liquid/tags/link.dart' as link;
 import 'package:gengen/liquid/tags/plugin_assets.dart';
 import 'package:gengen/liquid/tags/seo.dart';
@@ -57,6 +58,10 @@ class GenGenTempate {
     liquid.TagRegistry.register(
       'include',
       (content, filters) => Include(content, filters),
+    );
+    liquid.TagRegistry.register(
+      'include_relative',
+      (content, filters) => IncludeRelative(content, filters),
     );
 
     // Plugin asset injection tags
