@@ -13,7 +13,7 @@ This guide covers everything you need to know about creating pages in GenGen, fr
 
 ## What are Pages?
 
-Pages in GenGen are static content files that form the structure of your website. Unlike posts, which are typically blog entries organized by date, pages are standalone content like "About", "Contact", or "Services" pages.
+Pages in GenGen are static content files that form the structure of your website. Unlike posts, which are typically blog entries organized by date (from front matter or a `YYYY-MM-DD-` filename prefix), pages are standalone content like "About", "Contact", or "Services" pages.
 
 ## Basic Page Structure
 
@@ -328,7 +328,7 @@ your-site/
 
 - **Root level**: For main site pages (about.md, contact.md)
 - **Subdirectories**: For organized content (services/web-design.md)
-- **Special directories**: Avoid `_posts/` for regular pages (reserved for blog posts)
+- **Special directories**: Avoid `_posts/` for regular pages (reserved for blog posts). Posts can live in subdirectories under `_posts/` and do not require a date in the filename.
 
 ### Generated Output Structure
 

@@ -118,6 +118,21 @@ void main() {
       expect(site.posts.first.config['title'], 'My Post');
     });
 
+    test('should load non-date posts under _posts', () async {
+      final postsPath = p.join(projectRoot, 'source', '_posts');
+      memoryFileSystem
+          .file(p.join(postsPath, 'hello-world.md'))
+          .writeAsStringSync('---\ntitle: Hello World\n---\nContent');
+
+      await reader.read();
+
+      expect(site.posts.length, 2);
+      expect(
+        site.posts.any((post) => post.config['title'] == 'Hello World'),
+        isTrue,
+      );
+    });
+
     test('should load pages', () async {
       await reader.read();
       expect(site.pages.length, 1);
@@ -394,6 +409,56 @@ void main() {
       // Verify the original include still works
       expect(newSite.pages.any((page) => page.name == 'notes/important_notes.md'), isTrue,
           reason: "notes/important_notes.md should still be included");
+    });
+  });
+
+  group('Reader with strict front matter', () {
+    late MemoryFileSystem memoryFileSystem;
+    late String projectRoot;
+    late Site site;
+    late Reader reader;
+
+    setUpAll(() {
+      Site.resetInstance();
+    });
+
+    setUp(() {
+      memoryFileSystem = MemoryFileSystem();
+      gengen_fs.fs = memoryFileSystem;
+      projectRoot = memoryFileSystem.currentDirectory.path;
+      final sourcePath = p.join(projectRoot, 'source');
+      memoryFileSystem.directory(sourcePath).createSync(recursive: true);
+
+      final postsPath = p.join(sourcePath, '_posts');
+      memoryFileSystem.directory(postsPath).createSync(recursive: true);
+      memoryFileSystem
+          .file(p.join(postsPath, 'with-matter.md'))
+          .writeAsStringSync('---\ntitle: With Matter\n---\nContent');
+      memoryFileSystem
+          .file(p.join(postsPath, 'no-matter.md'))
+          .writeAsStringSync('No front matter here.');
+
+      Site.init(overrides: {
+        'source': sourcePath,
+        'destination': p.join(projectRoot, 'public'),
+        'strict_front_matter': true,
+      });
+      site = Site.instance;
+      reader = site.reader;
+    });
+
+    tearDown(() {
+      Site.resetInstance();
+    });
+
+    test('should skip posts without front matter when strict_front_matter is true', () async {
+      await reader.read();
+
+      expect(site.posts.any((post) => post.config['title'] == 'With Matter'), isTrue);
+      expect(
+        site.posts.any((post) => post.name.contains('no-matter.md')),
+        isFalse,
+      );
     });
   });
 } 

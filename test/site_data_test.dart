@@ -181,9 +181,10 @@ About us page.
       expect(users['tom']['name'], equals('Tom Preston-Werner'));
 
       // Verify navigation data
-      expect(siteData['navigation'], isA<List<Map<String, dynamic>>>());
-      final navigation = siteData['navigation'] as List<Map<String, dynamic>>;
+      expect(siteData['navigation'], isA<List<dynamic>>());
+      final navigation = siteData['navigation'] as List<dynamic>;
       expect(navigation.length, equals(2));
+      expect(navigation.first, isA<Map<String, Object?>>());
     });
 
     test('map getter should provide liquid template context', () async {
@@ -217,6 +218,36 @@ About us page.
       expect(liquidContext.containsKey('theme'), isTrue);
       final theme = liquidContext['theme'] as Map;
       expect(theme.containsKey('root'), isTrue);
+    });
+
+    test('non-date posts use front matter date for ordering and permalinks', () async {
+      final sourcePath = p.join(projectRoot, 'source');
+      final postsPath = p.join(sourcePath, '_posts');
+      memoryFileSystem
+          .file(p.join(postsPath, 'mid-post.md'))
+          .writeAsStringSync('''
+---
+title: Mid Post
+date: 2024-01-15
+---
+Mid content.
+''');
+
+      Site.init(overrides: {
+        'source': sourcePath,
+        'destination': p.join(projectRoot, 'public'),
+        'theme': 'default',
+      });
+
+      final site = Site.instance;
+      await site.read();
+
+      final titles = site.posts.map((post) => post.config['title']).toList();
+      expect(titles, equals(['Latest Post', 'Mid Post', 'First Post']));
+
+      final midPost =
+          site.posts.firstWhere((post) => post.config['title'] == 'Mid Post');
+      expect(midPost.link(), contains('2024/01/15'));
     });
 
     test('dump() should handle empty site gracefully', () async {
@@ -399,7 +430,7 @@ About us page.
 
       // Verify YAML data is still present
       expect(siteData['users'], isA<Map<String, dynamic>>());
-      expect(siteData['navigation'], isA<List<Map<String, dynamic>>>());
+      expect(siteData['navigation'], isA<List<dynamic>>());
     });
   });
 } 

@@ -13,7 +13,7 @@ Aurora ships with GenGen as a first-class example theme. It delivers a modern ed
 
 ![Aurora theme hero preview](https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1400&q=80)
 
-> ℹ️ **Quick start** — Switch an existing site to Aurora by setting `theme: aurora` in `_config.yaml` and running `gengen build`.
+> ℹ️ **Quick start** — Switch an existing site to Aurora by setting `theme: aurora` in `config.yaml` and running `gengen build`.
 
 ## Theme Structure
 

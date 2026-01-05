@@ -35,4 +35,7 @@ Store reusable fragments under `_includes/` and render them with:
 
 ## Custom Filters & Tags
 
-Plugins can register new filters and tags. See the plugin development guide for writing Dart-based extensions that hook into Liquid.
+GenGen ships a set of built-in Liquid tags and filters. Lua plugins can inject
+assets and transform content via `convert`, but they do not register Liquid
+filters or tags directly. If you need new Liquid primitives, add them to the
+GenGen codebase (or open an issue so we can document the extension point).

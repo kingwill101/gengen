@@ -1,0 +1,18 @@
+<div class="mobile-side-scroller">
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for item in include.scope -%}
+    <tr>
+      <td><p><code>{{ item.name }}</code></p></td>
+      <td><p>{{- item.description -}}</p></td>
+    </tr>
+  {% endfor -%}
+  </tbody>
+</table>
+</div>

@@ -61,7 +61,7 @@ Uses date-based structure for blog posts.
 permalink: date
 ```
 
-**Example**: `2024-01-15-my-post.md` → `/2024/01/15/my-post.html`
+**Example**: `my-post.md` with front matter `date: 2024-01-15` → `/2024/01/15/my-post.html`
 
 ### `pretty`
 Creates directory structures by removing file extensions.
@@ -81,7 +81,7 @@ Create custom URL structures using tokens:
 | Token | Description | Example |
 |-------|-------------|---------|
 | `:title` | Slugified page/post title | `my-awesome-post` |
-| `:basename` | Filename without extension | `2024-01-15-post` becomes `post` |
+| `:basename` | Filename without extension | `2024-01-15-post` |
 | `:path` | Relative directory path | `blog/tech` for `blog/tech/post.md` |
 | `:categories` | Categories joined with `/` | `tech/web-development` |
 | `:slugified_categories` | URL-safe categories | `tech-web-development` |
@@ -104,6 +104,10 @@ Create custom URL structures using tokens:
 | `:hour` | Two-digit hour | `14` |
 | `:minute` | Two-digit minute | `30` |
 | `:second` | Two-digit second | `45` |
+
+Dates come from front matter (`date:`) or a `YYYY-MM-DD-` filename prefix. If no
+date is available, GenGen falls back to the file’s modified time for posts and
+collections.
 
 ### Custom Pattern Examples
 
@@ -214,6 +218,8 @@ date: 2024-01-15    # Required for date tokens
 permalink: /:year/:month/:title/
 ---
 ```
+
+If a date cannot be parsed, GenGen falls back to a non-date permalink.
 
 ### Debugging Permalinks
 

@@ -89,8 +89,12 @@ Customize where GenGen looks for different types of content:
 # Posts directory (default: "_posts")
 post_dir: "_posts"
 
-# Drafts directory (default: "_draft") 
-draft_dir: "_draft"
+# Drafts directory (default: "_drafts") 
+draft_dir: "_drafts"
+
+# Collections directory (default: "")
+# When set, collections, posts, and drafts are read from this directory.
+collections_dir: "collections"
 
 # Themes directory (default: "_themes")
 themes_dir: "_themes"
@@ -115,6 +119,49 @@ template_dir: "_templates"
 
 # Includes directory (default: "_includes")
 include_dir: "_includes"
+```
+
+### Collections
+
+Collections let you group content in underscore-prefixed folders like `_docs` or `_tutorials`.
+
+```yaml
+collections:
+  docs:
+    output: true
+    permalink: "/:collection/:path/"
+  tutorials:
+    output: false
+
+defaults:
+  - scope:
+      type: "docs"
+    values:
+      layout: "doc"
+```
+
+`output: true` writes collection items to the destination. When `output` is `false`,
+items are still available in Liquid via `site.collections` and `site.<name>`.
+
+Collections can also be declared as a list:
+
+```yaml
+collections:
+  - docs
+  - tutorials
+```
+
+### Publish Controls
+
+```yaml
+# Include future-dated content in output
+future: false
+
+# Include items with published: false
+unpublished: false
+
+# Require front matter on extensionless posts
+strict_front_matter: false
 ```
 
 ### File Processing
@@ -225,6 +272,16 @@ date_format: "yyyy-MM-dd HH:mm:ss"
 # Whether to publish draft posts
 publish_drafts: false
 ```
+
+Notes:
+
+- Posts can live in subdirectories under `_posts/`.
+- Filenames do **not** need a date prefix. Dates are read from front matter,
+  or derived from a `YYYY-MM-DD-` filename prefix when present.
+- If you use date-based permalinks without a date, GenGen falls back to the file
+  modified time.
+- `_index.md` files in `_posts/` (or any content folder) are treated as
+  directory-level front matter and are not rendered.
 
 ### Data Files
 
@@ -585,13 +642,12 @@ GenGen's configuration is largely compatible with Jekyll. Common differences:
 |--------|--------|-------|
 | `_config.yml` | `config.yaml` | YAML extension preferred |
 | `baseurl` | Use `url` | GenGen handles this automatically |
-| `collections` | Not supported | Use posts and pages instead |
+| `collections` | Supported | Configure with `collections` + `_collection` folders |
 | `gems` | `plugins` | Different plugin system |
 | `highlighter` | Built into markdown | Automatic syntax highlighting |
 
 ### Unsupported Jekyll Features
 
-- Collections (use posts and pages instead)
 - Jekyll-specific plugins (implement as GenGen plugins)
 - Some advanced Liquid filters (basic set supported)
 

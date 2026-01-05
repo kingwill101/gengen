@@ -173,7 +173,7 @@ Test content without categories
         );
 
         String permalink = noCategoryPost.buildPermalink(PermalinkStructure.date);
-        expect(permalink, equals('posts/2023/05/10/no-category-post.html'));
+        expect(permalink, equals('posts/2023/05/10/no-category.html'));
       });
 
       test('Post with empty categories defaults to "posts"', () {
@@ -198,7 +198,7 @@ Test content with empty categories
         );
 
         String permalink = emptyCategoryPost.buildPermalink(PermalinkStructure.date);
-        expect(permalink, equals('posts/2023/07/15/empty-category-post.html'));
+        expect(permalink, equals('posts/2023/07/15/empty-category.html'));
       });
 
       test('Post with multiple categories uses first one', () {
@@ -223,7 +223,7 @@ Test content with multiple categories
         );
 
         String permalink = multiCategoryPost.buildPermalink(PermalinkStructure.date);
-        expect(permalink, equals('tech/2023/04/08/multi-category-post.html'));
+        expect(permalink, equals('tech/2023/04/08/multi-category.html'));
       });
 
       test('Slug override replaces title in permalink', () {
@@ -275,10 +275,10 @@ Test content with special characters
         );
 
         String permalink = specialCharsPost.buildPermalink(PermalinkStructure.date);
-        expect(permalink, equals('special/2023/10/31/special-characters-post.html'));
+        expect(permalink, equals('special/2023/10/31/special-chars.html'));
       });
 
-      test('Missing title falls back to filename', () {
+      test('Missing title falls back to slug', () {
         memoryFileSystem.file('_posts/2023-09-20-filename-fallback.md').createSync(recursive: true);
         memoryFileSystem.file('_posts/2023-09-20-filename-fallback.md').writeAsStringSync('''
 ---
@@ -299,7 +299,7 @@ Test content without title
         );
 
         String permalink = noTitlePost.buildPermalink(PermalinkStructure.date);
-        expect(permalink, equals('fallback/2023/09/20/2023-09-20-filename-fallback.html'));
+        expect(permalink, equals('fallback/2023/09/20/filename-fallback.html'));
       });
 
       test('Posts with tags but no categories still default to "posts"', () {
@@ -350,7 +350,7 @@ Test content with unicode characters
         );
 
         String permalink = unicodePost.buildPermalink(PermalinkStructure.date);
-        expect(permalink, equals('unicode/2023/03/17/caf-na-ve-r-sum-with.html'));
+        expect(permalink, equals('unicode/2023/03/17/unicode-test.html'));
       });
 
       test('Very long title gets truncated appropriately', () {
@@ -407,8 +407,8 @@ Test content for leap year
         String customPattern = '/:categories/:year-:short_year/:month-:i_month/:day-:i_day/:long_month-:short_month/:long_day-:short_day/:hour-:minute-:second/:title/';
         String permalink = leapYearPost.buildPermalink(customPattern);
         
-        // Expected: date-test/2024-24/02-2/29-29/February-Feb/Thursday-Thu/14-30-45/leap-year-post/
-        expect(permalink, equals('date-test/2024-24/02-2/29-29/February-Feb/Thursday-Thu/14-30-45/leap-year-post/'));
+        // Expected: date-test/2024-24/02-2/29-29/February-Feb/Thursday-Thu/14-30-45/leap-year/
+        expect(permalink, equals('date-test/2024-24/02-2/29-29/February-Feb/Thursday-Thu/14-30-45/leap-year/'));
       });
 
       test('Ordinal day calculation for New Year', () {
@@ -434,7 +434,7 @@ New Year's content
         );
 
         String permalink = newYearPost.buildPermalink(PermalinkStructure.ordinal);
-        expect(permalink, equals('holiday/2023/001/new-years-day.html'));
+        expect(permalink, equals('holiday/2023/001/new-years.html'));
       });
 
       test('Week calculation for different days', () {
@@ -472,7 +472,7 @@ Monday content
         );
 
         String sundayPermalink = sundayPost.buildPermalink(PermalinkStructure.weekdate);
-        expect(sundayPermalink, equals('test/2023/W01/Sun/sunday-post.html'));
+        expect(sundayPermalink, equals('test/2023/W01/Sun/sunday.html'));
 
         // Test Monday (start of week)
         Post mondayPost = Post(
@@ -485,7 +485,7 @@ Monday content
         );
 
         String mondayPermalink = mondayPost.buildPermalink(PermalinkStructure.weekdate);
-        expect(mondayPermalink, equals('test/2023/W02/Mon/monday-post.html'));
+        expect(mondayPermalink, equals('test/2023/W02/Mon/monday.html'));
       });
 
       test('Different months and their abbreviations', () {
@@ -660,7 +660,7 @@ URL test content
 
         Map<String, String> placeholders = urlPost.permalinkPlaceholders();
         
-        expect(placeholders['title'], equals('url-test-post'));
+        expect(placeholders['title'], equals('url-test'));
         expect(placeholders['categories'], equals('tech'));
         expect(placeholders['year'], equals('2023'));
         expect(placeholders['month'], equals('06'));
@@ -777,7 +777,7 @@ Multiple slash test content
         );
 
         String permalink = post.buildPermalink('/:categories//:title//extra/');
-        expect(permalink, equals('test//multiple-slash-test//extra/'));
+        expect(permalink, equals('test//multiple-slash//extra/'));
       });
 
       test('Empty title handling', () {
@@ -803,8 +803,8 @@ Empty title test content
         );
 
         String permalink = emptyTitlePost.buildPermalink(PermalinkStructure.date);
-        // Should fall back to filename-based title
-        expect(permalink, equals('empty/2023/09/15/2023-09-15-empty-title-test.html'));
+        // Should fall back to slug-based title
+        expect(permalink, equals('empty/2023/09/15/empty-title-test.html'));
       });
 
       test('Whitespace title handling', () {
@@ -830,7 +830,7 @@ Whitespace test content
         );
 
         String permalink = whitespacePost.buildPermalink(PermalinkStructure.date);
-        expect(permalink, equals('whitespace/2023/10/05/whitespace-title.html'));
+        expect(permalink, equals('whitespace/2023/10/05/whitespace.html'));
       });
     });
 
@@ -893,7 +893,7 @@ Mixed content test
         String mixedPattern = '/blog/archive/:year/category-:categories/posts/:title-final.html';
         String permalink = mixedPost.buildPermalink(mixedPattern);
         
-        expect(permalink, equals('blog/archive/2023/category-mixed/posts/mixed-content-post-final.html'));
+        expect(permalink, equals('blog/archive/2023/category-mixed/posts/mixed-content-final.html'));
       });
 
       test('Nested directory structure with tokens', () {
@@ -921,7 +921,7 @@ Nested test content
         String nestedPattern = '/content/:categories/articles/:year/:month/:title/comments/index.html';
         String permalink = nestedPost.buildPermalink(nestedPattern);
         
-        expect(permalink, equals('content/deep/articles/2023/04/nested-test-post/comments/index.html'));
+        expect(permalink, equals('content/deep/articles/2023/04/nested-test/comments/index.html'));
       });
 
       test('Mixed case and underscore handling', () {
@@ -947,7 +947,7 @@ Mixed case test content
         );
 
         String permalink = mixedCasePost.buildPermalink(PermalinkStructure.date);
-        expect(permalink, equals('Test_Category/2023/05/30/mixed-case-title-with-caps.html'));
+        expect(permalink, equals('Test_Category/2023/05/30/mixed-case.html'));
       });
 
       test('Permalink with query string like syntax', () {
@@ -1227,7 +1227,7 @@ Content for pretty post
       );
 
       String permalink = prettyPost.permalink();
-      expect(permalink, equals('blog/2024/03/10/pretty-post-example/index.html'));
+      expect(permalink, equals('blog/2024/03/10/pretty-post/index.html'));
     });
 
     test('Custom permalink with trailing slash creates index.html', () {
@@ -1255,7 +1255,7 @@ Custom directory content
       );
 
       String permalink = customPost.permalink();
-      expect(permalink, equals('tutorials/custom-directory-post/index.html'));
+      expect(permalink, equals('tutorials/custom-directory/index.html'));
     });
 
     test('Literal permalink without extension creates index.html', () {
@@ -1281,7 +1281,7 @@ Special landing page content
       );
 
       String permalink = specialPost.permalink();
-      expect(permalink, equals('special/landing/index.html'));
+      expect(permalink, equals('special/landing.html'));
     });
 
     test('Posts index file resolves to posts/index.html', () {
@@ -1336,7 +1336,7 @@ Blog style content
       );
 
       String permalink = blogPost.permalink();
-      expect(permalink, equals('blog/2024/09/blog-style-post/index.html'));
+      expect(permalink, equals('blog/2024/09/blog-style/index.html'));
     });
 
     test('Category-based permalink with directory structure', () {

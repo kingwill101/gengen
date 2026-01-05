@@ -34,10 +34,10 @@ void main() {
 
   group('DraftPlugin', () {
     group('Draft Directory Reading', () {
-      test('should read posts from _draft directory and mark them as drafts', () async {
-        // Create site structure with _draft directory
+      test('should read posts from _drafts directory and mark them as drafts', () async {
+        // Create site structure with _drafts directory
         await memoryFileSystem.directory(p.join(projectRoot, '_posts')).create(recursive: true);
-        await memoryFileSystem.directory(p.join(projectRoot, '_draft')).create(recursive: true);
+        await memoryFileSystem.directory(p.join(projectRoot, '_drafts')).create(recursive: true);
         await memoryFileSystem.directory(p.join(projectRoot, '_layouts')).create(recursive: true);
 
         // Create site config
@@ -58,7 +58,7 @@ This is a published post.
 ''');
 
         // Create draft posts
-        memoryFileSystem.file(p.join(projectRoot, '_draft', '2024-12-21-draft-post.md')).writeAsStringSync('''
+        memoryFileSystem.file(p.join(projectRoot, '_drafts', '2024-12-21-draft-post.md')).writeAsStringSync('''
 ---
 title: Draft Post
 date: 2024-12-21
@@ -67,7 +67,7 @@ date: 2024-12-21
 This is a draft post.
 ''');
 
-        memoryFileSystem.file(p.join(projectRoot, '_draft', '2024-12-22-another-draft.md')).writeAsStringSync('''
+        memoryFileSystem.file(p.join(projectRoot, '_drafts', '2024-12-22-another-draft.md')).writeAsStringSync('''
 ---
 title: Another Draft
 date: 2024-12-22
@@ -108,8 +108,8 @@ This is another draft post.
         expect(anotherDraft.config['draft'], isTrue, reason: 'Draft flag should be set in config');
       });
 
-      test('should handle missing _draft directory gracefully', () async {
-        // Create site structure without _draft directory
+      test('should handle missing _drafts directory gracefully', () async {
+        // Create site structure without _drafts directory
         await memoryFileSystem.directory(p.join(projectRoot, '_posts')).create(recursive: true);
         await memoryFileSystem.directory(p.join(projectRoot, '_layouts')).create(recursive: true);
 
@@ -152,10 +152,10 @@ This is a published post.
         expect(post.isDraft(), isFalse, reason: 'Post should not be marked as draft');
       });
 
-      test('should handle empty _draft directory', () async {
-        // Create site structure with empty _draft directory
+      test('should handle empty _drafts directory', () async {
+        // Create site structure with empty _drafts directory
         await memoryFileSystem.directory(p.join(projectRoot, '_posts')).create(recursive: true);
-        await memoryFileSystem.directory(p.join(projectRoot, '_draft')).create(recursive: true);
+        await memoryFileSystem.directory(p.join(projectRoot, '_drafts')).create(recursive: true);
         await memoryFileSystem.directory(p.join(projectRoot, '_layouts')).create(recursive: true);
 
         // Create site config
@@ -202,7 +202,7 @@ This is a published post.
       test('should filter out drafts when publish_drafts is false', () async {
         // Create site structure
         await memoryFileSystem.directory(p.join(projectRoot, '_posts')).create(recursive: true);
-        await memoryFileSystem.directory(p.join(projectRoot, '_draft')).create(recursive: true);
+        await memoryFileSystem.directory(p.join(projectRoot, '_drafts')).create(recursive: true);
         await memoryFileSystem.directory(p.join(projectRoot, '_layouts')).create(recursive: true);
 
         // Create site config with publish_drafts: false
@@ -233,8 +233,8 @@ draft: true
 This post is marked as draft in front matter.
 ''');
 
-        // Create draft post in _draft directory
-        memoryFileSystem.file(p.join(projectRoot, '_draft', '2024-12-22-directory-draft.md')).writeAsStringSync('''
+        // Create draft post in _drafts directory
+        memoryFileSystem.file(p.join(projectRoot, '_drafts', '2024-12-22-directory-draft.md')).writeAsStringSync('''
 ---
 title: Directory Draft
 date: 2024-12-22
@@ -269,7 +269,7 @@ This is a draft in the draft directory.
       test('should keep all posts when publish_drafts is true', () async {
         // Create site structure
         await memoryFileSystem.directory(p.join(projectRoot, '_posts')).create(recursive: true);
-        await memoryFileSystem.directory(p.join(projectRoot, '_draft')).create(recursive: true);
+        await memoryFileSystem.directory(p.join(projectRoot, '_drafts')).create(recursive: true);
         await memoryFileSystem.directory(p.join(projectRoot, '_layouts')).create(recursive: true);
 
         // Create site config with publish_drafts: true
@@ -300,8 +300,8 @@ draft: true
 This post is marked as draft in front matter.
 ''');
 
-        // Create draft post in _draft directory
-        memoryFileSystem.file(p.join(projectRoot, '_draft', '2024-12-22-directory-draft.md')).writeAsStringSync('''
+        // Create draft post in _drafts directory
+        memoryFileSystem.file(p.join(projectRoot, '_drafts', '2024-12-22-directory-draft.md')).writeAsStringSync('''
 ---
 title: Directory Draft
 date: 2024-12-22
@@ -452,7 +452,7 @@ This is a draft in the custom directory.
       test('should work with DraftPlugin instance methods', () async {
         // Create site structure
         await memoryFileSystem.directory(p.join(projectRoot, '_posts')).create(recursive: true);
-        await memoryFileSystem.directory(p.join(projectRoot, '_draft')).create(recursive: true);
+        await memoryFileSystem.directory(p.join(projectRoot, '_drafts')).create(recursive: true);
         await memoryFileSystem.directory(p.join(projectRoot, '_layouts')).create(recursive: true);
 
         // Create site config
@@ -482,7 +482,7 @@ draft: true
 This post is marked as draft.
 ''');
 
-        memoryFileSystem.file(p.join(projectRoot, '_draft', '2024-12-22-directory-draft.md')).writeAsStringSync('''
+        memoryFileSystem.file(p.join(projectRoot, '_drafts', '2024-12-22-directory-draft.md')).writeAsStringSync('''
 ---
 title: Directory Draft
 date: 2024-12-22

@@ -34,7 +34,7 @@ void main() {
       expect(config.get<List<String>>('exclude'), contains('config.yaml'));
       expect(config.get<List<String>>('include'), isEmpty);
       expect(config.get<String>('post_dir'), '_posts');
-      expect(config.get<String>('draft_dir'), '_draft');
+      expect(config.get<String>('draft_dir'), '_drafts');
       expect(config.get<String>('themes_dir'), '_themes');
       expect(config.get<String>('layout_dir'), '_layouts');
       expect(config.get<String>('plugin_dir'), '_plugins');
@@ -53,6 +53,11 @@ void main() {
         config.get<Map<String, dynamic>>('data'),
         equals(<String, dynamic>{}),
       );
+      expect(
+        config.get<Map<String, dynamic>>('collections'),
+        equals(<String, dynamic>{}),
+      );
+      expect(config.get<List<dynamic>>('defaults'), isEmpty);
 
       final configFiles = config.get<List<dynamic>>('config') ?? const [];
       expect(configFiles, contains('_config.yaml'));

@@ -1,0 +1,41 @@
+lifecycle:
+  - name: after_init
+    description: Called once after the plugin is initialized.
+  - name: before_read
+    description: Called before content is read.
+  - name: after_read
+    description: Called after content is read.
+  - name: before_generate
+    description: Called before generators run.
+  - name: generate
+    description: Called during generation.
+  - name: after_generate
+    description: Called after generators finish.
+  - name: before_render
+    description: Called before rendering.
+  - name: after_render
+    description: Called after rendering.
+  - name: before_write
+    description: Called before writing files.
+  - name: after_write
+    description: Called after writing files.
+  - name: before_convert
+    description: Called before convert hooks run.
+  - name: after_convert
+    description: Called after convert hooks run.
+
+convert:
+  - name: convert(content, page) -> string
+    description: Called for each document. Must return a string. Returning nil or non-strings throws a plugin error.
+
+assets:
+  - name: head_injection
+    description: String or function returning a string injected into <head>.
+  - name: body_injection
+    description: String or function returning a string injected before </body>.
+  - name: css_assets
+    description: List or function returning a list of CSS asset paths relative to the plugin directory.
+  - name: js_assets
+    description: List or function returning a list of JS asset paths relative to the plugin directory.
+  - name: meta_tags
+    description: Map or function returning a map of meta tag name/value pairs.

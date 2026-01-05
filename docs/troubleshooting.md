@@ -19,6 +19,6 @@ Liquid throws a detailed error including the template and include name. Make sur
 
 ## Tailwind Executable Not Found
 
-Enable the Tailwind auto-fetch (see Tailwind enhancement proposal) or download the CLI manually and set `tailwind_path` in `_config.yaml`.
+Enable the Tailwind auto-fetch (see Tailwind enhancement proposal) or download the CLI manually and set `tailwind_path` in `config.yaml`.
 
 If you run into something not covered here, open an issue so we can document the fix.

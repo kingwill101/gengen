@@ -1,0 +1,30 @@
+- name: name
+  description: Source name relative to the site root.
+- name: relativePath
+  description: Path relative to collections root for posts/collections, or site source for pages.
+- name: filePath
+  description: Absolute file path.
+- name: ext
+  description: File extension including the dot.
+- name: isPost
+  description: True for posts.
+- name: isCollection
+  description: True for collection documents.
+- name: collection
+  description: Collection label (posts, pages, or custom collection name).
+- name: output
+  description: True when the document is written to destination.
+- name: isDraft
+  description: True for drafts.
+- name: isStatic
+  description: True for static files.
+- name: isAsset
+  description: True for asset-like content (for example Sass).
+- name: isPage
+  description: True for pages.
+- name: permalink
+  description: Resolved output permalink.
+- name: frontMatter
+  description: Raw front matter map.
+- name: config
+  description: Merged config (site + dir + front matter + defaults).

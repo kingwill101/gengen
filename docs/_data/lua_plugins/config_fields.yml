@@ -1,0 +1,18 @@
+- name: name
+  description: Required. Plugin identifier used in asset URLs; typically matches the plugin folder name.
+- name: entrypoint
+  description: Required. Lua entrypoint in "file.lua:init_function" format.
+- name: description
+  description: Optional description shown in docs or tooling.
+- name: author
+  description: Optional author name.
+- name: authorUrl
+  description: Optional author URL.
+- name: version
+  description: Optional version string.
+- name: license
+  description: Optional license identifier.
+- name: url
+  description: Optional homepage URL.
+- name: files
+  description: Optional explicit asset list. Each entry has name/path; path can be a glob. If omitted, GenGen scans the plugin directory. Non-Lua files are copied to /assets/plugins/<plugin-name>.

@@ -1,0 +1,65 @@
+log:
+  - name: gengen.log.debug(message)
+    description: Debug log entry.
+  - name: gengen.log.info(message)
+    description: Info log entry.
+  - name: gengen.log.warn(message)
+    description: Warning log entry.
+  - name: gengen.log.error(message)
+    description: Error log entry.
+
+config:
+  - name: gengen.config.get(key, default)
+    description: Read site configuration with optional default.
+
+paths:
+  - name: gengen.paths.plugin(relative)
+    description: Resolve a path inside the plugin folder.
+  - name: gengen.paths.plugin_root()
+    description: Absolute plugin root path.
+  - name: gengen.paths.site_source(relative)
+    description: Resolve a path in the site source.
+  - name: gengen.paths.site_destination(relative)
+    description: Resolve a path in the site destination.
+  - name: gengen.paths.join(...parts)
+    description: Join path segments.
+  - name: gengen.paths.basename(path)
+    description: Basename of a path.
+  - name: gengen.paths.dirname(path)
+    description: Directory name of a path.
+
+content:
+  - name: gengen.content.read_plugin(path)
+    description: Read a file from the plugin directory.
+  - name: gengen.content.read_site(path)
+    description: Read a file from the site source.
+  - name: gengen.content.write_site(path, content)
+    description: Write a file to the site destination.
+  - name: gengen.content.exists_plugin(path)
+    description: Check if a plugin file exists.
+  - name: gengen.content.exists_site(path)
+    description: Check if a site file exists.
+
+util:
+  - name: gengen.util.slugify(value)
+    description: Slugify a string.
+  - name: gengen.util.contains_markdown(value)
+    description: Return true if the string contains markdown markers.
+  - name: gengen.util.excerpt(html, maxLength)
+    description: Extract a plain-text excerpt from HTML (default maxLength 200).
+  - name: gengen.util.parse_date(dateString, format)
+    description: Parse a date string and return ISO string.
+
+plugin:
+  - name: gengen.plugin.metadata
+    description: Plugin metadata map (name, version, author, path, and more).
+  - name: gengen.plugin.name
+    description: Plugin name.
+  - name: gengen.plugin.version
+    description: Plugin version.
+  - name: gengen.plugin.description
+    description: Plugin description.
+  - name: gengen.plugin.author
+    description: Plugin author.
+  - name: gengen.plugin.path
+    description: Plugin root path.

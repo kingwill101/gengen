@@ -21,6 +21,10 @@ sidebar:
           url: "/pages/"
           description: "Creating and structuring pages and posts"
           order: 4
+        - title: "Collections"
+          url: "/collections/"
+          description: "Group structured content with collections"
+          order: 5
 
     - title: "URL Structure"
       icon: "🔗"
