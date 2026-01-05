@@ -55,6 +55,8 @@ class Configuration {
     "future": false,
     "unpublished": false,
     "strict_front_matter": false,
+    "safe": false,
+    "safe_plugins": <String>[],
     "config": <String>["_config.yaml", "config.yaml"],
     "output": {"posts_dir": "posts"},
     "collections": <String, dynamic>{},

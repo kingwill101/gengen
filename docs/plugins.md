@@ -63,6 +63,23 @@ plugins:
 ```
 {% endfor %}
 
+### Safe Mode
+
+Safe mode disables **Lua plugins** unless they are explicitly allowlisted.
+
+```yaml
+safe: true
+safe_plugins:
+  - "site-enhancer"
+  - "theme-banner"
+```
+
+You can also enable safe mode from the CLI:
+
+```bash
+gengen build --safe
+```
+
 ## Built-in Plugins
 
 GenGen comes with several built-in plugins that provide core functionality:

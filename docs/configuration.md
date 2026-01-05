@@ -164,6 +164,27 @@ unpublished: false
 strict_front_matter: false
 ```
 
+### Safe Mode (Plugins)
+
+Safe mode disables **Lua plugins** by default. This is useful for locked-down
+environments or shared builds.
+
+```yaml
+# Disable Lua plugins unless explicitly allowlisted
+safe: true
+
+# Allowlist Lua plugins that may run in safe mode
+safe_plugins:
+  - "trusted-plugin"
+  - "theme-banner"
+```
+
+You can also enable safe mode from the CLI:
+
+```bash
+gengen build --safe
+```
+
 ### File Processing
 
 Control which files are processed and how:

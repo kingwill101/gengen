@@ -34,6 +34,15 @@ class PluginReader {
     Directory directory, {
     List<String> whitelist = const [],
   }) async {
+    final config = Configuration();
+    final safeMode = config.get<bool>('safe', defaultValue: false) ?? false;
+    final allowlist = {
+      ..._normalizeAllowlist(
+        config.get('safe_plugins', defaultValue: const []),
+      ),
+      ...whitelist.map((entry) => entry.trim()).where((entry) => entry.isNotEmpty),
+    };
+
     if (!directory.existsSync()) {
       return [];
     }
@@ -51,8 +60,26 @@ class PluginReader {
           readConfigFile(directory.file("config.yaml").path)
               as Map<String, dynamic>;
 
+      final pluginDirName = p.basename(directory.path);
+      final rawName = pluginConfigContent['name']?.toString() ?? '';
+      final pluginConfigName =
+          rawName.trim().isEmpty ? pluginDirName : rawName;
+      pluginConfigContent['name'] = pluginConfigName;
+
+      final entrypoint =
+          pluginConfigContent['entrypoint']?.toString().trim() ?? '';
+
+      if (safeMode &&
+          isLuaEntrypoint(entrypoint) &&
+          !allowlist.contains(pluginConfigName)) {
+        log.warning(
+          'Safe mode enabled: skipping Lua plugin "$pluginConfigName" at ${directory.path}.',
+        );
+        continue;
+      }
+
       final pluginAssets = <PluginAsset>[];
-      final pluginName = p.basename(directory.path);
+      final pluginName = pluginDirName;
 
       // Check if files are explicitly listed in config
       final explicitFiles = pluginConfigContent['files'] as List<dynamic>?;
@@ -163,5 +190,23 @@ class PluginReader {
     }
 
     return plugins;
+  }
+
+  static Set<String> _normalizeAllowlist(Object? raw) {
+    if (raw == null) return {};
+    if (raw is String) {
+      return raw
+          .split(',')
+          .map((entry) => entry.trim())
+          .where((entry) => entry.isNotEmpty)
+          .toSet();
+    }
+    if (raw is Iterable) {
+      return raw
+          .map((entry) => entry?.toString().trim() ?? '')
+          .where((entry) => entry.isNotEmpty)
+          .toSet();
+    }
+    return {};
   }
 }

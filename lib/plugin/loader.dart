@@ -50,3 +50,7 @@ bool _isLuaEntrypoint(String entrypoint) {
   final filePart = entrypoint.substring(0, separatorIndex).trim();
   return filePart.toLowerCase().endsWith('.lua');
 }
+
+bool isLuaEntrypoint(String entrypoint) {
+  return _isLuaEntrypoint(entrypoint);
+}
