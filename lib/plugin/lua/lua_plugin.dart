@@ -33,6 +33,7 @@ class LuaPlugin extends BasePlugin {
   List<String> _cachedCssAssets = const [];
   List<String> _cachedJsAssets = const [];
   Map<String, String> _cachedMetaTags = const {};
+  Map<String, LiquidFilter> _cachedLiquidFilters = const {};
 
   Future<void> _ensureInitialized() async {
     if (_initialized) return;
@@ -184,6 +185,7 @@ class LuaPlugin extends BasePlugin {
     _cachedCssAssets = await _invokeStringListHook('css_assets');
     _cachedJsAssets = await _invokeStringListHook('js_assets');
     _cachedMetaTags = await _invokeStringMapHook('meta_tags');
+    _cachedLiquidFilters = await _invokeFilterMapHook('liquid_filters');
   }
 
   Future<String> _invokeStringHook(
@@ -329,6 +331,77 @@ class LuaPlugin extends BasePlugin {
       result[key] = stringValue;
     }
     return result;
+  }
+
+  Future<Map<String, LiquidFilter>> _invokeFilterMapHook(String field) async {
+    final entry = _pluginTable?[field];
+    if (entry == null) return const {};
+
+    final callable = _coerceToCallable(entry);
+    Object? result;
+    if (callable != null) {
+      result = await _invokeLuaFunction(callable, field, const []);
+    } else {
+      result = entry;
+    }
+
+    return _coerceToFilterMap(field, result);
+  }
+
+  Map<String, LiquidFilter> _coerceToFilterMap(String field, Object? value) {
+    final data = unwrapValue(value);
+    if (data == null) return {};
+    if (data is! Map) {
+      throw PluginException(
+        'Lua plugin "${metadata.name}" hook "$field" must return a map of filter functions.',
+      );
+    }
+
+    final result = <String, LiquidFilter>{};
+    for (final entry in data.entries) {
+      final name = entry.key.toString();
+      final rawFn = _coerceToCallable(entry.value);
+      if (rawFn == null) {
+        throw PluginException(
+          'Lua plugin "${metadata.name}" hook "$field" must map "$name" to a function.',
+        );
+      }
+      result[name] = (value, args, namedArgs) {
+        return _invokeFilterFunction(field, name, rawFn, value, args, namedArgs);
+      };
+    }
+    return result;
+  }
+
+  Future<Object> _invokeFilterFunction(
+    String hook,
+    String filterName,
+    Value fn,
+    Object? value,
+    List<dynamic> args,
+    Map<String, dynamic> namedArgs,
+  ) async {
+    try {
+      final result = await fn.call([
+        wrapDynamic(value),
+        wrapDynamic(args),
+        wrapDynamic(namedArgs),
+      ]);
+      final resolved = unwrapValue(result);
+      if (resolved == null) {
+        throw PluginException(
+          'Lua plugin "${metadata.name}" filter "$filterName" returned nil.',
+        );
+      }
+      return resolved;
+    } catch (error, stackTrace) {
+      if (error is PluginException) rethrow;
+      throw PluginException(
+        'Lua plugin "${metadata.name}" filter "$filterName" threw an error.',
+        error,
+        stackTrace,
+      );
+    }
   }
 
   String _expectString(
@@ -501,6 +574,9 @@ class LuaPlugin extends BasePlugin {
 
   @override
   Map<String, String> getMetaTags() => _cachedMetaTags;
+
+  @override
+  Map<String, LiquidFilter> getLiquidFilters() => _cachedLiquidFilters;
 }
 
 class _LuaEntrypoint {

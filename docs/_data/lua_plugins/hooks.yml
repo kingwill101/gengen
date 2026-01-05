@@ -39,3 +39,7 @@ assets:
     description: List or function returning a list of JS asset paths relative to the plugin directory.
   - name: meta_tags
     description: Map or function returning a map of meta tag name/value pairs.
+
+liquid:
+  - name: liquid_filters
+    description: Map or function returning a map of Liquid filter functions keyed by filter name.

@@ -2,6 +2,7 @@ import 'package:file/memory.dart';
 import 'package:gengen/configuration.dart';
 import 'package:gengen/exceptions.dart';
 import 'package:gengen/fs.dart' as gengen_fs;
+import 'package:gengen/liquid/template.dart';
 import 'package:gengen/models/base.dart';
 import 'package:gengen/models/plugin_asset.dart';
 import 'package:gengen/plugin/lua/lua_plugin.dart';
@@ -143,6 +144,53 @@ end
             (error) => error.message,
             'message',
             contains('hook "convert"'),
+          ),
+        ),
+      );
+    });
+
+    test('registers liquid filters from Lua plugins', () async {
+      final plugin = await _writeAndLoadPlugin(
+        sourcePath: sourcePath,
+        name: 'lua-filters',
+        luaSource: '''
+function init_plugin(metadata)
+  return {
+    liquid_filters = {
+      shout = function(value, args, named)
+        return string.upper(tostring(value))
+      end,
+      nilfilter = function(value, args, named)
+        return nil
+      end
+    }
+  }
+end
+''',
+      );
+
+      await plugin.afterInit();
+      Site.instance.plugins.add(plugin);
+
+      final template = GenGenTempate.r(
+        'Hello {{ "world" | shout }}',
+        data: {'page': <String, dynamic>{}, 'site': <String, dynamic>{}},
+      );
+      final rendered = await template.render();
+      expect(rendered, contains('WORLD'));
+
+      final badTemplate = GenGenTempate.r(
+        'Test {{ "x" | nilfilter }}',
+        data: {'page': <String, dynamic>{}, 'site': <String, dynamic>{}},
+      );
+
+      expect(
+        () async => await badTemplate.render(),
+        throwsA(
+          isA<PluginException>().having(
+            (error) => error.message,
+            'message',
+            contains('filter "nilfilter"'),
           ),
         ),
       );

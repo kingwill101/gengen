@@ -12,10 +12,14 @@
   overflow: hidden;
   backdrop-filter: blur(14px);
   max-height: calc(100vh - #{$header-height} - #{$spacing-lg});
+  display: flex;
+  flex-direction: column;
 
   &__inner {
     padding: $spacing-lg $spacing-md;
     overflow-y: auto;
+    flex: 1 1 auto;
+    min-height: 0;
   }
 
   &__title {

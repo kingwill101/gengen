@@ -3,3 +3,6 @@
 .dart_tool/
 site/
 /gengen
+openspec/
+build/
+AGENTS.md

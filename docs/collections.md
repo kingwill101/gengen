@@ -1,6 +1,7 @@
 ---
 title: "Collections"
 layout: default
+permalink: /collections/
 description: "Group structured content with Jekyll-style collections."
 ---
 

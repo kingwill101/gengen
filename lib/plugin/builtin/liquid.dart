@@ -4,6 +4,7 @@ import 'package:gengen/exceptions.dart';
 import 'package:gengen/plugin/plugin.dart';
 import 'package:gengen/plugin/plugin_metadata.dart';
 import 'package:gengen/liquid/template.dart';
+import 'package:gengen/shortcodes.dart';
 import 'package:gengen/site.dart';
 import 'package:gengen/models/base.dart';
 import 'package:gengen/utilities.dart';
@@ -30,7 +31,12 @@ class LiquidPlugin extends BasePlugin {
 
   Future<String> renderContent(String content, Base page) async {
     final renderWithLiquid = page.config['render_with_liquid'] != false;
-    if (!renderWithLiquid || !containsLiquid(content)) {
+    final hasShortcode = containsShortcode(content);
+    if (renderWithLiquid && hasShortcode) {
+      content = replaceShortcodesWithLiquid(content);
+    }
+
+    if (!renderWithLiquid || (!containsLiquid(content) && !hasShortcode)) {
       return content;
     }
 

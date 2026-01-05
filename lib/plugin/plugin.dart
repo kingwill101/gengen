@@ -3,8 +3,11 @@ import 'dart:async';
 import 'package:gengen/models/base.dart';
 import 'package:gengen/plugin/plugin_metadata.dart';
 import 'package:logging/logging.dart';
+import 'package:liquify/liquify.dart' as liquid;
 
 import 'package:gengen/plugin/logger.dart';
+
+typedef LiquidFilter = liquid.FilterFunction;
 
 extension PluginLogExtension on BasePlugin {
   Logger get logger => plugLog;
@@ -70,5 +73,13 @@ abstract class BasePlugin {
   /// Returns additional meta tags to be included in head
   Map<String, String> getMetaTags() {
     return {};
+  }
+
+  /// Returns Liquid filters to register globally.
+  ///
+  /// The map key is the filter name, and the value is a filter function
+  /// compatible with Liquify's FilterRegistry.
+  Map<String, LiquidFilter> getLiquidFilters() {
+    return const {};
   }
 }

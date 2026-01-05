@@ -342,5 +342,5 @@ permalink: /:categories/:title/
 ## Related Documentation
 
 - [Pages Documentation](pages.md) - Creating and configuring pages
-- [Aliases Documentation](aliases.md) - Multiple URLs for the same content
+- [Aliases Documentation](/aliases/) - Multiple URLs for the same content
 - [Configuration Guide](config.md) - Site-wide permalink settings 

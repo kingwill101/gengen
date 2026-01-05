@@ -270,6 +270,20 @@ All hook names are **snake_case**. Missing hooks are treated as no-ops.
 Asset paths are **relative to the plugin directory** and are served at
 `/assets/plugins/<plugin-name>/<asset-path>`.
 
+#### Liquid filters
+
+{% include docs_reference_table.html scope=site.data.lua_plugins.hooks.liquid %}
+
+Filters receive `(value, args, named_args)` and return the transformed value.
+
+```lua
+liquid_filters = {
+  shout = function(value, args, named)
+    return string.upper(tostring(value))
+  end
+}
+```
+
 ### Page object in `convert`
 
 The `page` argument is a plain Lua table derived from the internal document model.

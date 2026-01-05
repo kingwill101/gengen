@@ -6,15 +6,29 @@ class Include extends AbstractTag with CustomTagParser {
   @override
   dynamic evaluate(Evaluator evaluator, Buffer buffer) {
     final includeName = _resolveIncludeName(evaluator);
+    final includeArgs = _resolveIncludeArgs(evaluator);
     final nodes = evaluator.resolveAndParseTemplate(includeName);
-    evaluator.evaluateNodes(nodes);
+    evaluator.context.pushScope();
+    evaluator.context.setVariable('include', includeArgs);
+    try {
+      evaluator.evaluateNodes(nodes);
+    } finally {
+      evaluator.context.popScope();
+    }
   }
 
   @override
   dynamic evaluateAsync(Evaluator evaluator, Buffer buffer) async {
     final includeName = _resolveIncludeName(evaluator);
+    final includeArgs = await _resolveIncludeArgsAsync(evaluator);
     final nodes = await evaluator.resolveAndParseTemplateAsync(includeName);
-    await evaluator.evaluateNodesAsync(nodes);
+    evaluator.context.pushScope();
+    evaluator.context.setVariable('include', includeArgs);
+    try {
+      await evaluator.evaluateNodesAsync(nodes);
+    } finally {
+      evaluator.context.popScope();
+    }
   }
 
   @override
@@ -27,6 +41,9 @@ class Include extends AbstractTag with CustomTagParser {
     final parts = <String>[];
 
     for (final node in content) {
+      if (node is Assignment) {
+        continue;
+      }
       final resolved = _resolveNodeValue(evaluator, node);
       if (resolved != null) {
         parts.add(resolved);
@@ -34,6 +51,36 @@ class Include extends AbstractTag with CustomTagParser {
     }
 
     return parts.join();
+  }
+
+  Map<String, dynamic> _resolveIncludeArgs(Evaluator evaluator) {
+    final args = <String, dynamic>{};
+
+    for (final node in content) {
+      if (node is! Assignment) continue;
+      final key = _renderNode(node.variable);
+      if (key == null || key.isEmpty) continue;
+      final value = evaluator.evaluate(node.value);
+      args[key] = value;
+    }
+
+    return args;
+  }
+
+  Future<Map<String, dynamic>> _resolveIncludeArgsAsync(
+    Evaluator evaluator,
+  ) async {
+    final args = <String, dynamic>{};
+
+    for (final node in content) {
+      if (node is! Assignment) continue;
+      final key = _renderNode(node.variable);
+      if (key == null || key.isEmpty) continue;
+      final value = await evaluator.evaluateAsync(node.value);
+      args[key] = value;
+    }
+
+    return args;
   }
 
   String? _resolveNodeValue(Evaluator evaluator, ASTNode node) {

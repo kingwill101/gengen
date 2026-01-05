@@ -10,6 +10,7 @@ import 'package:gengen/liquid/tags/include_relative.dart';
 import 'package:gengen/liquid/tags/link.dart' as link;
 import 'package:gengen/liquid/tags/plugin_assets.dart';
 import 'package:gengen/liquid/tags/seo.dart';
+import 'package:gengen/liquid/tags/shortcode.dart';
 import 'package:gengen/site.dart';
 import 'package:gengen/utilities.dart';
 import 'package:glob/glob.dart';
@@ -63,6 +64,10 @@ class GenGenTempate {
       'include_relative',
       (content, filters) => IncludeRelative(content, filters),
     );
+    liquid.TagRegistry.register(
+      'shortcode',
+      (content, filters) => ShortcodeTag(content, filters),
+    );
 
     // Plugin asset injection tags
     liquid.TagRegistry.register(
@@ -75,6 +80,14 @@ class GenGenTempate {
     );
     liquid.FilterRegistry.registerModule('ur', UrlModule());
     liquid.FilterRegistry.registerModule('data', DataModule());
+
+    for (final plugin in site.plugins) {
+      final filters = plugin.getLiquidFilters();
+      if (filters.isEmpty) continue;
+      for (final entry in filters.entries) {
+        liquid.FilterRegistry.register(entry.key, entry.value);
+      }
+    }
   }
 
   Future<String> render() async {

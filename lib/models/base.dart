@@ -245,6 +245,18 @@ class Base with WatcherMixin {
       log.info("write completed for $relativePath in ${duration.inMilliseconds}ms");
       return;
     }
+
+    if (isStatic && !isSass && ext == '.css') {
+      final hasSassTwin = site.staticFiles.any((asset) {
+        if (!asset.isSass) return false;
+        final sassOutputPath = setExtension(asset.filePath, '.css');
+        return sassOutputPath == filePath;
+      });
+      if (hasSassTwin) {
+        log.info('Skipping $relativePath because a Sass asset will generate ${p.basename(filePath)}');
+        return;
+      }
+    }
     log.info("trying to write $relativePath");
     File file = await fs.file(filePath).create(recursive: true);
 
