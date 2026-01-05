@@ -1,0 +1,3 @@
+name: theme-banner
+description: "Theme plugin that injects a floating badge and writes an output file."
+entrypoint: main.lua:init_plugin

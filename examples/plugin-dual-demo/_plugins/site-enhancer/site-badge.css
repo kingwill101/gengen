@@ -1,0 +1,9 @@
+.plugin-callout {
+  border: 1px solid #38bdf8;
+  background: #ecfeff;
+  padding: 16px 18px;
+  border-radius: 12px;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 24px;
+}

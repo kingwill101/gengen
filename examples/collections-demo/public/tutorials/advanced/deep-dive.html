@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Deep Dive | Collections Demo</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #0f1115;
+        --card: #171a21;
+        --accent: #4da3ff;
+        --text: #f4f6fb;
+        --muted: #9aa5b1;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: "IBM Plex Sans", system-ui, sans-serif;
+        color: var(--text);
+        background: linear-gradient(180deg, #0f1115 0%, #111827 100%);
+      }
+      a { color: var(--accent); text-decoration: none; }
+      .wrap {
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 32px 24px 64px;
+      }
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 32px;
+      }
+      header .title {
+        font-size: 20px;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+      }
+      header .meta {
+        color: var(--muted);
+        font-size: 14px;
+      }
+      .card {
+        background: var(--card);
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 16px 40px rgba(0,0,0,0.35);
+      }
+      .pager {
+        margin-top: 24px;
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        color: var(--muted);
+      }
+      .pager div { flex: 1; }
+      .pager a { display: inline-block; margin-top: 4px; }
+      footer {
+        margin-top: 40px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <div>
+          <div class="title">Collections Demo</div>
+          <div class="meta">Tutorials Collection</div>
+        </div>
+        <div class="meta"><a href="/">Home</a></div>
+      </header>
+
+      <main class="card">
+        <h1>Deep Dive</h1>
+        <p>Nested content shows that relative paths are preserved in the collection output.</p>
+
+
+        <div class="pager">
+          <div>
+            
+              <div>Previous</div>
+              <a href="/tutorials/next-steps.html">Next Steps</a>
+            
+          </div>
+          <div style="text-align: right;">
+            
+          </div>
+        </div>
+      </main>
+
+      <footer>
+        Uses collection ordering for previous/next navigation.
+      </footer>
+    </div>
+  </body>
+</html>

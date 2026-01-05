@@ -1,0 +1,1 @@
+Static collection file (no front matter) — should be written to /tutorials/assets/diagram.txt.

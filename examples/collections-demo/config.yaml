@@ -1,0 +1,43 @@
+# Example site showcasing Jekyll-style collections parity
+
+title: "Collections Demo"
+description: "Jekyll-compatible collections_dir, ordering, and include_relative"
+permalink: "pretty"
+date_format: "yyyy-MM-dd"
+
+theme: ""
+layout_dir: _layouts
+
+# Scope the site to this example when building from repo root
+source: "examples/collections-demo"
+destination: "public"
+
+collections_dir: "collections"
+collections:
+  tutorials:
+    output: true
+    sort_by: lesson
+  snippets:
+    output: true
+    order:
+      - first.md
+      - second.md
+
+defaults:
+  - scope:
+      type: tutorials
+    values:
+      layout: tutorial
+  - scope:
+      type: snippets
+    values:
+      layout: default
+
+plugins:
+  groups:
+    core:
+      - DraftPlugin
+      - MarkdownPlugin
+      - LiquidPlugin
+      - SassPlugin
+      - PaginationPlugin

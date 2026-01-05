@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Collections Demo | Collections Demo</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #0f1115;
+        --card: #171a21;
+        --accent: #4da3ff;
+        --text: #f4f6fb;
+        --muted: #9aa5b1;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: "IBM Plex Sans", system-ui, sans-serif;
+        color: var(--text);
+        background: linear-gradient(180deg, #0f1115 0%, #111827 100%);
+      }
+      a { color: var(--accent); text-decoration: none; }
+      .wrap {
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 32px 24px 64px;
+      }
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 32px;
+      }
+      header .title {
+        font-size: 20px;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+      }
+      header .meta {
+        color: var(--muted);
+        font-size: 14px;
+      }
+      .card {
+        background: var(--card);
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 16px 40px rgba(0,0,0,0.35);
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 16px;
+      }
+      pre {
+        background: #0b0d12;
+        padding: 12px 16px;
+        border-radius: 10px;
+        overflow-x: auto;
+        color: #c7d2fe;
+      }
+      footer {
+        margin-top: 40px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <div>
+          <div class="title">Collections Demo</div>
+          <div class="meta">Jekyll-compatible collections_dir, ordering, and include_relative</div>
+        </div>
+        <div class="meta">collections_dir: collections</div>
+      </header>
+
+      <main class="card">
+        <h1 id="collections-demo">Collections Demo</h1>
+<p>This example mirrors Jekyll-style collection behavior: <code>collections_dir</code>, ordering,
+static files inside collections, and <code>{% include_relative %}</code>.</p>
+<h2 id="collections">Collections</h2>
+<div class="grid">
+  <div class="card">
+    <strong>snippets</strong><br />
+    output: true<br />
+    docs: 2<br />
+    files: 0
+  </div>
+  <div class="card">
+    <strong>tutorials</strong><br />
+    output: true<br />
+    docs: 3<br />
+    files: 2
+  </div>
+</div>
+<h2 id="tutorials-sorted-by-lesson">Tutorials (sorted by <code>lesson</code>)</h2>
+<ul>
+<li>
+<p><a href="/tutorials/intro.html">Getting Started</a> — lesson 1</p>
+</li>
+<li>
+<p><a href="/tutorials/next-steps.html">Next Steps</a> — lesson 2</p>
+</li>
+<li>
+<p><a href="/tutorials/advanced/deep-dive.html">Deep Dive</a> — lesson 3</p>
+</li>
+</ul>
+<h2 id="snippets-manual-order">Snippets (manual <code>order</code>)</h2>
+<ul>
+<li>
+<p>First Snippet</p>
+</li>
+<li>
+<p>Second Snippet</p>
+</li>
+</ul>
+<h2 id="documents-includes-collection-static-files">Documents (includes collection static files)</h2>
+<ul>
+<li>
+<p>_posts/2024-01-01-collected.md → /posts/2024/01/01/collected-post/</p>
+</li>
+<li>
+<p>_tutorials/intro.md → /tutorials/intro.html</p>
+</li>
+<li>
+<p>_tutorials/next-steps.md → /tutorials/next-steps.html</p>
+</li>
+<li>
+<p>_tutorials/advanced/deep-dive.md → /tutorials/advanced/deep-dive.html</p>
+</li>
+<li>
+<p>_snippets/first.md → /snippets/first.html</p>
+</li>
+<li>
+<p>_snippets/second.md → /snippets/second.html</p>
+</li>
+<li>
+<p>_tutorials/assets/diagram.txt → /tutorials/assets/diagram.txt</p>
+</li>
+<li>
+<p>_tutorials/callout.md → /tutorials/callout.md</p>
+</li>
+</ul>
+<h2 id="posts">Posts</h2>
+<p>Only posts under <code>collections/_posts</code> are read when <code>collections_dir</code> is set.</p>
+<ul>
+<li>Collected Post (/posts/2024/01/01/collected-post/)</li>
+</ul>
+
+      </main>
+
+      <footer>
+        Built with GenGen collections parity demo.
+      </footer>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,7 @@
+title: "Plugin Dual Demo"
+description: "Demonstrates site and theme Lua plugins working together."
+url: "https://example.com"
+theme: default
+plugins:
+  enabled:
+    - core
