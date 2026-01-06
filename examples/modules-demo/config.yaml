@@ -1,0 +1,42 @@
+title: "Modules Demo Site"
+url: "http://localhost:4000"
+description: "Demonstrating GenGen's module system"
+
+# Module configuration
+module:
+  # Import themes/plugins from remote repositories
+  imports:
+    # GitHub repository with version constraint
+    - path: github.com/kingwill101/gengen_content
+      version: ^1.0.0
+
+    # Example: GitLab repository
+    # - path: gitlab.com/org/gengen-theme-awesome
+    #   version: ^2.0.0
+
+    # Example: Git branch (for development)
+    # - path: github.com/user/theme
+    #   version: branch:develop
+
+    # Example: Specific commit
+    # - path: github.com/user/theme
+    #   version: commit:abc123def
+
+  # Development replacements (for local theme development)
+  # Uncomment to override module with local path:
+  # replacements:
+  #   - path: github.com/kingwill101/gengen_content
+  #     replacement: ../my-local-theme
+
+# Use theme from the imported module
+theme: gengen-theme-minimal
+
+# Standard site configuration
+plugins:
+  enabled:
+    - core
+
+# Plugin configuration
+pagination:
+  enabled: true
+  per_page: 5

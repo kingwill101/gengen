@@ -5,9 +5,9 @@
       <p>Thoughts, stories, and curated media exploring technology and culture.</p>
     </div>
     <div class="aurora-footer__links">
-      <a href="/">Home</a>
-      <a href="/posts/">Archive</a>
-      <a href="/about.html">About</a>
+      <a href="{{ "/" | relative_url }}">Home</a>
+      <a href="{{ "/posts/" | relative_url }}">Archive</a>
+      <a href="{{ "/about.html" | relative_url }}">About</a>
     </div>
     <div class="aurora-footer__meta">
       <p>&copy; {{ site.time | date: "yyyy" }} {{ site.title }}. All rights reserved.</p>

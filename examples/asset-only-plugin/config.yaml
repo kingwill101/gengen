@@ -1,5 +1,0 @@
-title: Asset-Only Plugin Demo
-description: Demonstrating GenGen's asset-only plugin system
-url: http://localhost:4000
-source: .
-destination: public 

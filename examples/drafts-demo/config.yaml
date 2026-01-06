@@ -1,0 +1,10 @@
+title: "Drafts Demo"
+url: "http://localhost:4000"
+description: "Demonstrating draft posts in GenGen"
+
+# Draft configuration
+publish_drafts: false  # Set to true or use --drafts flag
+
+plugins:
+  enabled:
+    - core

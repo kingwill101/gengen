@@ -1,3 +1,0 @@
-name: StdlibDemoPlugin
-description: Sample Lua plugin that uses the GenGen standard library helpers.
-entrypoint: main.lua:init_plugin

@@ -20,7 +20,7 @@
               <ul class="docs-sidebar__pages">
                 {% for entry in section.pages %}
                   <li>
-                    <a href="{{ entry.url }}"
+                    <a href="{% if entry.external %}{{ entry.url }}{% else %}{{ entry.url | relative_url }}{% endif %}"
                        class="docs-sidebar__link{% if page.url == entry.url %} is-active{% endif %}"
                        {% if entry.external %}target="_blank" rel="noopener"{% endif %}>
                       {{ entry.title }}

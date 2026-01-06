@@ -20,7 +20,7 @@
           {% if site.data.docs.navigation.quick_nav %}
             <div class="home-hero__actions">
               {% for action in site.data.docs.navigation.quick_nav %}
-                <a class="button button--primary" href="{{ action.url }}">
+                <a class="button button--primary" href="{% if action.external %}{{ action.url }}{% elsif action.url and action.url | slice: 0, 1 == '#' %}{{ action.url }}{% else %}{{ action.url | relative_url }}{% endif %}">
                   {{ action.icon }} {{ action.title }}
                 </a>
               {% endfor %}

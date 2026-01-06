@@ -2,7 +2,7 @@
 {% assign nav_items = nav_source | split: "|" %}
 <header class="aurora-header">
   <div class="aurora-container aurora-header__inner">
-    <a class="aurora-brand" href="/">{{ site.title }}</a>
+    <a class="aurora-brand" href="{{ "/" | relative_url }}">{{ site.title }}</a>
     <button class="aurora-nav__toggle" aria-expanded="false" aria-controls="primary-navigation">
       <span class="aurora-nav__toggle-bar"></span>
       <span class="aurora-nav__toggle-bar"></span>

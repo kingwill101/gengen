@@ -2,7 +2,7 @@
 <header class="docs-header{% if is_home %} docs-header--home{% endif %}">
   <div class="docs-header__inner">
     <div class="docs-header__brand">
-      <a class="brand-link" href="/">
+      <a class="brand-link" href="{{ "/" | relative_url }}">
         <span class="brand-logo">📘</span>
         <span class="brand-text">
           <span class="brand-title">{{ site.title }}</span>
@@ -16,7 +16,7 @@
     {% if site.data.site.main_navigation %}
     <nav class="docs-header__nav" aria-label="Primary">
       {% for item in site.data.site.main_navigation %}
-        <a href="{{ item.url }}"
+        <a href="{% if item.external %}{{ item.url }}{% else %}{{ item.url | relative_url }}{% endif %}"
            class="nav-link{% if page.url == item.url %} is-active{% endif %}">
           {{ item.title }}
         </a>

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  {% render 'meta' %}
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+    header { border-bottom: 1px solid #ccc; margin-bottom: 20px; }
+    footer { border-top: 1px solid #ccc; margin-top: 20px; padding-top: 20px; color: #666; }
+    nav a { margin-right: 15px; }
+    .active { font-weight: bold; }
+  </style>
+</head>
+<body>
+  {% render 'header' %}
+  
+  <main>
+    {{ content }}
+  </main>
+  
+  {% render 'footer' %}
+</body>
+</html>

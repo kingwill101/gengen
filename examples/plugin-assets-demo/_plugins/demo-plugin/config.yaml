@@ -1,5 +1,0 @@
-name: DemoPlugin
-entrypoint: demo_plugin:Plugin
-description: A demo plugin showing automatic asset injection
-author: GenGen Team
-version: 1.0.0 

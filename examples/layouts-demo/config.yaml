@@ -1,0 +1,7 @@
+title: "Layouts Demo"
+url: "http://localhost:4000"
+description: "Demonstrating layouts and includes"
+
+plugins:
+  enabled:
+    - core

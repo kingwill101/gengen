@@ -1,5 +1,0 @@
-site:
-  title: Permalink Test Site
-  url: https://example.com
-permalink: date
-destination: public 
