@@ -4,6 +4,7 @@ import 'package:gengen/fs.dart';
 import 'package:gengen/module/module_cache.dart';
 import 'package:gengen/module/module_import.dart';
 import 'package:gengen/module/module_source.dart';
+import 'package:gengen/module/version_constraint.dart';
 import 'package:path/path.dart' as p;
 
 /// Handles local path module sources (./path, ../path, /absolute/path)
@@ -72,7 +73,7 @@ class GitModuleSource implements ModuleSourceHandler {
   }) async {
     final version = lockVersion ?? import_.version ?? 'main';
 
-    // Check if already cached
+    // Check if already cached with exact version
     if (cache.isCached(import_.path, version)) {
       final cachePath = cache.getModulePath(import_.path, version);
       return ResolvedModule(
@@ -84,8 +85,49 @@ class GitModuleSource implements ModuleSourceHandler {
       );
     }
 
+    // For semver constraints, check if any cached version satisfies
+    if (version.startsWith('^') || version.contains(' ') || version.startsWith('>=')) {
+      final cachedVersions = cache.getCachedVersions(import_.path);
+      final matchingCached = _findMatchingCachedVersion(cachedVersions, version);
+      if (matchingCached != null) {
+        final cachePath = cache.getModulePath(import_.path, matchingCached);
+        return ResolvedModule(
+          import_: import_,
+          resolvedPath: cachePath,
+          resolvedVersion: matchingCached,
+          source: ModuleSource.gitCache,
+        );
+      }
+    }
+
     // Need to fetch
     return fetch(import_);
+  }
+
+  /// Find a cached version that satisfies the constraint
+  String? _findMatchingCachedVersion(List<String> cachedVersions, String constraint) {
+    if (cachedVersions.isEmpty) return null;
+
+    try {
+      final versionConstraint = VersionConstraint.parse(constraint);
+
+      // Sort versions descending to get latest first
+      final sorted = cachedVersions.toList()
+        ..sort((a, b) => b.compareTo(a));
+
+      for (final cached in sorted) {
+        // Try to parse the cached version
+        final cleanVersion = cached.startsWith('v') ? cached.substring(1) : cached;
+        final parsed = Version.tryParse(cleanVersion);
+        if (parsed != null && versionConstraint.allows(parsed)) {
+          return cached;
+        }
+      }
+    } catch (_) {
+      // If constraint parsing fails, return null
+    }
+
+    return null;
   }
 
   @override
