@@ -1,3 +1,5 @@
+import 'package:gengen/exceptions.dart';
+
 /// Represents a semantic version
 class Version implements Comparable<Version> {
   final int major;
@@ -19,9 +21,20 @@ class Version implements Comparable<Version> {
   );
 
   factory Version.parse(String version) {
-    final match = _versionRegex.firstMatch(version.trim());
+    final trimmed = version.trim();
+    if (trimmed.isEmpty) {
+      throw VersionException(
+        'Version string cannot be empty',
+        version: version,
+      );
+    }
+
+    final match = _versionRegex.firstMatch(trimmed);
     if (match == null) {
-      throw FormatException('Invalid version format: $version');
+      throw VersionException(
+        'Invalid semantic version format. Expected format: MAJOR.MINOR.PATCH[-prerelease][+build]',
+        version: version,
+      );
     }
 
     return Version(
@@ -87,6 +100,16 @@ abstract class VersionConstraint {
   const VersionConstraint();
 
   /// Parse a version constraint string
+  ///
+  /// Supported formats:
+  /// - `any` or empty: matches any version
+  /// - `1.2.3`: exact version match
+  /// - `^1.2.3`: caret constraint (compatible versions)
+  /// - `>=1.0.0`, `<2.0.0`, `>1.0.0`, `<=2.0.0`: comparison constraints
+  /// - `>=1.0.0 <2.0.0`: range constraint
+  /// - `branch:main`, `tag:v1.0.0`, `commit:abc123`: git ref constraints
+  ///
+  /// Throws [VersionException] if the constraint is invalid.
   factory VersionConstraint.parse(String constraint) {
     final trimmed = constraint.trim();
 
@@ -96,19 +119,55 @@ abstract class VersionConstraint {
 
     // Git ref constraints
     if (trimmed.startsWith('branch:')) {
-      return GitRefConstraint(type: GitRefType.branch, ref: trimmed.substring(7));
+      final ref = trimmed.substring(7);
+      if (ref.isEmpty) {
+        throw VersionException(
+          'Branch name cannot be empty',
+          constraint: constraint,
+        );
+      }
+      return GitRefConstraint(type: GitRefType.branch, ref: ref);
     }
     if (trimmed.startsWith('tag:')) {
-      return GitRefConstraint(type: GitRefType.tag, ref: trimmed.substring(4));
+      final ref = trimmed.substring(4);
+      if (ref.isEmpty) {
+        throw VersionException(
+          'Tag name cannot be empty',
+          constraint: constraint,
+        );
+      }
+      return GitRefConstraint(type: GitRefType.tag, ref: ref);
     }
     if (trimmed.startsWith('commit:')) {
-      return GitRefConstraint(type: GitRefType.commit, ref: trimmed.substring(7));
+      final ref = trimmed.substring(7);
+      if (ref.isEmpty) {
+        throw VersionException(
+          'Commit SHA cannot be empty',
+          constraint: constraint,
+        );
+      }
+      return GitRefConstraint(type: GitRefType.commit, ref: ref);
     }
 
     // Caret constraint: ^1.0.0
     if (trimmed.startsWith('^')) {
-      final version = Version.parse(trimmed.substring(1));
-      return CaretConstraint(version);
+      final versionStr = trimmed.substring(1);
+      if (versionStr.isEmpty) {
+        throw VersionException(
+          'Caret constraint requires a version (e.g., ^1.0.0)',
+          constraint: constraint,
+        );
+      }
+      try {
+        final version = Version.parse(versionStr);
+        return CaretConstraint(version);
+      } on VersionException catch (e) {
+        throw VersionException(
+          'Invalid version in caret constraint',
+          constraint: constraint,
+          cause: e,
+        );
+      }
     }
 
     // Range constraint: >=1.0.0 <2.0.0
@@ -125,7 +184,15 @@ abstract class VersionConstraint {
     }
 
     // Exact version: 1.2.3
-    return ExactConstraint(Version.parse(trimmed));
+    try {
+      return ExactConstraint(Version.parse(trimmed));
+    } on VersionException catch (e) {
+      throw VersionException(
+        'Invalid version constraint',
+        constraint: constraint,
+        cause: e,
+      );
+    }
   }
 
   /// Check if a version satisfies this constraint
@@ -194,26 +261,46 @@ class ComparisonConstraint extends VersionConstraint {
   const ComparisonConstraint(this.operator, this.version);
 
   factory ComparisonConstraint.parse(String constraint) {
+    final trimmed = constraint.trim();
     String op;
     String versionStr;
 
-    if (constraint.startsWith('>=')) {
+    if (trimmed.startsWith('>=')) {
       op = '>=';
-      versionStr = constraint.substring(2);
-    } else if (constraint.startsWith('<=')) {
+      versionStr = trimmed.substring(2);
+    } else if (trimmed.startsWith('<=')) {
       op = '<=';
-      versionStr = constraint.substring(2);
-    } else if (constraint.startsWith('>')) {
+      versionStr = trimmed.substring(2);
+    } else if (trimmed.startsWith('>')) {
       op = '>';
-      versionStr = constraint.substring(1);
-    } else if (constraint.startsWith('<')) {
+      versionStr = trimmed.substring(1);
+    } else if (trimmed.startsWith('<')) {
       op = '<';
-      versionStr = constraint.substring(1);
+      versionStr = trimmed.substring(1);
     } else {
-      throw FormatException('Invalid comparison constraint: $constraint');
+      throw VersionException(
+        'Invalid comparison operator. Expected >=, <=, >, or <',
+        constraint: constraint,
+      );
     }
 
-    return ComparisonConstraint(op, Version.parse(versionStr.trim()));
+    versionStr = versionStr.trim();
+    if (versionStr.isEmpty) {
+      throw VersionException(
+        'Comparison constraint requires a version (e.g., >=1.0.0)',
+        constraint: constraint,
+      );
+    }
+
+    try {
+      return ComparisonConstraint(op, Version.parse(versionStr));
+    } on VersionException catch (e) {
+      throw VersionException(
+        'Invalid version in comparison constraint',
+        constraint: constraint,
+        cause: e,
+      );
+    }
   }
 
   @override
@@ -244,12 +331,34 @@ class RangeConstraint extends VersionConstraint {
 
   factory RangeConstraint.parse(String constraint) {
     final parts = constraint.split(RegExp(r'\s+'));
-    final constraints = parts
-        .where((p) => p.isNotEmpty)
-        .map((p) => ComparisonConstraint.parse(p))
-        .toList();
+    final nonEmpty = parts.where((p) => p.isNotEmpty).toList();
 
-    return RangeConstraint(constraints);
+    if (nonEmpty.isEmpty) {
+      throw VersionException(
+        'Range constraint cannot be empty',
+        constraint: constraint,
+      );
+    }
+
+    if (nonEmpty.length < 2) {
+      throw VersionException(
+        'Range constraint requires at least two parts (e.g., >=1.0.0 <2.0.0)',
+        constraint: constraint,
+      );
+    }
+
+    try {
+      final constraints = nonEmpty
+          .map((p) => ComparisonConstraint.parse(p))
+          .toList();
+      return RangeConstraint(constraints);
+    } on VersionException catch (e) {
+      throw VersionException(
+        'Invalid range constraint',
+        constraint: constraint,
+        cause: e,
+      );
+    }
   }
 
   @override

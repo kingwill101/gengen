@@ -1,3 +1,4 @@
+import 'package:gengen/exceptions.dart';
 import 'package:gengen/module/version_constraint.dart';
 import 'package:test/test.dart';
 
@@ -312,6 +313,173 @@ void main() {
       expect(alpha < stable, true);
       expect(beta < stable, true);
       expect(alpha < beta, true); // alpha comes before beta alphabetically
+    });
+  });
+
+  group('Error handling', () {
+    group('Version.parse errors', () {
+      test('throws VersionException for empty string', () {
+        expect(
+          () => Version.parse(''),
+          throwsA(isA<VersionException>()),
+        );
+      });
+
+      test('throws VersionException for whitespace only', () {
+        expect(
+          () => Version.parse('   '),
+          throwsA(isA<VersionException>()),
+        );
+      });
+
+      test('throws VersionException for invalid format', () {
+        expect(
+          () => Version.parse('not-a-version'),
+          throwsA(isA<VersionException>()),
+        );
+      });
+
+      test('throws VersionException for incomplete version', () {
+        expect(
+          () => Version.parse('1.2'),
+          throwsA(isA<VersionException>()),
+        );
+      });
+
+      test('exception contains version string', () {
+        try {
+          Version.parse('invalid');
+          fail('Expected VersionException');
+        } on VersionException catch (e) {
+          expect(e.version, 'invalid');
+          expect(e.toString(), contains('invalid'));
+        }
+      });
+    });
+
+    group('VersionConstraint.parse errors', () {
+      test('throws VersionException for empty caret constraint', () {
+        expect(
+          () => VersionConstraint.parse('^'),
+          throwsA(isA<VersionException>()),
+        );
+      });
+
+      test('throws VersionException for invalid caret version', () {
+        expect(
+          () => VersionConstraint.parse('^invalid'),
+          throwsA(isA<VersionException>()),
+        );
+      });
+
+      test('throws VersionException for empty branch name', () {
+        expect(
+          () => VersionConstraint.parse('branch:'),
+          throwsA(isA<VersionException>()),
+        );
+      });
+
+      test('throws VersionException for empty tag name', () {
+        expect(
+          () => VersionConstraint.parse('tag:'),
+          throwsA(isA<VersionException>()),
+        );
+      });
+
+      test('throws VersionException for empty commit sha', () {
+        expect(
+          () => VersionConstraint.parse('commit:'),
+          throwsA(isA<VersionException>()),
+        );
+      });
+
+      test('throws VersionException for invalid exact version', () {
+        expect(
+          () => VersionConstraint.parse('not-a-version'),
+          throwsA(isA<VersionException>()),
+        );
+      });
+
+      test('exception includes constraint string', () {
+        try {
+          VersionConstraint.parse('^bad');
+          fail('Expected VersionException');
+        } on VersionException catch (e) {
+          expect(e.constraint, '^bad');
+          expect(e.toString(), contains('^bad'));
+        }
+      });
+    });
+
+    group('ComparisonConstraint.parse errors', () {
+      test('throws VersionException for missing version after >=', () {
+        expect(
+          () => ComparisonConstraint.parse('>='),
+          throwsA(isA<VersionException>()),
+        );
+      });
+
+      test('throws VersionException for missing version after <', () {
+        expect(
+          () => ComparisonConstraint.parse('<'),
+          throwsA(isA<VersionException>()),
+        );
+      });
+
+      test('throws VersionException for invalid operator', () {
+        expect(
+          () => ComparisonConstraint.parse('==1.0.0'),
+          throwsA(isA<VersionException>()),
+        );
+      });
+
+      test('throws VersionException for invalid version', () {
+        expect(
+          () => ComparisonConstraint.parse('>=invalid'),
+          throwsA(isA<VersionException>()),
+        );
+      });
+    });
+
+    group('RangeConstraint.parse errors', () {
+      test('throws VersionException for single constraint', () {
+        // Range requires at least two parts
+        expect(
+          () => RangeConstraint.parse('>=1.0.0'),
+          throwsA(isA<VersionException>()),
+        );
+      });
+
+      test('throws VersionException for invalid part', () {
+        expect(
+          () => RangeConstraint.parse('>=1.0.0 <invalid'),
+          throwsA(isA<VersionException>()),
+        );
+      });
+    });
+
+    group('Exception message formatting', () {
+      test('VersionException formats with version', () {
+        final e = VersionException('Test error', version: '1.2.3');
+        final str = e.toString();
+        expect(str, contains('Test error'));
+        expect(str, contains('Version: 1.2.3'));
+      });
+
+      test('VersionException formats with constraint', () {
+        final e = VersionException('Test error', constraint: '^1.0.0');
+        final str = e.toString();
+        expect(str, contains('Test error'));
+        expect(str, contains('Constraint: ^1.0.0'));
+      });
+
+      test('VersionException formats with cause', () {
+        final cause = VersionException('Inner error');
+        final e = VersionException('Outer error', cause: cause);
+        final str = e.toString();
+        expect(str, contains('Outer error'));
+        expect(str, contains('Caused by:'));
+      });
     });
   });
 }

@@ -54,3 +54,102 @@ class TemplateException extends GenGenException {
 class FileSystemException extends GenGenException {
   const FileSystemException(super.message, [super.cause, super.stackTrace]);
 }
+
+/// Exception thrown when module operations fail.
+class ModuleException extends GenGenException {
+  const ModuleException(super.message, [super.cause, super.stackTrace]);
+
+  @override
+  String toString() {
+    if (cause != null) {
+      return 'ModuleException: $message\nCaused by: $cause';
+    }
+    return 'ModuleException: $message';
+  }
+}
+
+/// Exception thrown when version parsing or constraint matching fails.
+class VersionException extends ModuleException {
+  final String? version;
+  final String? constraint;
+
+  VersionException(
+    String message, {
+    this.version,
+    this.constraint,
+    dynamic cause,
+    StackTrace? stackTrace,
+  }) : super(message, cause, stackTrace);
+
+  @override
+  String toString() {
+    final parts = <String>['VersionException: $message'];
+    if (version != null) parts.add('  Version: $version');
+    if (constraint != null) parts.add('  Constraint: $constraint');
+    if (cause != null) parts.add('  Caused by: $cause');
+    return parts.join('\n');
+  }
+}
+
+/// Exception thrown when module resolution fails.
+class ModuleResolutionException extends ModuleException {
+  final String modulePath;
+
+  ModuleResolutionException(
+    String message, {
+    required this.modulePath,
+    dynamic cause,
+    StackTrace? stackTrace,
+  }) : super(message, cause, stackTrace);
+
+  @override
+  String toString() {
+    final parts = <String>['ModuleResolutionException: $message'];
+    parts.add('  Module: $modulePath');
+    if (cause != null) parts.add('  Caused by: $cause');
+    return parts.join('\n');
+  }
+}
+
+/// Exception thrown when module fetching fails.
+class ModuleFetchException extends ModuleException {
+  final String modulePath;
+  final String? source;
+
+  ModuleFetchException(
+    String message, {
+    required this.modulePath,
+    this.source,
+    dynamic cause,
+    StackTrace? stackTrace,
+  }) : super(message, cause, stackTrace);
+
+  @override
+  String toString() {
+    final parts = <String>['ModuleFetchException: $message'];
+    parts.add('  Module: $modulePath');
+    if (source != null) parts.add('  Source: $source');
+    if (cause != null) parts.add('  Caused by: $cause');
+    return parts.join('\n');
+  }
+}
+
+/// Exception thrown when lockfile operations fail.
+class LockfileException extends ModuleException {
+  final String? lockfilePath;
+
+  LockfileException(
+    String message, {
+    this.lockfilePath,
+    dynamic cause,
+    StackTrace? stackTrace,
+  }) : super(message, cause, stackTrace);
+
+  @override
+  String toString() {
+    final parts = <String>['LockfileException: $message'];
+    if (lockfilePath != null) parts.add('  Lockfile: $lockfilePath');
+    if (cause != null) parts.add('  Caused by: $cause');
+    return parts.join('\n');
+  }
+}
