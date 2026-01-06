@@ -1,0 +1,38 @@
+name: Docs
+
+on:
+  push:
+    branches: [ "master" ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: dart-lang/setup-dart@9a04e6d73cca37bd455e0608d7e5092f881fd603
+
+      - name: Install dependencies
+        run: dart pub get
+
+      - name: Compile GenGen
+        run: dart compile exe bin/main.dart -o gengen
+
+      - name: Build docs site
+        run: ./gengen build docs
+
+      - name: Disable Jekyll on Pages
+        run: touch docs/public/.nojekyll
+
+      - name: Deploy to GitHub Pages branch
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: docs/public
+          publish_branch: gh-pages
+          force_orphan: true

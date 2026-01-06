@@ -45,6 +45,3 @@ jobs:
 
       - name: compile
         run: dart compile exe bin/main.dart
-
-      - name: run
-        run: ./bin/main.exe

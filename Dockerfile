@@ -11,7 +11,7 @@ RUN dart run build_runner build
 
 RUN dart compile exe bin/main.dart  -o gengen
 
-FROM alpine:3.19.0
+FROM alpine:latest
 
 COPY --from=build /src/gengen/gengen /app/gengen
 
