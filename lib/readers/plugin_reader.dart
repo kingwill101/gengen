@@ -3,6 +3,7 @@ import 'package:gengen/exceptions.dart';
 import 'package:gengen/fs.dart';
 import 'package:gengen/logging.dart';
 import 'package:gengen/models/plugin_asset.dart' as plugin_static;
+import 'package:gengen/module/module.dart';
 import 'package:gengen/path_extensions.dart';
 import 'package:gengen/plugin/loader.dart';
 import 'package:gengen/plugin/plugin.dart';
@@ -27,7 +28,123 @@ class PluginReader {
       log.info("Plugins loaded: THEME plugins action");
     }
 
+    // Load plugins from resolved modules
+    plugins.addAll(await _loadModulePlugins());
+
     return plugins;
+  }
+
+  /// Load plugins from module cache based on manifest
+  Future<List<BasePlugin>> _loadModulePlugins() async {
+    final config = Configuration();
+    final moduleSection = config.get<Map<String, dynamic>>('module');
+
+    if (moduleSection == null) {
+      return [];
+    }
+
+    final manifest = ModuleManifest.parse(moduleSection);
+    if (!manifest.hasImports) {
+      return [];
+    }
+
+    final plugins = <BasePlugin>[];
+    final cache = ModuleCache();
+
+    for (final import_ in manifest.imports) {
+      // Check if this module is a plugin (has _plugins directory or config.yaml)
+      String? modulePath;
+
+      // Check for replacement
+      final replacement = manifest.getReplacementFor(import_.path);
+      if (replacement != null) {
+        modulePath = p.isAbsolute(replacement)
+            ? replacement
+            : p.join(config.source, replacement);
+      } else {
+        // Check cache
+        final versions = cache.getCachedVersions(import_.path);
+        if (versions.isNotEmpty) {
+          modulePath = cache.getModulePath(import_.path, versions.last);
+        }
+      }
+
+      if (modulePath != null && fs.directory(modulePath).existsSync()) {
+        // Check if module has a _plugins directory
+        final pluginDir = fs.directory(p.join(modulePath, '_plugins'));
+        if (pluginDir.existsSync()) {
+          final modulePlugins = await dirPlugins(pluginDir);
+          plugins.addAll(modulePlugins);
+          log.info("Plugins loaded: MODULE ${import_.path}");
+        }
+
+        // Check if module itself is a plugin (has config.yaml at root)
+        final configFile = fs.file(p.join(modulePath, 'config.yaml'));
+        if (configFile.existsSync()) {
+          final modulePlugin = await _loadSinglePlugin(modulePath);
+          if (modulePlugin != null) {
+            plugins.add(modulePlugin);
+            log.info("Plugin loaded: MODULE ${import_.path}");
+          }
+        }
+      }
+    }
+
+    return plugins;
+  }
+
+  /// Load a single plugin from a directory
+  Future<BasePlugin?> _loadSinglePlugin(String pluginDir) async {
+    final configFile = fs.file(p.join(pluginDir, 'config.yaml'));
+    if (!configFile.existsSync()) {
+      return null;
+    }
+
+    try {
+      final pluginConfigContent =
+          readConfigFile(configFile.path) as Map<String, dynamic>;
+
+      final pluginDirName = p.basename(pluginDir);
+      final rawName = pluginConfigContent['name']?.toString() ?? '';
+      final pluginConfigName = rawName.trim().isEmpty ? pluginDirName : rawName;
+      pluginConfigContent['name'] = pluginConfigName;
+
+      final pluginAssets = <PluginAsset>[];
+
+      // Scan for plugin files
+      final directory = fs.directory(pluginDir);
+      final pluginFiles = directory.listSync(recursive: true);
+
+      for (var f in pluginFiles) {
+        if (FileStat.statSync(f.path).type == FileSystemEntityType.directory) {
+          continue;
+        }
+        if (f.path.contains("config.yaml")) continue;
+
+        pluginAssets.add(PluginAsset(name: p.basename(f.path), path: f.path));
+
+        if (!f.path.endsWith('.dart') && !f.path.endsWith('.lua')) {
+          final staticAsset = plugin_static.PluginStaticAsset(
+            f.path,
+            pluginConfigName,
+            name: p.basename(f.path),
+          );
+          Site.instance.staticFiles.add(staticAsset);
+        }
+      }
+
+      final config = {
+        ...pluginConfigContent,
+        "path": pluginDir,
+        "files": pluginAssets.map((a) => a.toJson()).toList(),
+      };
+
+      final plugin = PluginMetadata.fromJson(config);
+      return initializePlugin(plugin);
+    } catch (e) {
+      log.warning('Failed to load plugin from $pluginDir: $e');
+      return null;
+    }
   }
 
   static Future<List<BasePlugin>> dirPlugins(

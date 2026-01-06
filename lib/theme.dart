@@ -1,6 +1,7 @@
 import 'package:gengen/configuration.dart';
 import 'package:gengen/fs.dart';
 import 'package:gengen/logging.dart';
+import 'package:gengen/module/module.dart';
 import 'package:gengen/path.dart';
 import 'package:path/path.dart' as p;
 
@@ -19,6 +20,27 @@ class Theme with PathMixin {
   }
 
   void decideLocation(String? themePath) {
+    // Check if name looks like a module path
+    if (_isModulePath(name)) {
+      final modulePath = _resolveModulePath(name);
+      if (modulePath != null) {
+        loaded = true;
+        location = modulePath;
+        _loadThemeConfig();
+        return;
+      }
+    }
+
+    // Try to find theme in cached modules
+    final moduleTheme = _findThemeInModules(name);
+    if (moduleTheme != null) {
+      loaded = true;
+      location = moduleTheme;
+      _loadThemeConfig();
+      return;
+    }
+
+    // Fall back to local theme directories
     var locations = [
       p.join(themePath ?? "", name),
       p.join(p.current, config.get<String>("themes_dir"), name),
@@ -37,11 +59,97 @@ class Theme with PathMixin {
       return;
     }
 
+    _loadThemeConfig();
+  }
+
+  void _loadThemeConfig() {
     var configFile = p.joinAll([location!, "config.yaml"]);
 
     if (fs.file(configFile).existsSync()) {
       config.read(readConfigFile(configFile) as Map<String, dynamic>);
     }
+  }
+
+  /// Check if the theme name looks like a module path
+  bool _isModulePath(String name) {
+    return name.startsWith('github.com/') ||
+        name.startsWith('gitlab.com/') ||
+        name.startsWith('bitbucket.org/') ||
+        name.startsWith('pub:') ||
+        name.startsWith('./') ||
+        name.startsWith('../');
+  }
+
+  /// Try to resolve theme from module cache
+  String? _resolveModulePath(String modulePath) {
+    final cache = ModuleCache();
+    final versions = cache.getCachedVersions(modulePath);
+
+    if (versions.isNotEmpty) {
+      // Use most recent version (simple approach - last in list)
+      final version = versions.last;
+      final cachePath = cache.getModulePath(modulePath, version);
+      if (fs.directory(cachePath).existsSync()) {
+        log.fine('Resolved theme from module cache: $modulePath@$version');
+        return cachePath;
+      }
+    }
+
+    return null;
+  }
+
+  /// Find a theme by name within cached modules
+  /// Searches for theme subdirectories inside each cached module
+  String? _findThemeInModules(String themeName) {
+    final cache = ModuleCache();
+    final moduleSection = config.get<Map<String, dynamic>>('module');
+
+    if (moduleSection == null) return null;
+
+    final manifest = ModuleManifest.parse(moduleSection);
+    if (!manifest.hasImports) return null;
+
+    // Load lockfile to get pinned versions
+    final lockfile = ModuleLockfile.load(config.source);
+
+    for (final import_ in manifest.imports) {
+      // Get the cached module path
+      String? modulePath;
+
+      // Check for replacement
+      final replacement = manifest.getReplacementFor(import_.path);
+      if (replacement != null) {
+        modulePath = p.isAbsolute(replacement)
+            ? replacement
+            : p.join(config.source, replacement);
+      } else {
+        // Use locked version if available
+        final locked = lockfile.getPackage(import_.path);
+        if (locked != null) {
+          modulePath = cache.getModulePath(import_.path, locked.version);
+        } else {
+          // Fall back to latest cached version
+          final versions = cache.getCachedVersions(import_.path);
+          if (versions.isNotEmpty) {
+            modulePath = cache.getModulePath(import_.path, versions.last);
+          }
+        }
+      }
+
+      if (modulePath == null) continue;
+
+      // Check if theme exists as a subdirectory in this module
+      final themePath = p.join(modulePath, themeName);
+      if (fs.directory(themePath).existsSync()) {
+        final configFile = fs.file(p.join(themePath, 'config.yaml'));
+        if (configFile.existsSync()) {
+          log.fine('Found theme "$themeName" in module ${import_.path}');
+          return themePath;
+        }
+      }
+    }
+
+    return null;
   }
 
   @override
