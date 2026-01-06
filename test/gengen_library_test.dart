@@ -27,27 +27,51 @@ void main() {
   group('GenGen Library API', () {
     test('should initialize and build a basic site', () async {
       // Create a basic site structure
-      await memoryFileSystem.directory(p.join(projectRoot, '_posts')).create(recursive: true);
-      await memoryFileSystem.directory(p.join(projectRoot, '_layouts')).create(recursive: true);
-      await memoryFileSystem.directory(p.join(projectRoot, '_themes')).create(recursive: true);
-      await memoryFileSystem.directory(p.join(projectRoot, '_themes', 'default')).create(recursive: true);
-      await memoryFileSystem.directory(p.join(projectRoot, '_themes', 'default', '_layouts')).create(recursive: true);
+      await memoryFileSystem
+          .directory(p.join(projectRoot, '_posts'))
+          .create(recursive: true);
+      await memoryFileSystem
+          .directory(p.join(projectRoot, '_layouts'))
+          .create(recursive: true);
+      await memoryFileSystem
+          .directory(p.join(projectRoot, '_themes'))
+          .create(recursive: true);
+      await memoryFileSystem
+          .directory(p.join(projectRoot, '_themes', 'default'))
+          .create(recursive: true);
+      await memoryFileSystem
+          .directory(p.join(projectRoot, '_themes', 'default', '_layouts'))
+          .create(recursive: true);
 
       // Create config file
-      memoryFileSystem.file(p.join(projectRoot, '_config.yaml')).writeAsStringSync('''
+      memoryFileSystem
+          .file(p.join(projectRoot, '_config.yaml'))
+          .writeAsStringSync('''
 title: Test Site
 description: A test site for GenGen library
 theme: default
 ''');
 
       // Create theme config
-      memoryFileSystem.file(p.join(projectRoot, '_themes', 'default', 'config.yaml')).writeAsStringSync('''
+      memoryFileSystem
+          .file(p.join(projectRoot, '_themes', 'default', 'config.yaml'))
+          .writeAsStringSync('''
 name: default
 version: 1.0.0
 ''');
 
       // Create a simple layout in the theme
-      memoryFileSystem.file(p.join(projectRoot, '_themes', 'default', '_layouts', 'default.html')).writeAsStringSync('''
+      memoryFileSystem
+          .file(
+            p.join(
+              projectRoot,
+              '_themes',
+              'default',
+              '_layouts',
+              'default.html',
+            ),
+          )
+          .writeAsStringSync('''
 <!DOCTYPE html>
 <html>
 <head>
@@ -60,7 +84,9 @@ version: 1.0.0
 ''');
 
       // Create a simple layout in the main layouts directory as fallback
-      memoryFileSystem.file(p.join(projectRoot, '_layouts', 'default.html')).writeAsStringSync('''
+      memoryFileSystem
+          .file(p.join(projectRoot, '_layouts', 'default.html'))
+          .writeAsStringSync('''
 <!DOCTYPE html>
 <html>
 <head>
@@ -73,7 +99,9 @@ version: 1.0.0
 ''');
 
       // Create index page
-      memoryFileSystem.file(p.join(projectRoot, 'index.html')).writeAsStringSync('''
+      memoryFileSystem
+          .file(p.join(projectRoot, 'index.html'))
+          .writeAsStringSync('''
 ---
 layout: default
 title: Home
@@ -83,7 +111,9 @@ title: Home
 ''');
 
       // Create a post
-      memoryFileSystem.file(p.join(projectRoot, '_posts', '2024-01-01-hello-world.md')).writeAsStringSync('''
+      memoryFileSystem
+          .file(p.join(projectRoot, '_posts', '2024-01-01-hello-world.md'))
+          .writeAsStringSync('''
 ---
 layout: default
 title: Hello World
@@ -121,14 +151,10 @@ This is my first post!
     });
 
     test('should handle configuration errors gracefully', () async {
-      final generator = GenGen()
-        ..source('/nonexistent-directory');
+      final generator = GenGen()..source('/nonexistent-directory');
 
       // Try to build with invalid source directory
-      await expectLater(
-        generator.build(),
-        throwsA(isA<SiteBuildException>()),
-      );
+      await expectLater(generator.build(), throwsA(isA<SiteBuildException>()));
     });
 
     test('should require initialization before operations', () async {
@@ -138,22 +164,21 @@ This is my first post!
       generator.dispose();
 
       // Try to build after disposal
-      await expectLater(
-        generator.build(),
-        throwsA(isA<GenGenException>()),
-      );
+      await expectLater(generator.build(), throwsA(isA<GenGenException>()));
     });
 
     test('should support custom plugins', () async {
       // Create minimal site structure
       await memoryFileSystem.directory(projectRoot).create(recursive: true);
-      memoryFileSystem.file(p.join(projectRoot, '_config.yaml')).writeAsStringSync('''
+      memoryFileSystem
+          .file(p.join(projectRoot, '_config.yaml'))
+          .writeAsStringSync('''
 title: Plugin Test Site
 ''');
 
       // Create a test plugin
       final testPlugin = TestPlugin();
-      
+
       final generator = GenGen()
         ..source(projectRoot)
         ..destination(p.join(projectRoot, '_site'))
@@ -171,7 +196,9 @@ title: Plugin Test Site
     test('should provide access to site data', () async {
       // Create minimal site structure
       await memoryFileSystem.directory(projectRoot).create(recursive: true);
-      memoryFileSystem.file(p.join(projectRoot, '_config.yaml')).writeAsStringSync('''
+      memoryFileSystem
+          .file(p.join(projectRoot, '_config.yaml'))
+          .writeAsStringSync('''
 title: Data Test Site
 ''');
 

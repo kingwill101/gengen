@@ -1,15 +1,29 @@
-*,
+@use 'sass:color';
+@use 'variables' as *;
+@use 'mixins' as *;
+
+*, 
 *::before,
 *::after {
   box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   font-family: $font-family-base;
   color: $text-color;
   background-color: $bg-color;
-  line-height: 1.6;
+  background-image:
+    radial-gradient(circle at 12% 8%, rgba($accent-color, 0.14), transparent 46%),
+    radial-gradient(circle at 85% 18%, rgba($primary-color, 0.1), transparent 42%),
+    linear-gradient(180deg, rgba($bg-color, 0.96), rgba($bg-color, 1));
+  line-height: 1.75;
+  letter-spacing: -0.01em;
   margin: 0;
+  min-height: 100vh;
 }
 
 .skip-link {
@@ -31,6 +45,15 @@ body {
     border-radius: $border-radius-sm;
     z-index: $z-index-overlay;
   }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  scroll-margin-top: calc(#{$header-height} + #{$spacing-lg});
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -56,15 +79,19 @@ a {
   color: $primary-color;
   text-decoration: none;
   transition: color $transition-base;
+  text-underline-offset: 0.18em;
+  text-decoration-thickness: 2px;
 
   &:hover {
-    color: darken($primary-color, 8%);
+    color: color.adjust($primary-color, $lightness: -8%);
   }
 }
 
 code {
-  background: $code-bg;
-  padding: 0.2rem 0.4rem;
+  font-family: $font-family-mono;
+  background: rgba($primary-color, 0.08);
+  color: color.adjust($primary-color, $lightness: -10%);
+  padding: 0.2rem 0.45rem;
   border-radius: $border-radius-sm;
   font-size: 0.9em;
 }
@@ -74,13 +101,59 @@ pre {
   padding: $spacing-lg;
   border-radius: $border-radius;
   background-color: $code-bg;
+  color: $code-text;
   overflow-x: auto;
+  box-shadow: $shadow-sm;
+
+  code {
+    background: transparent;
+    color: inherit;
+    padding: 0;
+  }
+}
+
+pre,
+code {
+  font-variant-ligatures: none;
+}
+
+blockquote {
+  margin: $spacing-lg 0;
+  padding: $spacing-md $spacing-lg;
+  border-radius: $border-radius;
+  border: 1px solid rgba($accent-color, 0.25);
+  border-left: 4px solid $accent-color;
+  background: rgba($accent-color, 0.08);
+  color: $text-color;
+
+  p:last-child {
+    margin-bottom: 0;
+  }
+}
+
+ul,
+ol {
+  padding-left: 1.4rem;
+  margin: 0 0 $spacing-md;
+}
+
+li + li {
+  margin-top: $spacing-xs;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid rgba($border-color, 0.9);
+  margin: $spacing-xl 0;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
   margin: $spacing-lg 0;
+  background-color: $surface-color;
+  border-radius: $border-radius;
+  overflow: hidden;
 
   th, td {
     border-bottom: 1px solid $border-color;
@@ -92,4 +165,40 @@ table {
     background-color: $bg-muted;
     font-weight: $font-weight-semibold;
   }
+}
+
+img,
+svg,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+button,
+input,
+textarea,
+select {
+  font-family: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid rgba($accent-color, 0.6);
+  outline-offset: 2px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+::selection {
+  background: rgba($accent-color, 0.25);
+  color: $text-color;
 }

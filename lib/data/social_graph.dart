@@ -15,7 +15,7 @@ Future<Map<String, String>> fetchPageAndExtractSocialGraph(String url) async {
     );
     if (response.statusCode == 200) {
       var document = parser.parse(response.body);
-      final graphTags =  extractSocialGraphTags(document);
+      final graphTags = extractSocialGraphTags(document);
       stopwatch.stop();
       log.info('Fetched page $url in ${stopwatch.elapsedMilliseconds} ms');
       return graphTags;

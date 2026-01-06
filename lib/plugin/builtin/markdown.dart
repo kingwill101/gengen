@@ -6,10 +6,10 @@ import 'package:gengen/plugin/plugin_metadata.dart';
 class MarkdownPlugin extends BasePlugin {
   @override
   PluginMetadata get metadata => PluginMetadata(
-        name: 'MarkdownPlugin',
-        version: '1.0.0',
-        description: 'Converts Markdown content to HTML in GenGen',
-      );
+    name: 'MarkdownPlugin',
+    version: '1.0.0',
+    description: 'Converts Markdown content to HTML in GenGen',
+  );
 
   @override
   String convert(String content, Base page) {

@@ -23,15 +23,19 @@ class FileBundler extends Builder {
       if (relativeFilePath != directoryName) {
         // Exclude root directory files
         fileContents[directoryName] ??= {};
-        fileContents[directoryName]![
-                relativeFilePath.removePrefix("$directoryName/")] =
-            await buildStep.readAsBytes(input);
+        fileContents[directoryName]![relativeFilePath.removePrefix(
+          "$directoryName/",
+        )] = await buildStep.readAsBytes(
+          input,
+        );
       }
     }
 
     // Generate the output file path under lib/bundle
-    final outputId =
-        AssetId(buildStep.inputId.package, 'lib/bundle/bundle_data.dart');
+    final outputId = AssetId(
+      buildStep.inputId.package,
+      'lib/bundle/bundle_data.dart',
+    );
 
     // Create Dart code for the nested map
     final buffer = StringBuffer()
@@ -54,6 +58,6 @@ class FileBundler extends Builder {
 
   @override
   Map<String, List<String>> get buildExtensions => {
-        r'$lib$': ['bundle/bundle_data.dart'],
-      };
+    r'$lib$': ['bundle/bundle_data.dart'],
+  };
 }

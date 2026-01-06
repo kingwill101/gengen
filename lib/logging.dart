@@ -27,7 +27,8 @@ void initLog() {
     }
     Console.setTextColor(color.id);
     Console.write(
-        '(${record.loggerName}) ${record.level.name}: ${record.time}: ${record.message}\n');
+      '(${record.loggerName}) ${record.level.name}: ${record.time}: ${record.message}\n',
+    );
     if (record.stackTrace != null) {
       Console.setTextColor(Color.RED.id);
       Console.write('${record.error}');

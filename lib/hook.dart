@@ -13,7 +13,7 @@ enum HookEvent {
   afterRender,
   beforeWrite,
   afterWrite,
-  convert
+  convert,
 }
 
 enum HookPriority {
@@ -40,8 +40,12 @@ class Hook {
     return _instance!;
   }
 
-  void _register(Object owner, HookEvent event, HookFunc handler,
-      {HookPriority priority = HookPriority.normal}) {
+  void _register(
+    Object owner,
+    HookEvent event,
+    HookFunc handler, {
+    HookPriority priority = HookPriority.normal,
+  }) {
     String ownerKey = owner.runtimeType.toString();
     _registry[ownerKey] ??= {};
     _registry[ownerKey]![event] ??= [];
@@ -61,9 +65,12 @@ class Hook {
     }
   }
 
-  static void register(Object owner, HookEvent event, HookFunc handler,
-          {HookPriority priority = HookPriority.normal}) =>
-      Hook.instance._register(owner, event, handler, priority: priority);
+  static void register(
+    Object owner,
+    HookEvent event,
+    HookFunc handler, {
+    HookPriority priority = HookPriority.normal,
+  }) => Hook.instance._register(owner, event, handler, priority: priority);
 
   static void trigger(Object owner, HookEvent event, Site site) =>
       Hook.instance._trigger(owner, event, site);

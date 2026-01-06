@@ -5,24 +5,27 @@ import 'package:gengen/plugin/plugin_metadata.dart';
 
 void main() {
   group('PluginManager', () {
-    test('should return default core plugins when only core group is enabled', () {
-      final config = _pluginConfig(
-        enabled: <String>['core'],
-        groups: <String, List<String>>{
-          'core': <String>['DraftPlugin', 'MarkdownPlugin', 'LiquidPlugin'],
-          'seo': <String>['RssPlugin', 'SitemapPlugin'],
-        },
-      );
+    test(
+      'should return default core plugins when only core group is enabled',
+      () {
+        final config = _pluginConfig(
+          enabled: <String>['core'],
+          groups: <String, List<String>>{
+            'core': <String>['DraftPlugin', 'MarkdownPlugin', 'LiquidPlugin'],
+            'seo': <String>['RssPlugin', 'SitemapPlugin'],
+          },
+        );
 
-      final plugins = PluginManager.getEnabledPlugins(config);
-      final pluginNames = plugins.map((p) => p.metadata.name).toSet();
+        final plugins = PluginManager.getEnabledPlugins(config);
+        final pluginNames = plugins.map((p) => p.metadata.name).toSet();
 
-      expect(pluginNames, contains('DraftPlugin'));
-      expect(pluginNames, contains('MarkdownPlugin'));
-      expect(pluginNames, contains('LiquidPlugin'));
-      expect(pluginNames, isNot(contains('RssPlugin')));
-      expect(pluginNames, isNot(contains('SitemapPlugin')));
-    });
+        expect(pluginNames, contains('DraftPlugin'));
+        expect(pluginNames, contains('MarkdownPlugin'));
+        expect(pluginNames, contains('LiquidPlugin'));
+        expect(pluginNames, isNot(contains('RssPlugin')));
+        expect(pluginNames, isNot(contains('SitemapPlugin')));
+      },
+    );
 
     test('should enable multiple groups', () {
       final config = _pluginConfig(
@@ -131,23 +134,29 @@ void main() {
       final config = <String, dynamic>{};
 
       final plugins = PluginManager.getEnabledPlugins(config);
-      expect(plugins.map((p) => p.metadata.name), containsAll(<String>[
-        'DraftPlugin',
-        'MarkdownPlugin',
-        'LiquidPlugin',
-        'SassPlugin',
-        'PaginationPlugin',
-      ]));
+      expect(
+        plugins.map((p) => p.metadata.name),
+        containsAll(<String>[
+          'DraftPlugin',
+          'MarkdownPlugin',
+          'LiquidPlugin',
+          'SassPlugin',
+          'PaginationPlugin',
+        ]),
+      );
     });
 
     test('should register custom plugins', () {
       // Create a mock plugin
       final originalPlugins = PluginManager.availablePlugins.toSet();
-      
+
       PluginManager.registerPlugin('TestPlugin', () => MockPlugin());
-      
+
       expect(PluginManager.availablePlugins, contains('TestPlugin'));
-      expect(PluginManager.availablePlugins.length, equals(originalPlugins.length + 1));
+      expect(
+        PluginManager.availablePlugins.length,
+        equals(originalPlugins.length + 1),
+      );
     });
   });
 }

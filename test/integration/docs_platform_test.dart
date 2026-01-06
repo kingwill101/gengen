@@ -31,8 +31,11 @@ void main() {
 
     test('example docs site builds and renders navigation', () async {
       final fixtureRoot = io.Directory('test/fixtures/docs_example');
-      expect(fixtureRoot.existsSync(), isTrue,
-          reason: 'docs example fixture missing');
+      expect(
+        fixtureRoot.existsSync(),
+        isTrue,
+        reason: 'docs example fixture missing',
+      );
       for (final entity in fixtureRoot.listSync(recursive: true)) {
         if (entity is! io.File) continue;
         final relative = p.relative(entity.path, from: fixtureRoot.path);
@@ -60,11 +63,13 @@ void main() {
       }
 
       Site.resetInstance();
-      Site.init(overrides: {
-        'source': tempDir!.path,
-        'parallel': false,
-        'config': ['config.yaml'],
-      });
+      Site.init(
+        overrides: {
+          'source': tempDir!.path,
+          'parallel': false,
+          'config': ['config.yaml'],
+        },
+      );
 
       await site.process();
 
@@ -78,34 +83,52 @@ void main() {
       final quickStartFile = io.File(
         p.join(outputDir, 'guides', 'quick-start', 'index.html'),
       );
-      expect(quickStartFile.existsSync(), isTrue,
-          reason: 'quick start guide should be generated');
+      expect(
+        quickStartFile.existsSync(),
+        isTrue,
+        reason: 'quick start guide should be generated',
+      );
       final quickStartHtml = quickStartFile.readAsStringSync();
 
       final configGuideFile = io.File(
         p.join(outputDir, 'reference', 'configuration', 'index.html'),
       );
-      expect(configGuideFile.existsSync(), isTrue,
-          reason: 'configuration reference should be generated');
+      expect(
+        configGuideFile.existsSync(),
+        isTrue,
+        reason: 'configuration reference should be generated',
+      );
       final configGuideHtml = configGuideFile.readAsStringSync();
 
       expect(quickStartHtml, contains('class="docs-sidebar"'));
       expect(configGuideHtml, contains('class="docs-sidebar"'));
 
       final cssBundle = io.File(p.join(outputDir, 'assets', 'css', 'main.css'));
-      expect(cssBundle.existsSync(), isTrue,
-          reason: 'docs CSS bundle should be emitted');
+      expect(
+        cssBundle.existsSync(),
+        isTrue,
+        reason: 'docs CSS bundle should be emitted',
+      );
       final cssContent = cssBundle.readAsStringSync();
-      expect(cssContent.trim().isNotEmpty, isTrue,
-          reason: 'docs CSS bundle should contain compiled styles');
-      expect(cssContent, contains('.docs-sidebar'),
-          reason: 'docs CSS should include sidebar styles');
+      expect(
+        cssContent.trim().isNotEmpty,
+        isTrue,
+        reason: 'docs CSS bundle should contain compiled styles',
+      );
+      expect(
+        cssContent,
+        contains('.docs-sidebar'),
+        reason: 'docs CSS should include sidebar styles',
+      );
     });
 
     test('core docs navigation data matches source pages', () {
       final navDataFile = io.File('docs/_data/docs/navigation.yml');
-      expect(navDataFile.existsSync(), isTrue,
-          reason: 'navigation data file missing');
+      expect(
+        navDataFile.existsSync(),
+        isTrue,
+        reason: 'navigation data file missing',
+      );
 
       final navData = loadYaml(navDataFile.readAsStringSync()) as YamlMap;
       final sections = navData['sidebar']['sections'] as YamlList;
@@ -123,16 +146,25 @@ void main() {
           final url = pageEntry['url']?.toString() ?? '';
           final expectedPath = _resolveDocPath(url, permalinkIndex);
 
-          expect(io.File(expectedPath).existsSync(), isTrue,
-              reason: 'Missing source for $url at $expectedPath');
+          expect(
+            io.File(expectedPath).existsSync(),
+            isTrue,
+            reason: 'Missing source for $url at $expectedPath',
+          );
 
           final frontMatter = _readFrontMatter(expectedPath);
-          expect(frontMatter['nav_section'], equals(sectionTitle),
-              reason: 'Front matter nav_section mismatch for $expectedPath');
+          expect(
+            frontMatter['nav_section'],
+            equals(sectionTitle),
+            reason: 'Front matter nav_section mismatch for $expectedPath',
+          );
 
           if (pageEntry.containsKey('order')) {
-            expect(frontMatter['nav_order'], equals(pageEntry['order']),
-                reason: 'Front matter nav_order mismatch for $expectedPath');
+            expect(
+              frontMatter['nav_order'],
+              equals(pageEntry['order']),
+              reason: 'Front matter nav_order mismatch for $expectedPath',
+            );
           }
         }
       }
@@ -258,7 +290,9 @@ Map<String, dynamic> _readFrontMatter(String path) {
 }
 
 Map<String, dynamic> _convertYamlMap(YamlMap map) {
-  return map.map((key, value) => MapEntry(key.toString(), _convertYamlValue(value)));
+  return map.map(
+    (key, value) => MapEntry(key.toString(), _convertYamlValue(value)),
+  );
 }
 
 dynamic _convertYamlValue(dynamic value) {

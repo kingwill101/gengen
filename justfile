@@ -22,3 +22,17 @@ new dir: exe
 
 exe:
     dart build cli
+
+# Run tests and generate LCOV coverage report in coverage/lcov.info.
+coverage:
+	rm -rf coverage
+	dart test --concurrency=1 --coverage=coverage test
+	dart run coverage:format_coverage --lcov --in=coverage --out=coverage/lcov.info --report-on=lib --ignore-files "lib/**.g.dart" --ignore-files "lib/**.freezed.dart"
+
+# Generate HTML coverage report if lcov/genhtml is installed.
+coverage-html: coverage
+	@if command -v genhtml >/dev/null; then \
+		genhtml -o coverage/html coverage/lcov.info; \
+	else \
+		echo "genhtml not found; install lcov to generate HTML output."; \
+	fi

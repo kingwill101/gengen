@@ -22,8 +22,10 @@ class URL {
 
   String generateUrl(String template) {
     placeholders!.forEach((key, value) {
-      template =
-          template.replaceAll(":$key", Uri.encodeComponent(value as String));
+      template = template.replaceAll(
+        ":$key",
+        Uri.encodeComponent(value as String),
+      );
     });
 
     return template;

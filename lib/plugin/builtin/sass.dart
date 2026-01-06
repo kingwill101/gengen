@@ -8,10 +8,10 @@ import 'package:gengen/logging.dart';
 class SassPlugin extends BasePlugin {
   @override
   PluginMetadata get metadata => PluginMetadata(
-        name: 'SassPlugin',
-        version: '1.0.0',
-        description: 'Compiles SASS/SCSS files in GenGen',
-      );
+    name: 'SassPlugin',
+    version: '1.0.0',
+    description: 'Compiles SASS/SCSS files in GenGen',
+  );
 
   @override
   String convert(String content, Base page) {
@@ -28,14 +28,16 @@ class SassPlugin extends BasePlugin {
         return result.css;
       } catch (e, s) {
         log.severe(
-            '(${metadata.name})  Error compiling SASS for ${page.source}:',
-            e,
-            s);
+          '(${metadata.name})  Error compiling SASS for ${page.source}:',
+          e,
+          s,
+        );
         return '';
       }
     }
-    logger
-        .warning('(${metadata.name}) no saas content detected ${page.source}');
+    logger.warning(
+      '(${metadata.name}) no saas content detected ${page.source}',
+    );
 
     return content;
   }

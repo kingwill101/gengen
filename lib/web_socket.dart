@@ -1,4 +1,4 @@
-String webSocketInjection(Uri url){
+String webSocketInjection(Uri url) {
   return '''
 <script type="application/javascript">
     let hotReloadSocket = null;

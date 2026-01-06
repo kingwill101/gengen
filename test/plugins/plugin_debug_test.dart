@@ -36,13 +36,23 @@ void main() {
 
       final projectRoot = fs.currentDirectory.path;
 
-      // Create test site structure  
+      // Create test site structure
       await fs.directory('$projectRoot/test_site').create(recursive: true);
-      await fs.directory('$projectRoot/test_site/_posts').create(recursive: true);
-      await fs.directory('$projectRoot/test_site/_themes').create(recursive: true);
-      await fs.directory('$projectRoot/test_site/_themes/default').create(recursive: true);
-      await fs.directory('$projectRoot/test_site/_themes/default/_layouts').create(recursive: true);
-      await fs.directory('$projectRoot/test_site/public').create(recursive: true);
+      await fs
+          .directory('$projectRoot/test_site/_posts')
+          .create(recursive: true);
+      await fs
+          .directory('$projectRoot/test_site/_themes')
+          .create(recursive: true);
+      await fs
+          .directory('$projectRoot/test_site/_themes/default')
+          .create(recursive: true);
+      await fs
+          .directory('$projectRoot/test_site/_themes/default/_layouts')
+          .create(recursive: true);
+      await fs
+          .directory('$projectRoot/test_site/public')
+          .create(recursive: true);
 
       // Create config file
       await fs.file('$projectRoot/test_site/_config.yaml').writeAsString('''
@@ -53,7 +63,9 @@ permalink: "posts/:title/"
 ''');
 
       // Create a default layout
-      await fs.file('$projectRoot/test_site/_themes/default/_layouts/default.html').writeAsString('''
+      await fs
+          .file('$projectRoot/test_site/_themes/default/_layouts/default.html')
+          .writeAsString('''
 <!DOCTYPE html>
 <html>
 <head><title>{{ page.title }}</title></head>
@@ -62,13 +74,17 @@ permalink: "posts/:title/"
 ''');
 
       // Create theme config
-      await fs.file('$projectRoot/test_site/_themes/default/config.yaml').writeAsString('''
+      await fs
+          .file('$projectRoot/test_site/_themes/default/config.yaml')
+          .writeAsString('''
 name: default
 version: 1.0.0
 ''');
 
       // Create the problematic post
-      await fs.file('$projectRoot/test_site/_posts/2024-01-10-pagination-test.md').writeAsString('''
+      await fs
+          .file('$projectRoot/test_site/_posts/2024-01-10-pagination-test.md')
+          .writeAsString('''
 ---
 title: "Pagination Test Post"
 date: 2024-01-10
@@ -87,7 +103,9 @@ Regular content after liquid.
 ''');
 
       // Create a simple working post
-      await fs.file('$projectRoot/test_site/_posts/2024-01-15-simple-post.md').writeAsString('''
+      await fs
+          .file('$projectRoot/test_site/_posts/2024-01-15-simple-post.md')
+          .writeAsString('''
 ---
 title: "Simple Test Post"
 date: 2024-01-15
@@ -104,17 +122,21 @@ Just some regular markdown content here.
 
     test('should test with NO plugins enabled', () async {
       print('\n=== TESTING WITH NO PLUGINS ===');
-      
-      Site.init(overrides: {
-        'source': '${fs.currentDirectory.path}/test_site',
-        'destination': '${fs.currentDirectory.path}/test_site/public',
-      });
+
+      Site.init(
+        overrides: {
+          'source': '${fs.currentDirectory.path}/test_site',
+          'destination': '${fs.currentDirectory.path}/test_site/public',
+        },
+      );
       site = Site.instance;
-      
+
       // Clear all plugins
       site.plugins.clear();
-      print('Active plugins: ${site.plugins.map((p) => p.runtimeType).toList()}');
-      
+      print(
+        'Active plugins: ${site.plugins.map((p) => p.runtimeType).toList()}',
+      );
+
       await site.process();
 
       final problematicPost = site.posts.firstWhere(
@@ -123,18 +145,22 @@ Just some regular markdown content here.
 
       print('\n--- PROBLEMATIC POST (NO PLUGINS) ---');
       print('Content length: ${problematicPost.content.length}');
-      
+
       await problematicPost.render();
-      print('Rendered content length: ${problematicPost.renderer.content.length}');
-      
+      print(
+        'Rendered content length: ${problematicPost.renderer.content.length}',
+      );
+
       await problematicPost.write();
-      
+
       final outputFile = fs.file(problematicPost.filePath);
       expect(await outputFile.exists(), true);
       final fileContent = await outputFile.readAsString();
       print('Output file size: ${fileContent.length} bytes');
-      print('Output preview: ${fileContent.substring(0, fileContent.length > 200 ? 200 : fileContent.length)}...');
-      
+      print(
+        'Output preview: ${fileContent.substring(0, fileContent.length > 200 ? 200 : fileContent.length)}...',
+      );
+
       expect(fileContent.isNotEmpty, true);
       expect(fileContent, contains('# Pagination Test Post'));
       expect(fileContent, contains('{% for post in site.paginate.items %}'));
@@ -142,17 +168,21 @@ Just some regular markdown content here.
 
     test('should test with ONLY markdown plugin enabled', () async {
       print('\n=== TESTING WITH ONLY MARKDOWN PLUGIN ===');
-      
-      Site.init(overrides: {
-        'source': '${fs.currentDirectory.path}/test_site',
-        'destination': '${fs.currentDirectory.path}/test_site/public',
-      });
+
+      Site.init(
+        overrides: {
+          'source': '${fs.currentDirectory.path}/test_site',
+          'destination': '${fs.currentDirectory.path}/test_site/public',
+        },
+      );
       site = Site.instance;
-      
+
       site.plugins.clear();
       site.plugins.add(MarkdownPlugin());
-      print('Active plugins: ${site.plugins.map((p) => p.runtimeType).toList()}');
-      
+      print(
+        'Active plugins: ${site.plugins.map((p) => p.runtimeType).toList()}',
+      );
+
       await site.process();
 
       final problematicPost = site.posts.firstWhere(
@@ -160,17 +190,21 @@ Just some regular markdown content here.
       );
 
       print('\n--- PROBLEMATIC POST (MARKDOWN ONLY) ---');
-      
+
       await problematicPost.render();
-      print('Rendered content length: ${problematicPost.renderer.content.length}');
-      
+      print(
+        'Rendered content length: ${problematicPost.renderer.content.length}',
+      );
+
       await problematicPost.write();
-      
+
       final outputFile = fs.file(problematicPost.filePath);
       final fileContent = await outputFile.readAsString();
       print('Output file size: ${fileContent.length} bytes');
-      print('Output preview: ${fileContent.substring(0, fileContent.length > 200 ? 200 : fileContent.length)}...');
-      
+      print(
+        'Output preview: ${fileContent.substring(0, fileContent.length > 200 ? 200 : fileContent.length)}...',
+      );
+
       expect(fileContent.isNotEmpty, true);
       expect(fileContent, contains('Pagination Test Post'));
       expect(fileContent, contains('{% for post in site.paginate.items %}'));
@@ -178,17 +212,21 @@ Just some regular markdown content here.
 
     test('should test with ONLY liquid plugin enabled', () async {
       print('\n=== TESTING WITH ONLY LIQUID PLUGIN ===');
-      
-      Site.init(overrides: {
-        'source': '${fs.currentDirectory.path}/test_site',
-        'destination': '${fs.currentDirectory.path}/test_site/public',
-      });
+
+      Site.init(
+        overrides: {
+          'source': '${fs.currentDirectory.path}/test_site',
+          'destination': '${fs.currentDirectory.path}/test_site/public',
+        },
+      );
       site = Site.instance;
-      
+
       site.plugins.clear();
       site.plugins.add(LiquidPlugin());
-      print('Active plugins: ${site.plugins.map((p) => p.runtimeType).toList()}');
-      
+      print(
+        'Active plugins: ${site.plugins.map((p) => p.runtimeType).toList()}',
+      );
+
       await site.process();
 
       final problematicPost = site.posts.firstWhere(
@@ -196,30 +234,36 @@ Just some regular markdown content here.
       );
 
       print('\n--- PROBLEMATIC POST (LIQUID ONLY) ---');
-      
+
       await problematicPost.render();
-      print('Rendered content length: ${problematicPost.renderer.content.length}');
-      
+      print(
+        'Rendered content length: ${problematicPost.renderer.content.length}',
+      );
+
       await problematicPost.write();
-      
+
       final outputFile = fs.file(problematicPost.filePath);
       final fileContent = await outputFile.readAsString();
       print('Output file size: ${fileContent.length} bytes');
-      print('Output preview: ${fileContent.substring(0, fileContent.length > 200 ? 200 : fileContent.length)}...');
-      
+      print(
+        'Output preview: ${fileContent.substring(0, fileContent.length > 200 ? 200 : fileContent.length)}...',
+      );
+
       expect(fileContent.isNotEmpty, true);
       expect(fileContent, contains('# Pagination Test Post'));
     });
 
     test('should test liquid plugin directly', () async {
       print('\n=== TESTING LIQUID PLUGIN DIRECTLY ===');
-      
-      Site.init(overrides: {
-        'source': '${fs.currentDirectory.path}/test_site',
-        'destination': '${fs.currentDirectory.path}/test_site/public',
-      });
+
+      Site.init(
+        overrides: {
+          'source': '${fs.currentDirectory.path}/test_site',
+          'destination': '${fs.currentDirectory.path}/test_site/public',
+        },
+      );
       site = Site.instance;
-      
+
       await site.process();
 
       final problematicPost = site.posts.firstWhere(
@@ -228,14 +272,17 @@ Just some regular markdown content here.
 
       print('\n--- MANUAL LIQUID PLUGIN TESTING ---');
       print('Original content: ${problematicPost.content}');
-      
+
       final liquidPlugin = LiquidPlugin();
-      
+
       try {
-        final result = await liquidPlugin.convert(problematicPost.content, problematicPost);
+        final result = await liquidPlugin.convert(
+          problematicPost.content,
+          problematicPost,
+        );
         print('Liquid plugin result length: ${result.length}');
         print('Liquid plugin result: "$result"');
-        
+
         if (result.isEmpty) {
           print('ERROR: Liquid plugin returned empty string!');
         }
@@ -245,4 +292,4 @@ Just some regular markdown content here.
       }
     });
   });
-} 
+}

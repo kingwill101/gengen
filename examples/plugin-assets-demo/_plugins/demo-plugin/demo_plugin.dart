@@ -2,7 +2,8 @@ import 'package:gengen/plugin/plugin.dart';
 
 class Plugin extends BasePlugin {
   @override
-  Never get metadata => throw UnimplementedError('Metadata is handled by the plugin system');
+  Never get metadata =>
+      throw UnimplementedError('Metadata is handled by the plugin system');
 
   @override
   String getHeadInjection() {
@@ -43,4 +44,4 @@ class Plugin extends BasePlugin {
       'demo-plugin-author': 'GenGen Team',
     };
   }
-} 
+}

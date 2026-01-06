@@ -8,15 +8,14 @@ import 'package:path/path.dart';
 class PostReader {
   List<Base> unfilteredContent = [];
 
-  static final RegExp _postMatcher =
-      RegExp(r'^(?:.+/)*?[^/]+\.[^.]+$');
+  static final RegExp _postMatcher = RegExp(r'^(?:.+/)*?[^/]+\.[^.]+$');
   static final RegExp _draftMatcher = RegExp(r'^(?:.+/)*?[^/]+\.[^.]+$');
 
   PostReader();
 
   List<Base> readPosts(String dir) {
     unfilteredContent.clear(); // Clear any previous content
-    
+
     var docs = readContent(dir, _postMatcher);
     unfilteredContent.addAll(docs);
 
@@ -40,16 +39,19 @@ class PostReader {
 
       var path = Site.instance.inSourceDir(join(dir, entry));
 
-      final strictFrontMatter = Site.instance.config
-              .get<bool>('strict_front_matter', defaultValue: false) ==
+      final strictFrontMatter =
+          Site.instance.config.get<bool>(
+            'strict_front_matter',
+            defaultValue: false,
+          ) ==
           true;
       if (strictFrontMatter && !hasYamlHeader(path)) {
         continue;
       }
-      
+
       // Check the filename to determine how to handle it
       String filename = withoutExtension(basename(entry));
-      
+
       if (filename == '_index') {
         // _index.md files are for directory-level metadata only
         // Skip processing them as content files
@@ -60,8 +62,8 @@ class PostReader {
         docs.add(doc);
       } else {
         // Regular posts
-      var doc = Post(path);
-      docs.add(doc);
+        var doc = Post(path);
+        docs.add(doc);
       }
     }
 

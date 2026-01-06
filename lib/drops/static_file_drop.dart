@@ -21,8 +21,9 @@ class StaticFileDrop extends Drop {
       'relative_path': file.relativePath,
       'extname': p.extension(file.source),
       'name': p.basename(file.source),
-      'basename':
-          p.basenameWithoutExtension(file.source).replaceAll(RegExp(r'\.*$'), ''),
+      'basename': p
+          .basenameWithoutExtension(file.source)
+          .replaceAll(RegExp(r'\.*$'), ''),
       'collection': file.collectionLabel,
       'url': _url(),
     };

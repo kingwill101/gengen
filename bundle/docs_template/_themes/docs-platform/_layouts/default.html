@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  {% render 'head' %}
+  {% render 'head', site: site, page: page %}
 </head>
 {% assign is_home = page.url == '/' or page.layout == 'home' %}
 <body class="docs-body{% if is_home %} docs-body--home{% endif %}">
   <a class="skip-link" href="#main-content">Skip to content</a>
 
-  {% render 'header', is_home: is_home %}
+  {% render 'header', site: site, page: page, is_home: is_home %}
 
   {% if is_home %}
     <main id="main-content" class="docs-home">
@@ -38,25 +38,25 @@
     </main>
   {% else %}
     <main id="main-content" class="docs-main">
-      {% render 'breadcrumbs' %}
+      {% render 'breadcrumbs', site: site, page: page %}
 
       <div class="docs-layout">
-        {% render 'sidebar' %}
+        {% render 'sidebar', site: site, page: page %}
 
         <article class="docs-article">
-          {% render 'page-header' %}
+          {% render 'page-header', site: site, page: page %}
           <div class="docs-article__body">
             {{ content }}
           </div>
-          {% render 'page-navigation' %}
+          {% render 'page-navigation', site: site, page: page %}
         </article>
 
-        {% render 'toc' %}
+        {% render 'toc', site: site, page: page %}
       </div>
     </main>
   {% endif %}
 
-  {% render 'footer' %}
-  {% render 'scripts' %}
+  {% render 'footer', site: site, page: page %}
+  {% render 'scripts', site: site, page: page %}
 </body>
 </html>

@@ -3,9 +3,9 @@ import 'package:markdown/markdown.dart';
 
 class Shortcode extends InlineSyntax {
   Shortcode()
-      : super(
-          r'''\[\s*shortcode\s+(?:\"([^\"]+)\"|'([^\']+)'|(\S+))((?:\s+[\w-]+\s*(?:=|:)\s*(?:\"[^\"]*\"|'[^\']*'|[^\s\]]+))*)\s*\]''',
-        );
+    : super(
+        r'''\[\s*shortcode\s+(?:\"([^\"]+)\"|'([^\']+)'|(\S+))((?:\s+[\w-]+\s*(?:=|:)\s*(?:\"[^\"]*\"|'[^\']*'|[^\s\]]+))*)\s*\]''',
+      );
 
   @override
   bool onMatch(InlineParser parser, Match match) {
@@ -23,5 +23,4 @@ class Shortcode extends InlineSyntax {
 
     return true;
   }
-
 }

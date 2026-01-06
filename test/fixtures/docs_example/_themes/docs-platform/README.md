@@ -16,6 +16,8 @@ The Docs Platform theme provides a reusable documentation experience for GenGen 
 docs/_themes/docs-platform/
 ├── config.yaml
 ├── README.md
+├── content/
+│   └── index.html
 ├── _layouts/
 │   ├── default.html
 │   └── home.html
@@ -54,7 +56,7 @@ docs/_themes/docs-platform/
    theme: "docs-platform"
    ```
 
-2. Define navigation metadata in `_data/docs/navigation.yml`. The theme expects sections, pages, quick links, and footer links to live under this key.
+2. Define navigation metadata in `_data/docs/navigation.yml`. The theme expects sections, pages, quick links, and footer links to live under this key. Theme-level `_data` is merged into `site.data`, and site `_data` overrides theme defaults.
 
 3. Include the compiled stylesheet in your layout (already handled by `head.html`). If you need further customization, override or extend the Sass partials in your site.
 
@@ -67,6 +69,13 @@ docs/_themes/docs-platform/
    ```
 
 5. Optional: wire up your own search provider by enhancing the `search.html` include or replacing it in your site.
+
+## Theme Pages
+
+The Docs Platform theme can ship pages via the `content/` directory. Any theme
+content file with YAML front matter is treated as a page and rendered into the
+final site output using its relative path inside `content/`. If your site provides
+the same relative path, the site page overrides the theme page.
 
 ## Overriding Parts of the Theme
 

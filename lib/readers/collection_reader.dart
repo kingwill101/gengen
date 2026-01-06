@@ -62,10 +62,7 @@ class CollectionReader {
     ContentCollection collection,
     FrontMatterDefaults defaultsResolver,
   ) {
-    final dir = join(
-      Site.instance.collectionsDir,
-      '_${collection.label}',
-    );
+    final dir = join(Site.instance.collectionsDir, '_${collection.label}');
     final entries = Site.instance.reader.getEntries(dir);
 
     for (final entry in entries) {

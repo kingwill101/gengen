@@ -15,27 +15,27 @@ import 'package:gengen/site.dart';
 import 'package:get_it/get_it.dart';
 
 /// A simple, fluent API for generating static sites with GenGen.
-/// 
+///
 /// Inspired by StaticShock and Jaspr, GenGen provides a clean, chainable API
 /// for building static websites programmatically.
-/// 
+///
 /// ## Basic Usage
-/// 
+///
 /// ```dart
 /// import 'package:gengen/gengen.dart';
-/// 
+///
 /// void main() async {
 ///   final generator = GenGen()
 ///     ..source('./content')
 ///     ..destination('./build')
 ///     ..title('My Site');
-///   
+///
 ///   await generator.build();
 /// }
 /// ```
-/// 
+///
 /// ## With Plugins
-/// 
+///
 /// ```dart
 /// final generator = GenGen()
 ///   ..source('./content')
@@ -44,20 +44,20 @@ import 'package:get_it/get_it.dart';
 ///   ..plugin(MarkdownPlugin())
 ///   ..plugin(SassPlugin())
 ///   ..plugin(PaginationPlugin());
-/// 
+///
 /// await generator.build();
 /// ```
-/// 
+///
 /// ## Development Server
-/// 
+///
 /// ```dart
 /// await generator.serve(port: 4000, watch: true);
 /// ```
-/// 
+///
 /// ## Configuration
-/// 
+///
 /// All Jekyll-compatible configuration options are supported:
-/// 
+///
 /// ```dart
 /// final generator = GenGen()
 ///   ..source('./content')
@@ -87,11 +87,9 @@ class GenGen {
   GenGen() {
     // Initialize dependencies if not already registered
     _initializeDependencies();
-    
+
     // Set library-specific defaults that differ from Configuration defaults
-    _configOverrides.addAll({
-      'destination': './build',
-    });
+    _configOverrides.addAll({'destination': './build'});
   }
 
   /// Initialize required dependencies in the DI container.
@@ -100,13 +98,13 @@ class GenGen {
     if (!GetIt.instance.isRegistered<FileSystem>()) {
       GetIt.instance.registerLazySingleton<FileSystem>(() => LocalFileSystem());
     }
-    
+
     // Initialize logging
     initLog();
   }
 
   /// Sets the source directory containing your site content.
-  /// 
+  ///
   /// Example:
   /// ```dart
   /// generator.source('./content');
@@ -117,7 +115,7 @@ class GenGen {
   }
 
   /// Sets the destination directory for the generated site.
-  /// 
+  ///
   /// Example:
   /// ```dart
   /// generator.destination('./build');
@@ -152,7 +150,7 @@ class GenGen {
   }
 
   /// Sets the permalink structure for posts.
-  /// 
+  ///
   /// Example:
   /// ```dart
   /// generator.permalink('/blog/:year/:month/:day/:title/');
@@ -163,7 +161,7 @@ class GenGen {
   }
 
   /// Adds custom configuration options.
-  /// 
+  ///
   /// Example:
   /// ```dart
   /// generator.config({
@@ -179,7 +177,7 @@ class GenGen {
   }
 
   /// Adds a plugin to extend GenGen's functionality.
-  /// 
+  ///
   /// Example:
   /// ```dart
   /// generator
@@ -199,7 +197,7 @@ class GenGen {
   }
 
   /// Excludes files and directories from processing.
-  /// 
+  ///
   /// Example:
   /// ```dart
   /// generator.exclude(['README.md', 'node_modules', '.git']);
@@ -211,7 +209,7 @@ class GenGen {
   }
 
   /// Includes files that would normally be excluded.
-  /// 
+  ///
   /// Example:
   /// ```dart
   /// generator.include(['.htaccess', '.well-known']);
@@ -222,9 +220,9 @@ class GenGen {
   }
 
   /// Builds the static site.
-  /// 
+  ///
   /// Returns a map with build statistics and information.
-  /// 
+  ///
   /// Example:
   /// ```dart
   /// final result = await generator.build();
@@ -237,21 +235,17 @@ class GenGen {
 
     try {
       await _ensureInitialized();
-      
+
       await _site!.process();
 
       return await _getSiteStats();
     } catch (e, stackTrace) {
-      throw SiteBuildException(
-        'Failed to build site: $e',
-        e,
-        stackTrace,
-      );
+      throw SiteBuildException('Failed to build site: $e', e, stackTrace);
     }
   }
 
   /// Starts a development server with optional file watching.
-  /// 
+  ///
   /// Example:
   /// ```dart
   /// await generator.serve(
@@ -278,7 +272,7 @@ class GenGen {
   }
 
   /// Cleans the destination directory.
-  /// 
+  ///
   /// Example:
   /// ```dart
   /// await generator.clean();
@@ -293,15 +287,15 @@ class GenGen {
   }
 
   /// Gets site information and statistics.
-  /// 
+  ///
   /// Returns a map containing:
   /// - `title`: Site title
-  /// - `description`: Site description  
+  /// - `description`: Site description
   /// - `posts_count`: Number of posts
   /// - `pages_count`: Number of pages
   /// - `source`: Source directory
   /// - `destination`: Destination directory
-  /// 
+  ///
   /// Example:
   /// ```dart
   /// final info = await generator.getSiteInfo();
@@ -314,11 +308,11 @@ class GenGen {
   }
 
   /// Disposes of resources and cleans up.
-  /// 
+  ///
   /// Call this when you're done with the GenGen instance.
   void dispose() {
     if (_isDisposed) return;
-    
+
     try {
       Site.resetInstance();
       GetIt.instance.reset();
@@ -326,7 +320,7 @@ class GenGen {
     } catch (_) {
       // Ignore errors during cleanup
     }
-    
+
     _configuration = null;
     _site = null;
     _isDisposed = true;
@@ -344,7 +338,7 @@ class GenGen {
   }
 
   /// Returns the site instance for advanced usage.
-  /// 
+  ///
   /// Throws [GenGenException] if not initialized.
   Site get site {
     if (_site == null || _isDisposed) {
@@ -356,7 +350,7 @@ class GenGen {
   /// Internal method to ensure the site is initialized.
   Future<void> _ensureInitialized() async {
     if (_site != null && !_isDisposed) return;
-    
+
     if (_isDisposed) {
       throw GenGenException('GenGen instance has been disposed');
     }
@@ -365,11 +359,11 @@ class GenGen {
       // Initialize configuration using the Configuration class
       _configuration = Configuration();
       _configuration!.read(_configOverrides);
-      
+
       // Initialize the site with the properly configured Configuration instance
       Site.init(overrides: _configOverrides);
       _site = Site.instance;
-      
+
       // Add custom plugins
       for (final plugin in _plugins) {
         _site!.plugins.add(plugin);
@@ -391,7 +385,9 @@ class GenGen {
 
     return {
       'title': _configuration!.get<String>('title') ?? 'My Site',
-      'description': _configuration!.get<String>('description') ?? 'A site built with GenGen',
+      'description':
+          _configuration!.get<String>('description') ??
+          'A site built with GenGen',
       'url': _configuration!.get<String>('url') ?? '',
       'baseurl': _configuration!.get<String>('baseurl') ?? '',
       'posts_count': _site!.posts.length,
@@ -404,7 +400,7 @@ class GenGen {
 }
 
 /// Convenience function to create a new GenGen instance.
-/// 
+///
 /// Example:
 /// ```dart
 /// final generator = gengen()

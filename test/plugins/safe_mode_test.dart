@@ -30,7 +30,8 @@ void main() {
 
       fs.directory(sourcePath).createSync(recursive: true);
       fs.directory(p.join(sourcePath, '_plugins')).createSync(recursive: true);
-      fs.directory(p.join(sourcePath, '_themes', 'default', '_plugins'))
+      fs
+          .directory(p.join(sourcePath, '_themes', 'default', '_plugins'))
           .createSync(recursive: true);
 
       records = [];
@@ -57,7 +58,9 @@ void main() {
 
       fs
           .file(p.join(pluginDir, 'config.yaml'))
-          .writeAsStringSync('name: $pluginName\nentrypoint: main.lua:init_plugin\n');
+          .writeAsStringSync(
+            'name: $pluginName\nentrypoint: main.lua:init_plugin\n',
+          );
       fs
           .file(p.join(pluginDir, 'main.lua'))
           .writeAsStringSync('function init_plugin(metadata) return {} end');
@@ -117,7 +120,10 @@ void main() {
         fs.directory(p.join(sourcePath, '_plugins')),
       );
 
-      expect(plugins.any((plugin) => plugin.metadata.name == 'allowed'), isTrue);
+      expect(
+        plugins.any((plugin) => plugin.metadata.name == 'allowed'),
+        isTrue,
+      );
       expect(
         plugins.any((plugin) => plugin.metadata.name == 'blocked'),
         isFalse,

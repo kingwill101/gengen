@@ -308,6 +308,9 @@ Notes:
 
 Data files in `_data/` are automatically loaded and available in templates:
 
+GenGen also merges `_data` from the active theme and any plugins. Precedence is:
+`site _data` → `theme _data` → `plugin _data` (site overrides theme overrides plugin).
+
 ```yaml
 # Custom data can be added directly to config
 data:
@@ -388,7 +391,11 @@ Themes are located in `_themes/theme-name/` and can contain:
 - `_includes/` - Partial templates  
 - `_sass/` - Sass/SCSS stylesheets
 - `assets/` - Theme assets (CSS, JS, images)
+- `content/` - Theme pages (front matter files rendered into the site)
 - `config.yaml` - Theme-specific configuration
+
+Theme pages render to the same relative path inside the site output. If a site
+file exists at the same path, the site file wins and the theme page is ignored.
 
 ## Plugin Configuration
 

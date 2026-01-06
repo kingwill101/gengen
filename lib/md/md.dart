@@ -23,9 +23,7 @@ String renderMd(String content) {
     content,
     extensionSet: ExtensionSet.gitHubWeb,
     blockSyntaxes: [EmptyLineBlockSyntax()],
-    inlineSyntaxes: [
-      Shortcode(),
-    ],
+    inlineSyntaxes: [Shortcode()],
   );
 
   return cleanUpContent(renderedContent);

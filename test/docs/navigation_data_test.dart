@@ -18,30 +18,51 @@ void main() {
       expect(sidebar, isNotNull, reason: 'sidebar key is required');
 
       final sections = sidebar!['sections'] as YamlList?;
-      expect(sections, isNotNull,
-          reason: 'sidebar.sections must be a list of section definitions');
-      expect(sections, isNotEmpty,
-          reason: 'sidebar.sections must contain at least one section');
+      expect(
+        sections,
+        isNotNull,
+        reason: 'sidebar.sections must be a list of section definitions',
+      );
+      expect(
+        sections,
+        isNotEmpty,
+        reason: 'sidebar.sections must contain at least one section',
+      );
 
       for (final section in sections!) {
         expect(section, isA<YamlMap>(), reason: 'section must be a map');
         final sectionMap = section as YamlMap;
-        expect(sectionMap.containsKey('title'), isTrue,
-            reason: 'each section requires a title');
-        expect(sectionMap['pages'], isA<YamlList>(),
-            reason: 'each section must define pages');
+        expect(
+          sectionMap.containsKey('title'),
+          isTrue,
+          reason: 'each section requires a title',
+        );
+        expect(
+          sectionMap['pages'],
+          isA<YamlList>(),
+          reason: 'each section must define pages',
+        );
 
         final pages = sectionMap['pages'] as YamlList;
-        expect(pages, isNotEmpty,
-            reason: 'section "${sectionMap['title']}" must have pages');
+        expect(
+          pages,
+          isNotEmpty,
+          reason: 'section "${sectionMap['title']}" must have pages',
+        );
 
         for (final page in pages) {
           expect(page, isA<YamlMap>(), reason: 'page must be a map');
           final pageMap = page as YamlMap;
-          expect(pageMap.containsKey('title'), isTrue,
-              reason: 'each page requires a title');
-          expect(pageMap.containsKey('url'), isTrue,
-              reason: 'each page requires a url');
+          expect(
+            pageMap.containsKey('title'),
+            isTrue,
+            reason: 'each page requires a title',
+          );
+          expect(
+            pageMap.containsKey('url'),
+            isTrue,
+            reason: 'each page requires a url',
+          );
         }
       }
     });
@@ -53,10 +74,16 @@ void main() {
       for (final entry in quickNav!) {
         expect(entry, isA<YamlMap>(), reason: 'quick nav entries must be maps');
         final entryMap = entry as YamlMap;
-        expect(entryMap.containsKey('title'), isTrue,
-            reason: 'quick nav entry requires title');
-        expect(entryMap.containsKey('url'), isTrue,
-            reason: 'quick nav entry requires url');
+        expect(
+          entryMap.containsKey('title'),
+          isTrue,
+          reason: 'quick nav entry requires title',
+        );
+        expect(
+          entryMap.containsKey('url'),
+          isTrue,
+          reason: 'quick nav entry requires url',
+        );
       }
     });
 
@@ -65,12 +92,22 @@ void main() {
       expect(footerNav, isNotNull, reason: 'footer_nav key must exist');
 
       for (final entry in footerNav!) {
-        expect(entry, isA<YamlMap>(), reason: 'footer nav entries must be maps');
+        expect(
+          entry,
+          isA<YamlMap>(),
+          reason: 'footer nav entries must be maps',
+        );
         final entryMap = entry as YamlMap;
-        expect(entryMap.containsKey('title'), isTrue,
-            reason: 'footer nav entry requires title');
-        expect(entryMap.containsKey('url'), isTrue,
-            reason: 'footer nav entry requires url');
+        expect(
+          entryMap.containsKey('title'),
+          isTrue,
+          reason: 'footer nav entry requires title',
+        );
+        expect(
+          entryMap.containsKey('url'),
+          isTrue,
+          reason: 'footer nav entry requires url',
+        );
       }
     });
   });

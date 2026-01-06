@@ -29,7 +29,9 @@ class PluginManager {
     final pluginConfig = _normalizePluginConfig(config['plugins']);
     final enabled = Set<String>.from(pluginConfig['enabled'] as List? ?? []);
     final disabled = Set<String>.from(pluginConfig['disabled'] as List? ?? []);
-    final groups = Map<String, dynamic>.from(pluginConfig['groups'] as Map? ?? {});
+    final groups = Map<String, dynamic>.from(
+      pluginConfig['groups'] as Map? ?? {},
+    );
 
     final enabledPluginNames = <String>{};
 
@@ -39,13 +41,17 @@ class PluginManager {
         // It's a group
         final groupPlugins = List<String>.from(groups[item] as List? ?? []);
         enabledPluginNames.addAll(groupPlugins);
-        log.info('(PluginManager) Enabled plugin group "$item": ${groupPlugins.join(", ")}');
+        log.info(
+          '(PluginManager) Enabled plugin group "$item": ${groupPlugins.join(", ")}',
+        );
       } else if (_availablePlugins.containsKey(item)) {
         // It's an individual plugin
         enabledPluginNames.add(item);
         log.info('(PluginManager) Enabled individual plugin "$item"');
       } else {
-        log.warning('(PluginManager) Unknown plugin or group "$item" in enabled list');
+        log.warning(
+          '(PluginManager) Unknown plugin or group "$item" in enabled list',
+        );
       }
     }
 
@@ -55,13 +61,17 @@ class PluginManager {
         // It's a group
         final groupPlugins = List<String>.from(groups[item] as List? ?? []);
         enabledPluginNames.removeAll(groupPlugins);
-        log.info('(PluginManager) Disabled plugin group "$item": ${groupPlugins.join(", ")}');
+        log.info(
+          '(PluginManager) Disabled plugin group "$item": ${groupPlugins.join(", ")}',
+        );
       } else if (_availablePlugins.containsKey(item)) {
         // It's an individual plugin
         enabledPluginNames.remove(item);
         log.info('(PluginManager) Disabled individual plugin "$item"');
       } else {
-        log.warning('(PluginManager) Unknown plugin or group "$item" in disabled list');
+        log.warning(
+          '(PluginManager) Unknown plugin or group "$item" in disabled list',
+        );
       }
     }
 
@@ -76,7 +86,9 @@ class PluginManager {
     }
 
     if (plugins.isEmpty) {
-      log.warning('(PluginManager) No plugins enabled! Consider enabling at least the "core" group.');
+      log.warning(
+        '(PluginManager) No plugins enabled! Consider enabling at least the "core" group.',
+      );
     }
 
     return plugins;
@@ -87,7 +99,13 @@ class PluginManager {
 
   /// Gets the default plugin groups
   static Map<String, List<String>> get defaultGroups => {
-    'core': ['DraftPlugin', 'MarkdownPlugin', 'LiquidPlugin', 'SassPlugin', 'PaginationPlugin'],
+    'core': [
+      'DraftPlugin',
+      'MarkdownPlugin',
+      'LiquidPlugin',
+      'SassPlugin',
+      'PaginationPlugin',
+    ],
     'seo': ['RssPlugin', 'SitemapPlugin'],
     'assets': ['SassPlugin', 'TailwindPlugin'],
     'content': ['PaginationPlugin', 'AliasPlugin'],
@@ -104,16 +122,20 @@ class PluginManager {
     final pluginConfig = _normalizePluginConfig(config['plugins']);
     final enabled = Set<String>.from(pluginConfig['enabled'] as List? ?? []);
     final disabled = Set<String>.from(pluginConfig['disabled'] as List? ?? []);
-    final groups = Map<String, dynamic>.from(pluginConfig['groups'] as Map? ?? {});
+    final groups = Map<String, dynamic>.from(
+      pluginConfig['groups'] as Map? ?? {},
+    );
 
     return {
       'available': availablePlugins.toList()..sort(),
       'enabled': enabled.toList()..sort(),
       'disabled': disabled.toList()..sort(),
       'groups': groups,
-      'active_plugins': getEnabledPlugins(config).map((p) => p.metadata.name).toList()..sort(),
+      'active_plugins': getEnabledPlugins(
+        config,
+      ).map((p) => p.metadata.name).toList()..sort(),
     };
-}
+  }
 
   static Map<String, dynamic> _normalizePluginConfig(dynamic raw) {
     final baseGroups = defaultGroups.map(
@@ -157,8 +179,9 @@ class PluginManager {
       }
 
       final enabled = _normalizeStringList(result['enabled']);
-      result['enabled'] =
-          enabled.isEmpty && !explicitEnabled ? <String>['core'] : enabled;
+      result['enabled'] = enabled.isEmpty && !explicitEnabled
+          ? <String>['core']
+          : enabled;
       result['disabled'] = _normalizeStringList(result['disabled']);
       return result;
     }

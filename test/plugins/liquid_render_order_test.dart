@@ -21,10 +21,18 @@ void main() {
       final projectRoot = fs.currentDirectory.path;
 
       await fs.directory('$projectRoot/test_site').create(recursive: true);
-      await fs.directory('$projectRoot/test_site/_themes').create(recursive: true);
-      await fs.directory('$projectRoot/test_site/_themes/default').create(recursive: true);
-      await fs.directory('$projectRoot/test_site/_themes/default/_layouts').create(recursive: true);
-      await fs.directory('$projectRoot/test_site/public').create(recursive: true);
+      await fs
+          .directory('$projectRoot/test_site/_themes')
+          .create(recursive: true);
+      await fs
+          .directory('$projectRoot/test_site/_themes/default')
+          .create(recursive: true);
+      await fs
+          .directory('$projectRoot/test_site/_themes/default/_layouts')
+          .create(recursive: true);
+      await fs
+          .directory('$projectRoot/test_site/public')
+          .create(recursive: true);
 
       await fs.file('$projectRoot/test_site/_config.yaml').writeAsString('''
 title: "Test Site"
@@ -34,7 +42,9 @@ permalink: "pretty"
 snippet: "**Bold**"
 ''');
 
-      await fs.file('$projectRoot/test_site/_themes/default/_layouts/default.html').writeAsString('''
+      await fs
+          .file('$projectRoot/test_site/_themes/default/_layouts/default.html')
+          .writeAsString('''
 <!doctype html>
 <html>
 <head><title>{{ site.title }}</title></head>
@@ -44,7 +54,9 @@ snippet: "**Bold**"
 </html>
 ''');
 
-      await fs.file('$projectRoot/test_site/_themes/default/config.yaml').writeAsString('''
+      await fs
+          .file('$projectRoot/test_site/_themes/default/config.yaml')
+          .writeAsString('''
 name: default
 version: 1.0.0
 ''');
@@ -68,36 +80,44 @@ render_with_liquid: false
 Literal: {{ site.title }}
 ''');
 
-      Site.init(overrides: {
-        'source': '$projectRoot/test_site',
-        'destination': '$projectRoot/test_site/public',
-        'permalink': 'pretty',
-        'theme': 'default',
-      });
+      Site.init(
+        overrides: {
+          'source': '$projectRoot/test_site',
+          'destination': '$projectRoot/test_site/public',
+          'permalink': 'pretty',
+          'theme': 'default',
+        },
+      );
       site = Site.instance;
     });
 
-    test('renders Liquid before Markdown so Liquid output is converted', () async {
-      await site.process();
+    test(
+      'renders Liquid before Markdown so Liquid output is converted',
+      () async {
+        await site.process();
 
-      final page = site.pages.firstWhere(
-        (page) => page.config['title'] == 'Order Test',
-      );
+        final page = site.pages.firstWhere(
+          (page) => page.config['title'] == 'Order Test',
+        );
 
-      final output = await fs.file(page.filePath).readAsString();
-      expect(output, contains('<strong>Bold</strong>'));
-    });
+        final output = await fs.file(page.filePath).readAsString();
+        expect(output, contains('<strong>Bold</strong>'));
+      },
+    );
 
-    test('render_with_liquid false keeps content literal but layout renders', () async {
-      await site.process();
+    test(
+      'render_with_liquid false keeps content literal but layout renders',
+      () async {
+        await site.process();
 
-      final page = site.pages.firstWhere(
-        (page) => page.config['title'] == 'No Liquid',
-      );
+        final page = site.pages.firstWhere(
+          (page) => page.config['title'] == 'No Liquid',
+        );
 
-      final output = await fs.file(page.filePath).readAsString();
-      expect(output, contains('Test Site'));
-      expect(output, contains('{{ site.title }}'));
-    });
+        final output = await fs.file(page.filePath).readAsString();
+        expect(output, contains('Test Site'));
+        expect(output, contains('{{ site.title }}'));
+      },
+    );
   });
 }

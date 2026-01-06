@@ -367,7 +367,14 @@ class LuaPlugin extends BasePlugin {
         );
       }
       result[name] = (value, args, namedArgs) {
-        return _invokeFilterFunction(field, name, rawFn, value, args, namedArgs);
+        return _invokeFilterFunction(
+          field,
+          name,
+          rawFn,
+          value,
+          args,
+          namedArgs,
+        );
       };
     }
     return result;
@@ -382,7 +389,7 @@ class LuaPlugin extends BasePlugin {
     Map<String, dynamic> namedArgs,
   ) async {
     try {
-      final result = await fn.call([
+      final result = await _runtime.vm.callFunction(fn, [
         wrapDynamic(value),
         wrapDynamic(args),
         wrapDynamic(namedArgs),
@@ -422,7 +429,7 @@ class LuaPlugin extends BasePlugin {
     List<Object?> args,
   ) async {
     try {
-      return await fn.call(args);
+      return await _runtime.vm.callFunction(fn, args);
     } catch (error, stackTrace) {
       throw PluginException(
         'Lua plugin "${metadata.name}" hook "$hook" threw an error',

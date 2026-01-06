@@ -21,11 +21,21 @@ void main() {
 
       // Create test site structure
       await fs.directory('$projectRoot/test_site').create(recursive: true);
-      await fs.directory('$projectRoot/test_site/_posts').create(recursive: true);
-      await fs.directory('$projectRoot/test_site/_themes').create(recursive: true);
-      await fs.directory('$projectRoot/test_site/_themes/default').create(recursive: true);
-      await fs.directory('$projectRoot/test_site/_themes/default/_layouts').create(recursive: true);
-      await fs.directory('$projectRoot/test_site/public').create(recursive: true);
+      await fs
+          .directory('$projectRoot/test_site/_posts')
+          .create(recursive: true);
+      await fs
+          .directory('$projectRoot/test_site/_themes')
+          .create(recursive: true);
+      await fs
+          .directory('$projectRoot/test_site/_themes/default')
+          .create(recursive: true);
+      await fs
+          .directory('$projectRoot/test_site/_themes/default/_layouts')
+          .create(recursive: true);
+      await fs
+          .directory('$projectRoot/test_site/public')
+          .create(recursive: true);
 
       // Create config
       await fs.file('$projectRoot/test_site/_config.yaml').writeAsString('''
@@ -36,7 +46,9 @@ permalink: "posts/:title/"
 ''');
 
       // Create layouts
-      await fs.file('$projectRoot/test_site/_themes/default/_layouts/default.html').writeAsString('''
+      await fs
+          .file('$projectRoot/test_site/_themes/default/_layouts/default.html')
+          .writeAsString('''
 <!DOCTYPE html>
 <html>
 <head>
@@ -51,7 +63,9 @@ permalink: "posts/:title/"
 </html>
 ''');
 
-      await fs.file('$projectRoot/test_site/_themes/default/_layouts/post.html').writeAsString('''
+      await fs
+          .file('$projectRoot/test_site/_themes/default/_layouts/post.html')
+          .writeAsString('''
 ---
 layout: default
 ---
@@ -67,23 +81,31 @@ layout: default
 ''');
 
       // Create theme config
-      await fs.file('$projectRoot/test_site/_themes/default/config.yaml').writeAsString('''
+      await fs
+          .file('$projectRoot/test_site/_themes/default/config.yaml')
+          .writeAsString('''
 name: default
 version: 1.0.0
 ''');
 
       // Initialize site
-      Site.init(overrides: {
-        'source': '$projectRoot/test_site',
-        'destination': '$projectRoot/test_site/public',
-        'permalink': 'posts/:title/',
-      });
+      Site.init(
+        overrides: {
+          'source': '$projectRoot/test_site',
+          'destination': '$projectRoot/test_site/public',
+          'permalink': 'posts/:title/',
+        },
+      );
       site = Site.instance;
     });
 
     test('should render content without layout when layout is missing', () async {
       // Create a post WITHOUT layout specified
-      await fs.file('${fs.currentDirectory.path}/test_site/_posts/2024-01-10-no-layout.md').writeAsString('''
+      await fs
+          .file(
+            '${fs.currentDirectory.path}/test_site/_posts/2024-01-10-no-layout.md',
+          )
+          .writeAsString('''
 ---
 title: "Post Without Layout"
 date: 2024-01-10
@@ -113,35 +135,67 @@ This post should still render its content even without a layout specified.
       print('Post layout: "${post.layout}"');
       print('Content length: ${post.content.length}');
       print('Rendered content length: ${post.renderer.content.length}');
-      print('Rendered content preview: ${post.renderer.content.substring(0, post.renderer.content.length > 200 ? 200 : post.renderer.content.length)}...');
+      print(
+        'Rendered content preview: ${post.renderer.content.substring(0, post.renderer.content.length > 200 ? 200 : post.renderer.content.length)}...',
+      );
 
       // Check that content was rendered
-      expect(post.renderer.content.isNotEmpty, true, 
-        reason: 'Post should render content even without layout');
-      
+      expect(
+        post.renderer.content.isNotEmpty,
+        true,
+        reason: 'Post should render content even without layout',
+      );
+
       // The content should contain the markdown converted to HTML
-      expect(post.renderer.content, contains('<h1'), 
-        reason: 'Markdown should be converted to HTML');
-      expect(post.renderer.content, contains('This is a post without layout'),
-        reason: 'Post content should be present');
-      expect(post.renderer.content, contains('<strong>Bold text</strong>'),
-        reason: 'Markdown formatting should work');
+      expect(
+        post.renderer.content,
+        contains('<h1'),
+        reason: 'Markdown should be converted to HTML',
+      );
+      expect(
+        post.renderer.content,
+        contains('This is a post without layout'),
+        reason: 'Post content should be present',
+      );
+      expect(
+        post.renderer.content,
+        contains('<strong>Bold text</strong>'),
+        reason: 'Markdown formatting should work',
+      );
 
       // Check the output file
       final outputFile = fs.file(post.filePath);
-      expect(await outputFile.exists(), true, reason: 'Output file should be created');
-      
+      expect(
+        await outputFile.exists(),
+        true,
+        reason: 'Output file should be created',
+      );
+
       final fileContent = await outputFile.readAsString();
-      expect(fileContent.isNotEmpty, true, reason: 'Output file should not be empty');
-      expect(fileContent.length, greaterThan(100), reason: 'Output should have substantial content');
-      
+      expect(
+        fileContent.isNotEmpty,
+        true,
+        reason: 'Output file should not be empty',
+      );
+      expect(
+        fileContent.length,
+        greaterThan(100),
+        reason: 'Output should have substantial content',
+      );
+
       print('Output file size: ${fileContent.length} bytes');
-      print('Output file preview: ${fileContent.substring(0, fileContent.length > 200 ? 200 : fileContent.length)}...');
+      print(
+        'Output file preview: ${fileContent.substring(0, fileContent.length > 200 ? 200 : fileContent.length)}...',
+      );
     });
 
     test('should compare behavior between post with layout vs without layout', () async {
       // Create two posts - one with layout, one without
-      await fs.file('${fs.currentDirectory.path}/test_site/_posts/2024-01-10-with-layout.md').writeAsString('''
+      await fs
+          .file(
+            '${fs.currentDirectory.path}/test_site/_posts/2024-01-10-with-layout.md',
+          )
+          .writeAsString('''
 ---
 title: "Post With Layout"
 date: 2024-01-10
@@ -153,7 +207,11 @@ layout: post
 This post has a layout specified.
 ''');
 
-      await fs.file('${fs.currentDirectory.path}/test_site/_posts/2024-01-11-without-layout.md').writeAsString('''
+      await fs
+          .file(
+            '${fs.currentDirectory.path}/test_site/_posts/2024-01-11-without-layout.md',
+          )
+          .writeAsString('''
 ---
 title: "Post Without Layout"
 date: 2024-01-11
@@ -177,18 +235,28 @@ This post has no layout specified.
       print('WITH LAYOUT:');
       print('  Layout: "${postWithLayout.layout}"');
       print('  Rendered length: ${postWithLayout.renderer.content.length}');
-      print('  Preview: ${postWithLayout.renderer.content.substring(0, postWithLayout.renderer.content.length > 100 ? 100 : postWithLayout.renderer.content.length)}...');
-      
+      print(
+        '  Preview: ${postWithLayout.renderer.content.substring(0, postWithLayout.renderer.content.length > 100 ? 100 : postWithLayout.renderer.content.length)}...',
+      );
+
       print('\nWITHOUT LAYOUT:');
       print('  Layout: "${postWithoutLayout.layout}"');
       print('  Rendered length: ${postWithoutLayout.renderer.content.length}');
-      print('  Preview: ${postWithoutLayout.renderer.content.substring(0, postWithoutLayout.renderer.content.length > 100 ? 100 : postWithoutLayout.renderer.content.length)}...');
+      print(
+        '  Preview: ${postWithoutLayout.renderer.content.substring(0, postWithoutLayout.renderer.content.length > 100 ? 100 : postWithoutLayout.renderer.content.length)}...',
+      );
 
       // Both should have content
-      expect(postWithLayout.renderer.content.isNotEmpty, true, 
-        reason: 'Post with layout should have content');
-      expect(postWithoutLayout.renderer.content.isNotEmpty, true, 
-        reason: 'Post without layout should also have content');
+      expect(
+        postWithLayout.renderer.content.isNotEmpty,
+        true,
+        reason: 'Post with layout should have content',
+      );
+      expect(
+        postWithoutLayout.renderer.content.isNotEmpty,
+        true,
+        reason: 'Post without layout should also have content',
+      );
 
       // Both should have substantial content (not just 1 byte)
       expect(postWithLayout.renderer.content.length, greaterThan(50));
@@ -205,4 +273,4 @@ This post has no layout specified.
       }
     });
   });
-} 
+}

@@ -26,7 +26,10 @@ void main() {
       final plugin = RssPlugin();
       expect(plugin.metadata.name, equals('RssPlugin'));
       expect(plugin.metadata.version, equals('1.0.0'));
-      expect(plugin.metadata.description, equals('Generates RSS 2.0 feed from site posts'));
+      expect(
+        plugin.metadata.description,
+        equals('Generates RSS 2.0 feed from site posts'),
+      );
     });
 
     test('should use default configuration values', () {
@@ -36,29 +39,36 @@ void main() {
     });
 
     test('should accept custom configuration', () {
-      final plugin = RssPlugin(
-        outputPath: 'rss.xml',
-        maxPosts: 10,
-      );
+      final plugin = RssPlugin(outputPath: 'rss.xml', maxPosts: 10);
       expect(plugin.outputPath, equals('rss.xml'));
       expect(plugin.maxPosts, equals(10));
     });
 
     test('should generate RSS feed from posts', () async {
       // Create test site structure
-      await memoryFileSystem.directory(p.join(projectRoot, '_posts')).create(recursive: true);
-      await memoryFileSystem.directory(p.join(projectRoot, '_layouts')).create(recursive: true);
-      await memoryFileSystem.directory(p.join(projectRoot, 'public')).create(recursive: true);
+      await memoryFileSystem
+          .directory(p.join(projectRoot, '_posts'))
+          .create(recursive: true);
+      await memoryFileSystem
+          .directory(p.join(projectRoot, '_layouts'))
+          .create(recursive: true);
+      await memoryFileSystem
+          .directory(p.join(projectRoot, 'public'))
+          .create(recursive: true);
 
       // Create config
-      memoryFileSystem.file(p.join(projectRoot, 'config.yaml')).writeAsStringSync('''
+      memoryFileSystem
+          .file(p.join(projectRoot, 'config.yaml'))
+          .writeAsStringSync('''
 title: Test Site
 description: A test site for RSS generation
 url: https://example.com
 ''');
 
       // Create posts
-      memoryFileSystem.file(p.join(projectRoot, '_posts', '2024-01-01-first-post.md')).writeAsStringSync('''
+      memoryFileSystem
+          .file(p.join(projectRoot, '_posts', '2024-01-01-first-post.md'))
+          .writeAsStringSync('''
 ---
 title: First Post
 date: 2024-01-01
@@ -68,7 +78,9 @@ excerpt: This is the first post excerpt
 This is the content of the first post.
 ''');
 
-      memoryFileSystem.file(p.join(projectRoot, '_posts', '2024-01-02-second-post.md')).writeAsStringSync('''
+      memoryFileSystem
+          .file(p.join(projectRoot, '_posts', '2024-01-02-second-post.md'))
+          .writeAsStringSync('''
 ---
 title: Second Post
 date: 2024-01-02
@@ -78,26 +90,32 @@ This is the content of the second post.
 ''');
 
       // Create layout
-      memoryFileSystem.file(p.join(projectRoot, '_layouts', 'default.html')).writeAsStringSync('''
+      memoryFileSystem
+          .file(p.join(projectRoot, '_layouts', 'default.html'))
+          .writeAsStringSync('''
 <!DOCTYPE html>
 <html><head><title>{{ page.title }}</title></head>
 <body>{{ content }}</body></html>
 ''');
 
       // Initialize site
-      Site.init(overrides: {
-        'source': projectRoot,
-        'destination': p.join(projectRoot, 'public'),
-      });
+      Site.init(
+        overrides: {
+          'source': projectRoot,
+          'destination': p.join(projectRoot, 'public'),
+        },
+      );
 
       await Site.instance.read();
-      
+
       // Test plugin
       final plugin = RssPlugin();
       await plugin.afterRender();
 
       // Check that RSS file was created
-      final rssFile = memoryFileSystem.file(p.join(projectRoot, 'public', 'feed.xml'));
+      final rssFile = memoryFileSystem.file(
+        p.join(projectRoot, 'public', 'feed.xml'),
+      );
       expect(await rssFile.exists(), isTrue);
 
       // Check RSS content
@@ -111,20 +129,26 @@ This is the content of the second post.
 
     test('should handle empty posts gracefully', () async {
       // Create test site structure with no posts
-      await memoryFileSystem.directory(p.join(projectRoot, 'public')).create(recursive: true);
+      await memoryFileSystem
+          .directory(p.join(projectRoot, 'public'))
+          .create(recursive: true);
 
       // Create config
-      memoryFileSystem.file(p.join(projectRoot, 'config.yaml')).writeAsStringSync('''
+      memoryFileSystem
+          .file(p.join(projectRoot, 'config.yaml'))
+          .writeAsStringSync('''
 title: Empty Site
 description: A site with no posts
 url: https://example.com
 ''');
 
       // Initialize site
-      Site.init(overrides: {
-        'source': projectRoot,
-        'destination': p.join(projectRoot, 'public'),
-      });
+      Site.init(
+        overrides: {
+          'source': projectRoot,
+          'destination': p.join(projectRoot, 'public'),
+        },
+      );
 
       await Site.instance.read();
 
@@ -133,8 +157,10 @@ url: https://example.com
       await plugin.afterRender();
 
       // Check that RSS file was not created
-      final rssFile = memoryFileSystem.file(p.join(projectRoot, 'public', 'feed.xml'));
+      final rssFile = memoryFileSystem.file(
+        p.join(projectRoot, 'public', 'feed.xml'),
+      );
       expect(await rssFile.exists(), isFalse);
     });
   });
-} 
+}

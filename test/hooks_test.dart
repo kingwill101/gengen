@@ -12,16 +12,17 @@ import 'package:test/test.dart';
 class TestHookPlugin extends BasePlugin {
   static List<String> executionLog = [];
   static int instanceCounter = 0;
-  
+
   final String identifier;
-  
-  TestHookPlugin([String? id]) : identifier = id ?? 'plugin${++instanceCounter}';
-  
+
+  TestHookPlugin([String? id])
+    : identifier = id ?? 'plugin${++instanceCounter}';
+
   static void clearLog() {
     executionLog.clear();
     instanceCounter = 0;
   }
-  
+
   void _log(String event) {
     executionLog.add('$identifier:$event');
   }
@@ -88,7 +89,7 @@ class ExceptionPlugin extends BasePlugin {
 // Plugin that modifies site state during hooks
 class StateModifyingPlugin extends BasePlugin {
   static Map<String, dynamic> siteData = {};
-  
+
   static void clearData() {
     siteData.clear();
   }
@@ -135,7 +136,9 @@ void main() {
 
     final layoutsPath = p.join(sourcePath, '_layouts');
     memoryFileSystem.directory(layoutsPath).createSync(recursive: true);
-    memoryFileSystem.file(p.join(layoutsPath, 'default.html')).writeAsStringSync('''
+    memoryFileSystem
+        .file(p.join(layoutsPath, 'default.html'))
+        .writeAsStringSync('''
 <!DOCTYPE html>
 <html>
 <head>
@@ -149,7 +152,8 @@ void main() {
 
     final postsPath = p.join(sourcePath, '_posts');
     memoryFileSystem.directory(postsPath).createSync();
-    memoryFileSystem.file(p.join(postsPath, '2024-01-01-test-post.md'))
+    memoryFileSystem
+        .file(p.join(postsPath, '2024-01-01-test-post.md'))
         .writeAsStringSync('''
 ---
 title: Test Post
@@ -162,7 +166,9 @@ Test content
     // Theme structure (minimal)
     final themePath = p.join(sourcePath, '_themes', 'default', '_layouts');
     memoryFileSystem.directory(themePath).createSync(recursive: true);
-    memoryFileSystem.file(p.join(themePath, 'default.html')).writeAsStringSync('{{ content }}');
+    memoryFileSystem
+        .file(p.join(themePath, 'default.html'))
+        .writeAsStringSync('{{ content }}');
   });
 
   group('Site Hook System', () {
@@ -173,78 +179,105 @@ Test content
       TestHookPlugin.clearLog();
     });
 
-    test('should execute hooks in the correct order during site processing', () async {
-      Site.init(overrides: {
-        'source': p.join(projectRoot, 'source'),
-        'destination': p.join(projectRoot, 'public'),
-        'theme': 'default',
-      });
+    test(
+      'should execute hooks in the correct order during site processing',
+      () async {
+        Site.init(
+          overrides: {
+            'source': p.join(projectRoot, 'source'),
+            'destination': p.join(projectRoot, 'public'),
+            'theme': 'default',
+          },
+        );
 
-      final site = Site.instance;
-      
-      // Add a test plugin to track hook execution
-      final testPlugin = TestHookPlugin('main');
-      site.plugins.add(testPlugin);
+        final site = Site.instance;
 
-      await site.process();
+        // Add a test plugin to track hook execution
+        final testPlugin = TestHookPlugin('main');
+        site.plugins.add(testPlugin);
 
-      // Verify the complete hook execution order
-      final expectedOrder = [
-        'main:afterInit',
-        'main:beforeRead',
-        'main:afterRead',
-        'main:beforeGenerate',
-        'main:generate',
-        'main:afterGenerate',
-        'main:beforeRender',
-        'main:afterRender',
-        'main:beforeWrite',
-        'main:afterWrite',
-      ];
+        await site.process();
 
-      expect(TestHookPlugin.executionLog, equals(expectedOrder));
-    });
+        // Verify the complete hook execution order
+        final expectedOrder = [
+          'main:afterInit',
+          'main:beforeRead',
+          'main:afterRead',
+          'main:beforeGenerate',
+          'main:generate',
+          'main:afterGenerate',
+          'main:beforeRender',
+          'main:afterRender',
+          'main:beforeWrite',
+          'main:afterWrite',
+        ];
 
-    test('should execute hooks from multiple plugins in registration order', () async {
-      Site.init(overrides: {
-        'source': p.join(projectRoot, 'source'),
-        'destination': p.join(projectRoot, 'public'),
-        'theme': 'default',
-      });
+        expect(TestHookPlugin.executionLog, equals(expectedOrder));
+      },
+    );
 
-      final site = Site.instance;
-      
-      // Add multiple test plugins
-      final plugin1 = TestHookPlugin('first');
-      final plugin2 = TestHookPlugin('second');
-      final plugin3 = TestHookPlugin('third');
-      
-      site.plugins.addAll([plugin1, plugin2, plugin3]);
+    test(
+      'should execute hooks from multiple plugins in registration order',
+      () async {
+        Site.init(
+          overrides: {
+            'source': p.join(projectRoot, 'source'),
+            'destination': p.join(projectRoot, 'public'),
+            'theme': 'default',
+          },
+        );
 
-      await site.process();
+        final site = Site.instance;
 
-      // Verify that each hook event runs for all plugins in order
-      final log = TestHookPlugin.executionLog;
-      
-      // Check afterInit hooks run in order
-      final afterInitHooks = log.where((entry) => entry.endsWith(':afterInit')).toList();
-      expect(afterInitHooks, equals(['first:afterInit', 'second:afterInit', 'third:afterInit']));
-      
-      // Check beforeRead hooks run in order
-      final beforeReadHooks = log.where((entry) => entry.endsWith(':beforeRead')).toList();
-      expect(beforeReadHooks, equals(['first:beforeRead', 'second:beforeRead', 'third:beforeRead']));
-      
-      // Check afterWrite hooks run in order (last hooks)
-      final afterWriteHooks = log.where((entry) => entry.endsWith(':afterWrite')).toList();
-      expect(afterWriteHooks, equals(['first:afterWrite', 'second:afterWrite', 'third:afterWrite']));
-    });
+        // Add multiple test plugins
+        final plugin1 = TestHookPlugin('first');
+        final plugin2 = TestHookPlugin('second');
+        final plugin3 = TestHookPlugin('third');
+
+        site.plugins.addAll([plugin1, plugin2, plugin3]);
+
+        await site.process();
+
+        // Verify that each hook event runs for all plugins in order
+        final log = TestHookPlugin.executionLog;
+
+        // Check afterInit hooks run in order
+        final afterInitHooks = log
+            .where((entry) => entry.endsWith(':afterInit'))
+            .toList();
+        expect(
+          afterInitHooks,
+          equals(['first:afterInit', 'second:afterInit', 'third:afterInit']),
+        );
+
+        // Check beforeRead hooks run in order
+        final beforeReadHooks = log
+            .where((entry) => entry.endsWith(':beforeRead'))
+            .toList();
+        expect(
+          beforeReadHooks,
+          equals(['first:beforeRead', 'second:beforeRead', 'third:beforeRead']),
+        );
+
+        // Check afterWrite hooks run in order (last hooks)
+        final afterWriteHooks = log
+            .where((entry) => entry.endsWith(':afterWrite'))
+            .toList();
+        expect(
+          afterWriteHooks,
+          equals(['first:afterWrite', 'second:afterWrite', 'third:afterWrite']),
+        );
+      },
+    );
 
     test('should execute individual hook events correctly', () async {
-      Site.init(overrides: {
-        'source': p.join(projectRoot, 'source'),
-        'destination': p.join(projectRoot, 'public'),
-        'theme': 'default',
-      });
+      Site.init(
+        overrides: {
+          'source': p.join(projectRoot, 'source'),
+          'destination': p.join(projectRoot, 'public'),
+          'theme': 'default',
+        },
+      );
 
       final site = Site.instance;
       final testPlugin = TestHookPlugin('test');
@@ -288,147 +321,202 @@ Test content
     });
 
     test('should handle hooks with no plugins gracefully', () async {
-      Site.init(overrides: {
-        'source': p.join(projectRoot, 'source'),
-        'destination': p.join(projectRoot, 'public'),
-        'theme': 'default',
-      });
+      Site.init(
+        overrides: {
+          'source': p.join(projectRoot, 'source'),
+          'destination': p.join(projectRoot, 'public'),
+          'theme': 'default',
+        },
+      );
 
       final site = Site.instance;
-      
+
       // Clear all plugins (including built-ins)
       site.plugins.clear();
 
       // Should not throw when running hooks with no plugins
-      expect(() async => await site.runHook(HookEvent.afterInit), returnsNormally);
-      expect(() async => await site.runHook(HookEvent.beforeRead), returnsNormally);
-      expect(() async => await site.runHook(HookEvent.afterWrite), returnsNormally);
+      expect(
+        () async => await site.runHook(HookEvent.afterInit),
+        returnsNormally,
+      );
+      expect(
+        () async => await site.runHook(HookEvent.beforeRead),
+        returnsNormally,
+      );
+      expect(
+        () async => await site.runHook(HookEvent.afterWrite),
+        returnsNormally,
+      );
     });
 
-    test('should execute generator hooks separately from lifecycle hooks', () async {
-      Site.init(overrides: {
-        'source': p.join(projectRoot, 'source'),
-        'destination': p.join(projectRoot, 'public'),
-        'theme': 'default',
-      });
+    test(
+      'should execute generator hooks separately from lifecycle hooks',
+      () async {
+        Site.init(
+          overrides: {
+            'source': p.join(projectRoot, 'source'),
+            'destination': p.join(projectRoot, 'public'),
+            'theme': 'default',
+          },
+        );
 
-      final site = Site.instance;
-      final testPlugin = TestHookPlugin('gen');
-      site.plugins.add(testPlugin);
+        final site = Site.instance;
+        final testPlugin = TestHookPlugin('gen');
+        site.plugins.add(testPlugin);
 
-      // Test runGenerators method
-      await site.runGenerators();
-      
-      expect(TestHookPlugin.executionLog, equals(['gen:generate']));
-    });
+        // Test runGenerators method
+        await site.runGenerators();
 
-    test('should maintain hook execution order even with built-in plugins', () async {
-      Site.init(overrides: {
-        'source': p.join(projectRoot, 'source'),
-        'destination': p.join(projectRoot, 'public'),
-        'theme': 'default',
-      });
+        expect(TestHookPlugin.executionLog, equals(['gen:generate']));
+      },
+    );
 
-      final site = Site.instance;
-      
-      // Count built-in plugins
-      final builtInCount = site.plugins.length;
-      expect(builtInCount, greaterThan(0), reason: 'Should have built-in plugins');
-      
-      // Add our test plugin
-      final testPlugin = TestHookPlugin('custom');
-      site.plugins.add(testPlugin);
+    test(
+      'should maintain hook execution order even with built-in plugins',
+      () async {
+        Site.init(
+          overrides: {
+            'source': p.join(projectRoot, 'source'),
+            'destination': p.join(projectRoot, 'public'),
+            'theme': 'default',
+          },
+        );
 
-      // Run a single hook
-      await site.runHook(HookEvent.afterInit);
-      
-      // Our custom plugin should have executed its hook
-      expect(TestHookPlugin.executionLog, contains('custom:afterInit'));
-      expect(TestHookPlugin.executionLog.length, equals(1), 
-          reason: 'Only our test plugin should be logged');
-    });
+        final site = Site.instance;
+
+        // Count built-in plugins
+        final builtInCount = site.plugins.length;
+        expect(
+          builtInCount,
+          greaterThan(0),
+          reason: 'Should have built-in plugins',
+        );
+
+        // Add our test plugin
+        final testPlugin = TestHookPlugin('custom');
+        site.plugins.add(testPlugin);
+
+        // Run a single hook
+        await site.runHook(HookEvent.afterInit);
+
+        // Our custom plugin should have executed its hook
+        expect(TestHookPlugin.executionLog, contains('custom:afterInit'));
+        expect(
+          TestHookPlugin.executionLog.length,
+          equals(1),
+          reason: 'Only our test plugin should be logged',
+        );
+      },
+    );
 
     test('should handle hook exceptions gracefully', () async {
-      Site.init(overrides: {
-        'source': p.join(projectRoot, 'source'),
-        'destination': p.join(projectRoot, 'public'),
-        'theme': 'default',
-      });
+      Site.init(
+        overrides: {
+          'source': p.join(projectRoot, 'source'),
+          'destination': p.join(projectRoot, 'public'),
+          'theme': 'default',
+        },
+      );
 
       final site = Site.instance;
       site.plugins.add(ExceptionPlugin());
 
       // Hook should throw the exception (hooks don't catch exceptions)
-      expect(() async => await site.runHook(HookEvent.afterInit), throwsException);
+      expect(
+        () async => await site.runHook(HookEvent.afterInit),
+        throwsException,
+      );
     });
 
-    test('should execute hooks at the right phases of site processing', () async {
-      Site.init(overrides: {
-        'source': p.join(projectRoot, 'source'),
-        'destination': p.join(projectRoot, 'public'),
-        'theme': 'default',
-      });
+    test(
+      'should execute hooks at the right phases of site processing',
+      () async {
+        Site.init(
+          overrides: {
+            'source': p.join(projectRoot, 'source'),
+            'destination': p.join(projectRoot, 'public'),
+            'theme': 'default',
+          },
+        );
 
-      final site = Site.instance;
-      final testPlugin = TestHookPlugin('phase');
-      site.plugins.add(testPlugin);
+        final site = Site.instance;
+        final testPlugin = TestHookPlugin('phase');
+        site.plugins.add(testPlugin);
 
-      // Process the site and verify hook timing
-      await site.process();
+        // Process the site and verify hook timing
+        await site.process();
 
-      final log = TestHookPlugin.executionLog;
-      
-      // Verify the sequence includes all expected phases
-      expect(log, contains('phase:afterInit'));
-      expect(log, contains('phase:beforeRead'));
-      expect(log, contains('phase:afterRead'));
-      expect(log, contains('phase:beforeGenerate'));
-      expect(log, contains('phase:generate'));
-      expect(log, contains('phase:afterGenerate'));
-      expect(log, contains('phase:beforeRender'));
-      expect(log, contains('phase:afterRender'));
-      expect(log, contains('phase:beforeWrite'));
-      expect(log, contains('phase:afterWrite'));
+        final log = TestHookPlugin.executionLog;
 
-      // Verify logical ordering (afterInit comes before beforeRead, etc.)
-      final afterInitIndex = log.indexOf('phase:afterInit');
-      final beforeReadIndex = log.indexOf('phase:beforeRead');
-      final afterReadIndex = log.indexOf('phase:afterRead');
-      final beforeWriteIndex = log.indexOf('phase:beforeWrite');
-      final afterWriteIndex = log.indexOf('phase:afterWrite');
+        // Verify the sequence includes all expected phases
+        expect(log, contains('phase:afterInit'));
+        expect(log, contains('phase:beforeRead'));
+        expect(log, contains('phase:afterRead'));
+        expect(log, contains('phase:beforeGenerate'));
+        expect(log, contains('phase:generate'));
+        expect(log, contains('phase:afterGenerate'));
+        expect(log, contains('phase:beforeRender'));
+        expect(log, contains('phase:afterRender'));
+        expect(log, contains('phase:beforeWrite'));
+        expect(log, contains('phase:afterWrite'));
 
-      expect(afterInitIndex, lessThan(beforeReadIndex));
-      expect(beforeReadIndex, lessThan(afterReadIndex));
-      expect(beforeWriteIndex, lessThan(afterWriteIndex));
-      expect(afterReadIndex, lessThan(beforeWriteIndex));
-    });
+        // Verify logical ordering (afterInit comes before beforeRead, etc.)
+        final afterInitIndex = log.indexOf('phase:afterInit');
+        final beforeReadIndex = log.indexOf('phase:beforeRead');
+        final afterReadIndex = log.indexOf('phase:afterRead');
+        final beforeWriteIndex = log.indexOf('phase:beforeWrite');
+        final afterWriteIndex = log.indexOf('phase:afterWrite');
 
-    test('should allow plugins to access and modify site state during hooks', () async {
-      Site.init(overrides: {
-        'source': p.join(projectRoot, 'source'),
-        'destination': p.join(projectRoot, 'public'),
-        'theme': 'default',
-      });
+        expect(afterInitIndex, lessThan(beforeReadIndex));
+        expect(beforeReadIndex, lessThan(afterReadIndex));
+        expect(beforeWriteIndex, lessThan(afterWriteIndex));
+        expect(afterReadIndex, lessThan(beforeWriteIndex));
+      },
+    );
 
-      final site = Site.instance;
-      final statePlugin = StateModifyingPlugin();
-      site.plugins.add(statePlugin);
+    test(
+      'should allow plugins to access and modify site state during hooks',
+      () async {
+        Site.init(
+          overrides: {
+            'source': p.join(projectRoot, 'source'),
+            'destination': p.join(projectRoot, 'public'),
+            'theme': 'default',
+          },
+        );
 
-      StateModifyingPlugin.clearData();
+        final site = Site.instance;
+        final statePlugin = StateModifyingPlugin();
+        site.plugins.add(statePlugin);
 
-      await site.process();
+        StateModifyingPlugin.clearData();
 
-      // Verify that the plugin was able to access and store site information
-      expect(StateModifyingPlugin.siteData['afterInit'], equals('Site initialized'));
-      expect(StateModifyingPlugin.siteData['beforeWrite'], equals('Ready to write files'));
-      
-      // Verify the plugin accessed actual site data
-      expect(StateModifyingPlugin.siteData['postsCount'], isA<int>());
-      expect(StateModifyingPlugin.siteData['pagesCount'], isA<int>());
-      expect(StateModifyingPlugin.siteData['postsCount'], greaterThan(0), 
-          reason: 'Should have found the test post');
-      expect(StateModifyingPlugin.siteData['pagesCount'], greaterThan(0),
-          reason: 'Should have found the index page');
-    });
+        await site.process();
+
+        // Verify that the plugin was able to access and store site information
+        expect(
+          StateModifyingPlugin.siteData['afterInit'],
+          equals('Site initialized'),
+        );
+        expect(
+          StateModifyingPlugin.siteData['beforeWrite'],
+          equals('Ready to write files'),
+        );
+
+        // Verify the plugin accessed actual site data
+        expect(StateModifyingPlugin.siteData['postsCount'], isA<int>());
+        expect(StateModifyingPlugin.siteData['pagesCount'], isA<int>());
+        expect(
+          StateModifyingPlugin.siteData['postsCount'],
+          greaterThan(0),
+          reason: 'Should have found the test post',
+        );
+        expect(
+          StateModifyingPlugin.siteData['pagesCount'],
+          greaterThan(0),
+          reason: 'Should have found the index page',
+        );
+      },
+    );
   });
-} 
+}

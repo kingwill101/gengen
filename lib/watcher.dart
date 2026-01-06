@@ -23,8 +23,6 @@ mixin WatcherMixin {
             metadata.containsKey("size")) &&
         stat.modified.millisecondsSinceEpoch == metadata["last_modified"] &&
         stat.size == metadata["size"]) {
-
-
       return false;
     }
 
@@ -35,19 +33,19 @@ mixin WatcherMixin {
 
   void watch() {
     final receivePort = ReceivePort();
-    Isolate.spawn(
-      _watchFile,
-      {'source': source, 'sendPort': receivePort.sendPort},
-    );
+    Isolate.spawn(_watchFile, {
+      'source': source,
+      'sendPort': receivePort.sendPort,
+    });
 
     receivePort
         .asBroadcastStream()
         .debounceTime(Duration(milliseconds: 500))
         .listen((message) {
-      if (message is String && message == 'file_changed') {
-        onFileChange();
-      }
-    });
+          if (message is String && message == 'file_changed') {
+            onFileChange();
+          }
+        });
   }
 
   static void _watchFile(Map<String, dynamic> args) {

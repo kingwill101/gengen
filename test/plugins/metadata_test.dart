@@ -11,15 +11,13 @@ void main() {
       getIt.registerLazySingleton<FileSystem>(() => LocalFileSystem());
     }
     initLog();
-    Site.init(overrides: {
-      'source': 'examples/plugins',
-      'destination': 'build',
-    });
+    Site.init(
+      overrides: {'source': 'examples/plugins', 'destination': 'build'},
+    );
     site.read();
   });
 
   test("correct plugin count", () {
     expect(site.plugins.length, equals(5));
   });
-
 }

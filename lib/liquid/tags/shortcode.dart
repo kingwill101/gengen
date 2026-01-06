@@ -12,12 +12,12 @@ class ShortcodeTag extends AbstractTag with CustomTagParser, AsyncTag {
             any().starLazy(tagEnd()).flatten() &
             tagEnd())
         .map((values) {
-      final raw = (values[2] as String).trim();
-      if (raw.isEmpty) {
-        return Tag('shortcode', []);
-      }
-      return Tag('shortcode', [TextNode(raw)]);
-    });
+          final raw = (values[2] as String).trim();
+          if (raw.isEmpty) {
+            return Tag('shortcode', []);
+          }
+          return Tag('shortcode', [TextNode(raw)]);
+        });
   }
 
   @override

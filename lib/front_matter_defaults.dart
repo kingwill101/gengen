@@ -4,14 +4,11 @@ import 'package:glob/glob.dart';
 
 class FrontMatterDefaults {
   FrontMatterDefaults(List<dynamic>? defaults)
-      : _defaults = _normalize(defaults);
+    : _defaults = _normalize(defaults);
 
   final List<Map<String, dynamic>> _defaults;
 
-  Map<String, dynamic> resolve({
-    required List<String> paths,
-    String? type,
-  }) {
+  Map<String, dynamic> resolve({required List<String> paths, String? type}) {
     Map<String, dynamic> resolved = {};
     final normalizedPaths = paths.map(_normalizePath).toList();
 
@@ -66,8 +63,7 @@ class FrontMatterDefaults {
   }
 
   static bool _matchesPath(String scopePath, List<String> paths) {
-    final normalizedScope =
-        _stripCollectionsDir(_normalizePath(scopePath));
+    final normalizedScope = _stripCollectionsDir(_normalizePath(scopePath));
     if (normalizedScope.isEmpty || normalizedScope == '.') {
       return true;
     }

@@ -59,9 +59,11 @@ String replaceShortcodesWithLiquid(String content) {
       continue;
     }
 
-    buffer.write(_replaceShortcodesOutsideRaw(line, inRaw, (value) {
-      inRaw = value;
-    }));
+    buffer.write(
+      _replaceShortcodesOutsideRaw(line, inRaw, (value) {
+        inRaw = value;
+      }),
+    );
     if (i < lines.length - 1) buffer.write('\n');
   }
 

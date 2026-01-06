@@ -118,7 +118,10 @@ class Include extends AbstractTag with CustomTagParser {
     if (node is MemberAccess) {
       final base = _renderNode(node.object) ?? '';
       if (node.members.isEmpty) return base;
-      final segments = node.members.map(_renderNode).whereType<String>().toList();
+      final segments = node.members
+          .map(_renderNode)
+          .whereType<String>()
+          .toList();
       if (segments.isEmpty) return base;
       return ([base, ...segments]).join('.');
     }

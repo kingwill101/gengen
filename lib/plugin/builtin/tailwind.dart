@@ -50,19 +50,25 @@ class TailwindPlugin extends BasePlugin {
 
   @override
   PluginMetadata get metadata => PluginMetadata(
-        name: 'TailwindPlugin',
-        version: '1.0.0',
-        description: 'Compiles Tailwind CSS files in GenGen',
-      );
+    name: 'TailwindPlugin',
+    version: '1.0.0',
+    description: 'Compiles Tailwind CSS files in GenGen',
+  );
 
   @override
   Future<void> afterRender() async {
     try {
       logger.info('(${metadata.name}) Generating Tailwind CSS');
-      
-      final inputPath = p.isAbsolute(input) ? input : p.join(site.config.source, input);
-      final outputPath = p.isAbsolute(output) ? output : p.join(site.config.destination, output);
-      final tailwindExecutable = p.isAbsolute(tailwindPath) ? tailwindPath : p.join(site.config.source, tailwindPath);
+
+      final inputPath = p.isAbsolute(input)
+          ? input
+          : p.join(site.config.source, input);
+      final outputPath = p.isAbsolute(output)
+          ? output
+          : p.join(site.config.destination, output);
+      final tailwindExecutable = p.isAbsolute(tailwindPath)
+          ? tailwindPath
+          : p.join(site.config.source, tailwindPath);
 
       if (!File(inputPath).existsSync()) {
         logger.warning('(${metadata.name}) Input file not found: $inputPath');
@@ -70,34 +76,42 @@ class TailwindPlugin extends BasePlugin {
       }
 
       if (!File(tailwindExecutable).existsSync()) {
-        logger.warning('(${metadata.name}) Tailwind executable not found: $tailwindExecutable');
-        logger.info('(${metadata.name}) Download the standalone Tailwind CLI from: https://tailwindcss.com/blog/standalone-cli');
+        logger.warning(
+          '(${metadata.name}) Tailwind executable not found: $tailwindExecutable',
+        );
+        logger.info(
+          '(${metadata.name}) Download the standalone Tailwind CLI from: https://tailwindcss.com/blog/standalone-cli',
+        );
         return;
       }
 
       final outputDir = p.dirname(outputPath);
       await Directory(outputDir).create(recursive: true);
 
-      final result = await Process.run(
-        tailwindExecutable,
-        ["-i", inputPath, "-o", outputPath],
-        workingDirectory: site.config.source,
-      );
+      final result = await Process.run(tailwindExecutable, [
+        "-i",
+        inputPath,
+        "-o",
+        outputPath,
+      ], workingDirectory: site.config.source);
 
       if (result.exitCode != 0) {
-        logger.warning('(${metadata.name}) Failed to compile - exit code: ${result.exitCode}');
+        logger.warning(
+          '(${metadata.name}) Failed to compile - exit code: ${result.exitCode}',
+        );
         logger.warning('(${metadata.name}) Error: ${result.stderr}');
         return;
       }
 
       logger.info('(${metadata.name}) Successfully generated: $outputPath');
-      
+
       if (result.stdout.toString().isNotEmpty) {
         logger.info('(${metadata.name}) Tailwind output: ${result.stdout}');
       }
-      
     } catch (exception, stacktrace) {
-      logger.severe('(${metadata.name}) Failed to run Tailwind CSS compilation!');
+      logger.severe(
+        '(${metadata.name}) Failed to run Tailwind CSS compilation!',
+      );
       logger.severe('(${metadata.name}) Exception: $exception');
       logger.severe('(${metadata.name}) Stacktrace: $stacktrace');
     }
@@ -107,4 +121,4 @@ class TailwindPlugin extends BasePlugin {
   Future<void> beforeRender() async {
     logger.info('(${metadata.name}) Preparing to compile Tailwind CSS...');
   }
-} 
+}

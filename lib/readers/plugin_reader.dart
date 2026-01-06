@@ -40,7 +40,9 @@ class PluginReader {
       ..._normalizeAllowlist(
         config.get('safe_plugins', defaultValue: const []),
       ),
-      ...whitelist.map((entry) => entry.trim()).where((entry) => entry.isNotEmpty),
+      ...whitelist
+          .map((entry) => entry.trim())
+          .where((entry) => entry.isNotEmpty),
     };
 
     if (!directory.existsSync()) {
@@ -62,8 +64,7 @@ class PluginReader {
 
       final pluginDirName = p.basename(directory.path);
       final rawName = pluginConfigContent['name']?.toString() ?? '';
-      final pluginConfigName =
-          rawName.trim().isEmpty ? pluginDirName : rawName;
+      final pluginConfigName = rawName.trim().isEmpty ? pluginDirName : rawName;
       pluginConfigContent['name'] = pluginConfigName;
 
       final entrypoint =

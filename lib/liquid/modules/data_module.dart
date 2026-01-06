@@ -29,9 +29,7 @@ class DataModule extends Module {
           if (decoded is Map<String, dynamic>) {
             return decoded;
           }
-          return {
-            'value': decoded,
-          };
+          return {'value': decoded};
         }
 
         log.warning(

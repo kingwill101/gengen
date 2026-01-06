@@ -10,9 +10,9 @@ class EntryFilter {
   final String source;
 
   EntryFilter()
-      : excludeSet = Set.from(Site.instance.exclude),
-        includeSet = Set.from(Site.instance.include),
-        source = Site.instance.config.source;
+    : excludeSet = Set.from(Site.instance.exclude),
+      includeSet = Set.from(Site.instance.include),
+      source = Site.instance.config.source;
 
   List<String> filter(List<String> entries) {
     return entries.where((entry) {
@@ -53,7 +53,10 @@ class EntryFilter {
 
   bool isSymlink(String entry) {
     return FileSystemEntity.isLinkSync(entry) &&
-        !FileSystemEntity.identicalSync(entry, Site.instance.inSourceDir(entry));
+        !FileSystemEntity.identicalSync(
+          entry,
+          Site.instance.inSourceDir(entry),
+        );
   }
 
   bool globInclude(Set<String> patterns, String entry) {
@@ -62,7 +65,7 @@ class EntryFilter {
       if (glob.matches(entry)) {
         return true;
       }
-      
+
       // Also check if the pattern matches a parent directory
       // For example, pattern "secret" should match "secret/file.txt"
       if (entry.startsWith('$pattern/')) {

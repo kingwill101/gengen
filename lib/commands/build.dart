@@ -51,13 +51,14 @@ class Build extends AbstractCommand {
   Future<void> start() async {
     final enableBenchmark = argResults?['benchmark'] as bool? ?? false;
     final enableParallel = argResults?['parallel'] as bool? ?? true;
-    final concurrency = int.tryParse(argResults?['concurrency'] as String? ?? '4') ?? 4;
-    
+    final concurrency =
+        int.tryParse(argResults?['concurrency'] as String? ?? '4') ?? 4;
+
     // Configure benchmarking
     Benchmark.setEnabled(enableBenchmark);
     Benchmark.reset();
     Benchmark.start();
-    
+
     log.info(" Starting build\n");
     if (enableBenchmark) {
       log.info("Benchmarking enabled");
@@ -65,7 +66,7 @@ class Build extends AbstractCommand {
     if (enableParallel) {
       log.info("Parallel processing enabled (concurrency: $concurrency)");
     }
-    
+
     try {
       final overrides = {...argResults?.map ?? <String, dynamic>{}};
       overrides['parallel'] = enableParallel;
@@ -90,13 +91,15 @@ class Build extends AbstractCommand {
 
       if (site.posts.isNotEmpty) {
         final sample = site.posts.first.renderer.content;
-        log.fine('Sample renderer content: '
-            '${sample.substring(0, sample.length > 80 ? 80 : sample.length)}');
+        log.fine(
+          'Sample renderer content: '
+          '${sample.substring(0, sample.length > 80 ? 80 : sample.length)}',
+        );
       }
-      
+
       Benchmark.stop();
       log.info("Build complete\n");
-      
+
       if (enableBenchmark) {
         Benchmark.printReport();
       }

@@ -137,8 +137,7 @@ class Base with WatcherMixin {
     return '';
   }
 
-  String get pathPlaceholder =>
-      p.relative(p.dirname(source), from: site.root);
+  String get pathPlaceholder => p.relative(p.dirname(source), from: site.root);
 
   DateTime get date {
     if (!config.containsKey("date")) {
@@ -151,8 +150,10 @@ class Base with WatcherMixin {
     if (rawDate is int) {
       return DateTime.fromMillisecondsSinceEpoch(rawDate);
     }
-    return parseDate(rawDate.toString(),
-        format: site.config.get("date_format"));
+    return parseDate(
+      rawDate.toString(),
+      format: site.config.get("date_format"),
+    );
   }
 
   Base(
@@ -171,8 +172,9 @@ class Base with WatcherMixin {
   }
 
   void read() {
-    metadata["last_modified"] =
-        FileStat.statSync(source).modified.millisecondsSinceEpoch;
+    metadata["last_modified"] = FileStat.statSync(
+      source,
+    ).modified.millisecondsSinceEpoch;
     metadata["size"] = FileStat.statSync(source).size;
 
     String fileContent = readFileSafe(source);
@@ -180,8 +182,9 @@ class Base with WatcherMixin {
 
     //config from _index.md located in directory hierarchy
     //starting in _posts
-    dirConfig =
-        walkDirectoriesAndGetFrontMatters(site.relativeToSource(source));
+    dirConfig = walkDirectoriesAndGetFrontMatters(
+      site.relativeToSource(source),
+    );
 
     //config found in post/page front matter
     frontMatter = loadedContent.frontMatter;
@@ -191,8 +194,10 @@ class Base with WatcherMixin {
     //loop properties and check if values contain liquid templates
     for (var key in frontMatter.keys) {
       if (containsLiquid(frontMatter[key].toString())) {
-        frontMatter[key] =
-            GenGenTempate.r(frontMatter[key].toString(), data: config);
+        frontMatter[key] = GenGenTempate.r(
+          frontMatter[key].toString(),
+          data: config,
+        );
       }
     }
 
@@ -234,7 +239,9 @@ class Base with WatcherMixin {
       await renderer.render();
     }
     final duration = DateTime.now().difference(start);
-    log.info("render completed for $relativePath in ${duration.inMilliseconds}ms");
+    log.info(
+      "render completed for $relativePath in ${duration.inMilliseconds}ms",
+    );
   }
 
   Future<void> write() async {
@@ -242,7 +249,9 @@ class Base with WatcherMixin {
     if (isStatic && isSass) {
       await copyWrite();
       final duration = DateTime.now().difference(start);
-      log.info("write completed for $relativePath in ${duration.inMilliseconds}ms");
+      log.info(
+        "write completed for $relativePath in ${duration.inMilliseconds}ms",
+      );
       return;
     }
 
@@ -253,18 +262,23 @@ class Base with WatcherMixin {
         return sassOutputPath == filePath;
       });
       if (hasSassTwin) {
-        log.info('Skipping $relativePath because a Sass asset will generate ${p.basename(filePath)}');
+        log.info(
+          'Skipping $relativePath because a Sass asset will generate ${p.basename(filePath)}',
+        );
         return;
       }
     }
     log.info("trying to write $relativePath");
     File file = await fs.file(filePath).create(recursive: true);
 
-    var fileContent =
-        (isPost || isPage || (isCollection && !isStatic)) ? renderer.content : content;
+    var fileContent = (isPost || isPage || (isCollection && !isStatic))
+        ? renderer.content
+        : content;
     if (isPost) {
-      log.fine('Writing post $relativePath snippet: '
-          '${fileContent.substring(0, fileContent.length > 60 ? 60 : fileContent.length)}');
+      log.fine(
+        'Writing post $relativePath snippet: '
+        '${fileContent.substring(0, fileContent.length > 60 ? 60 : fileContent.length)}',
+      );
     }
     await file.writeAsString(fileContent);
     final duration = DateTime.now().difference(start);
@@ -279,7 +293,7 @@ class Base with WatcherMixin {
       defaultMatter,
       site.config.all,
       dirConfig,
-      frontMatter
+      frontMatter,
     ]) {
       config = deepMerge(config, element);
     }
@@ -309,8 +323,9 @@ class Base with WatcherMixin {
 
     final filename = p.basename(source);
     final basename = p.basenameWithoutExtension(filename);
-    final dateMatch =
-        RegExp(r'^(\d{2,4}-\d{1,2}-\d{1,2})-(.+)$').firstMatch(basename);
+    final dateMatch = RegExp(
+      r'^(\d{2,4}-\d{1,2}-\d{1,2})-(.+)$',
+    ).firstMatch(basename);
 
     String derivedSlug = basename;
     if (dateMatch != null) {
@@ -346,11 +361,15 @@ class Base with WatcherMixin {
 
   String _titleizeSlug(String slug) {
     if (slug.isEmpty) return '';
-    final words =
-        slug.replaceAll(RegExp(r'[_-]+'), ' ').trim().split(RegExp(r'\s+'));
+    final words = slug
+        .replaceAll(RegExp(r'[_-]+'), ' ')
+        .trim()
+        .split(RegExp(r'\s+'));
     return words
-        .map((word) =>
-            word.isEmpty ? word : word[0].toUpperCase() + word.substring(1))
+        .map(
+          (word) =>
+              word.isEmpty ? word : word[0].toUpperCase() + word.substring(1),
+        )
         .join(' ');
   }
 }

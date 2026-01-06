@@ -22,8 +22,10 @@ class LayoutReader {
     });
 
     themeLayoutEntries().forEach((layoutFile) {
-      var name =
-          relative(withoutExtension(layoutFile), from: site.theme.layoutsPath);
+      var name = relative(
+        withoutExtension(layoutFile),
+        from: site.theme.layoutsPath,
+      );
       layouts[name] = Layout(layoutFile, name, ext: extension(layoutFile));
     });
 

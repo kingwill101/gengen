@@ -13,10 +13,10 @@ import 'helpers/world.dart';
 class Plugin extends BasePlugin {
   @override
   PluginMetadata get metadata => PluginMetadata(
-        name: 'MetadataPlugin',
-        version: '1.0.0',
-        description: 'Demonstrates accessing site metadata from a plugin.',
-      );
+    name: 'MetadataPlugin',
+    version: '1.0.0',
+    description: 'Demonstrates accessing site metadata from a plugin.',
+  );
 
   @override
   void generate() {

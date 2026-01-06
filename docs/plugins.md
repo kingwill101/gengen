@@ -80,6 +80,12 @@ You can also enable safe mode from the CLI:
 gengen build --safe
 ```
 
+### Plugin Data Files
+
+Plugins can include a `_data/` directory inside the plugin folder. These files
+are merged into `site.data` at build time. Precedence is:
+`site _data` → `theme _data` → `plugin _data`.
+
 ## Built-in Plugins
 
 GenGen comes with several built-in plugins that provide core functionality:

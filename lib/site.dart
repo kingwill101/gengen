@@ -244,12 +244,7 @@ class Site with PathMixin {
   }
 
   Future<void> render() async {
-    final items = [
-      ...staticFiles,
-      ...posts,
-      ...collectionDocuments,
-      ...pages,
-    ];
+    final items = [...staticFiles, ...posts, ...collectionDocuments, ...pages];
 
     for (var item in items) {
       await item.render();
@@ -257,7 +252,12 @@ class Site with PathMixin {
   }
 
   Future<void> watch() async {
-    for (var value in [...staticFiles, ...posts, ...pages, ...collectionItems]) {
+    for (var value in [
+      ...staticFiles,
+      ...posts,
+      ...pages,
+      ...collectionItems,
+    ]) {
       value.watch();
     }
 
@@ -284,8 +284,9 @@ class Site with PathMixin {
     final includeUnpublished =
         config.get<bool>('unpublished', defaultValue: false) ?? false;
     final filteredPosts = posts
-        .where((post) =>
-            !post.isIndex && (includeUnpublished || post.isPublished))
+        .where(
+          (post) => !post.isIndex && (includeUnpublished || post.isPublished),
+        )
         .toList();
 
     // Get pagination data from PaginationPlugin
@@ -296,10 +297,11 @@ class Site with PathMixin {
         : const <String, dynamic>{};
 
     final collectionAliases = <String, List<dynamic>>{};
-    final collectionList = _collections.values
-        .map((collection) => CollectionDrop(collection))
-        .toList()
-      ..sort((a, b) => a.label.compareTo(b.label));
+    final collectionList =
+        _collections.values
+            .map((collection) => CollectionDrop(collection))
+            .toList()
+          ..sort((a, b) => a.label.compareTo(b.label));
     for (final entry in _collections.entries) {
       final items = entry.value.docs.map((e) => e.to_liquid).toList();
       collectionAliases[entry.key] = items;

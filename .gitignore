@@ -6,3 +6,5 @@ site/
 openspec/
 build/
 AGENTS.md
+.output/
+coverage/

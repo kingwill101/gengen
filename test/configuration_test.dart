@@ -17,8 +17,9 @@ void main() {
     Configuration.resetConfig();
 
     memoryFileSystem.directory(realProjectRoot).createSync(recursive: true);
-    memoryFileSystem.currentDirectory = memoryFileSystem.directory(realProjectRoot);
-
+    memoryFileSystem.currentDirectory = memoryFileSystem.directory(
+      realProjectRoot,
+    );
   });
 
   group('Configuration Tests', () {
@@ -30,7 +31,10 @@ void main() {
       expect(config.get<String>('url'), 'http://gengen.local');
       expect(config.get<String>('theme'), 'default');
       // Destination is resolved relative to the source, which defaults to p.current (realProjectRoot).
-      expect(config.get<String>('destination'), equals(p.join(realProjectRoot, 'public')));
+      expect(
+        config.get<String>('destination'),
+        equals(p.join(realProjectRoot, 'public')),
+      );
       expect(config.get<List<String>>('exclude'), contains('config.yaml'));
       expect(config.get<List<String>>('include'), isEmpty);
       expect(config.get<String>('post_dir'), '_posts');
@@ -83,15 +87,20 @@ theme: custom_theme # Add theme to override default
       expect(config.get<String>('title'), 'My Custom Site');
       expect(config.get<String>('description'), 'A custom site description.');
       expect(config.get<String>('url'), 'http://custom.com');
-      expect(config.get<String>('theme'), 'custom_theme'); // Should be overridden
+      expect(
+        config.get<String>('theme'),
+        'custom_theme',
+      ); // Should be overridden
     });
 
-    test('3. Multiple config files are merged correctly with precedence (later overrides earlier)', () {
-      // Create config files relative to the real project root in the mock filesystem.
-      final configFilePath1 = p.join(realProjectRoot, '_config1.yaml');
-      final configFilePath2 = p.join(realProjectRoot, '_config2.yaml');
+    test(
+      '3. Multiple config files are merged correctly with precedence (later overrides earlier)',
+      () {
+        // Create config files relative to the real project root in the mock filesystem.
+        final configFilePath1 = p.join(realProjectRoot, '_config1.yaml');
+        final configFilePath2 = p.join(realProjectRoot, '_config2.yaml');
 
-      memoryFileSystem.file(configFilePath1).writeAsStringSync('''
+        memoryFileSystem.file(configFilePath1).writeAsStringSync('''
 title: Site One
 author: John Doe
 plugins:
@@ -100,7 +109,7 @@ social:
   twitter: handle1
 ''');
 
-      memoryFileSystem.file(configFilePath2).writeAsStringSync('''
+        memoryFileSystem.file(configFilePath2).writeAsStringSync('''
 title: Site Two
 email: two@example.com
 plugins:
@@ -109,19 +118,31 @@ social:
   github: handle2
 ''');
 
-      final config = Configuration();
-      // Pass the config files as an override to simulate CLI behavior.
-      // Note: `Configuration.read` consumes the 'config' override for processing; it's not stored in the final config map.
-      config.read({'config': ['_config1.yaml', '_config2.yaml']});
+        final config = Configuration();
+        // Pass the config files as an override to simulate CLI behavior.
+        // Note: `Configuration.read` consumes the 'config' override for processing; it's not stored in the final config map.
+        config.read({
+          'config': ['_config1.yaml', '_config2.yaml'],
+        });
 
-      expect(config.get<String>('title'), 'Site Two'); // config2 overrides config1 for 'title'
-      expect(config.get<String>('author'), 'John Doe'); // 'author' only in config1
-      expect(config.get<String>('email'), 'two@example.com'); // 'email' only in config2
-      // For lists like 'plugins', the behavior is replacement.
-      expect(config.get<List<dynamic>>('plugins'), ['plugin_b']); 
-      final social = config.get<Map<String,dynamic>>('social');
-      expect(social, {'twitter': 'handle1', 'github': 'handle2'});
-    });
+        expect(
+          config.get<String>('title'),
+          'Site Two',
+        ); // config2 overrides config1 for 'title'
+        expect(
+          config.get<String>('author'),
+          'John Doe',
+        ); // 'author' only in config1
+        expect(
+          config.get<String>('email'),
+          'two@example.com',
+        ); // 'email' only in config2
+        // For lists like 'plugins', the behavior is replacement.
+        expect(config.get<List<dynamic>>('plugins'), ['plugin_b']);
+        final social = config.get<Map<String, dynamic>>('social');
+        expect(social, {'twitter': 'handle1', 'github': 'handle2'});
+      },
+    );
 
     test('4. Command-line overrides take highest precedence', () {
       final configFilePath = p.join(realProjectRoot, '_config.yaml');
@@ -143,9 +164,15 @@ plugins:
 
       expect(config.get<String>('title'), 'CLI Title'); // CLI overrides file
       expect(config.get<String>('theme'), 'cli_theme'); // CLI overrides file
-      expect(config.get<String>('description'), 'From file'); // File value remains, not overridden by CLI
+      expect(
+        config.get<String>('description'),
+        'From file',
+      ); // File value remains, not overridden by CLI
       // CLI override for destination is relative to `realProjectRoot`.
-      expect(config.get<String>('destination'), equals(p.join(realProjectRoot, 'cli_output')));
+      expect(
+        config.get<String>('destination'),
+        equals(p.join(realProjectRoot, 'cli_output')),
+      );
       // CLI override for plugins replaces the file list.
       expect(config.get<List<dynamic>>('plugins'), ['plugin_cli']);
     });
@@ -217,17 +244,23 @@ exclude: another_string
     test('8. Path resolution for source and destination is correct', () {
       // Create dummy source and destination directories in the in-memory file system.
       // These directories need to be created relative to realProjectRoot (our mock p.current).
-      memoryFileSystem.directory(p.join(realProjectRoot, 'src')).createSync(recursive: true);
+      memoryFileSystem
+          .directory(p.join(realProjectRoot, 'src'))
+          .createSync(recursive: true);
       // Destination does not need to pre-exist for Configuration to resolve its path.
 
       // Test with relative source and relative destination
       final config1 = Configuration();
       config1.read({'source': 'src', 'destination': 'output'});
       expect(config1.source, equals(p.join(realProjectRoot, 'src')));
-      expect(config1.destination, equals(p.join(realProjectRoot, 'src', 'output')));
+      expect(
+        config1.destination,
+        equals(p.join(realProjectRoot, 'src', 'output')),
+      );
 
       // Test with absolute source and relative destination
-      final absoluteSourcePath = '/absolute_src'; // This is an absolute path within the MemoryFileSystem
+      final absoluteSourcePath =
+          '/absolute_src'; // This is an absolute path within the MemoryFileSystem
       memoryFileSystem.directory(absoluteSourcePath).createSync();
       final config2 = Configuration();
       config2.read({'source': absoluteSourcePath, 'destination': 'build'});
@@ -235,26 +268,44 @@ exclude: another_string
       expect(config2.destination, equals(p.join(absoluteSourcePath, 'build')));
 
       // Test with absolute source and absolute destination
-      final absoluteDestPath = '/absolute_output'; // This is an absolute path within the MemoryFileSystem
+      final absoluteDestPath =
+          '/absolute_output'; // This is an absolute path within the MemoryFileSystem
       memoryFileSystem.directory(absoluteDestPath).createSync();
       final config3 = Configuration();
-      config3.read({'source': absoluteSourcePath, 'destination': absoluteDestPath});
+      config3.read({
+        'source': absoluteSourcePath,
+        'destination': absoluteDestPath,
+      });
       expect(config3.source, equals(absoluteSourcePath));
       expect(config3.destination, equals(absoluteDestPath));
     });
 
-    test('9. Reading non-existent config file should not throw, but log warning and use defaults/overrides', () {
-      final config = Configuration();
-      // Do not create the config file '_non_existent_config.yaml'
+    test(
+      '9. Reading non-existent config file should not throw, but log warning and use defaults/overrides',
+      () {
+        final config = Configuration();
+        // Do not create the config file '_non_existent_config.yaml'
 
-      // Configuration.read is expected to log a warning and proceed with defaults/overrides.
-      // `returnsNormally` confirms no exception is thrown.
-      expect(() => config.read({'config': ['_non_existent_config.yaml']}), returnsNormally);
-      expect(config.get<String>('title'), 'My GenGen Site'); // Should still load defaults
-    });
+        // Configuration.read is expected to log a warning and proceed with defaults/overrides.
+        // `returnsNormally` confirms no exception is thrown.
+        expect(
+          () => config.read({
+            'config': ['_non_existent_config.yaml'],
+          }),
+          returnsNormally,
+        );
+        expect(
+          config.get<String>('title'),
+          'My GenGen Site',
+        ); // Should still load defaults
+      },
+    );
 
     test('10. Reading malformed config file should throw YamlException', () {
-      final malformedConfigPath = p.join(realProjectRoot, '_malformed_config.yaml');
+      final malformedConfigPath = p.join(
+        realProjectRoot,
+        '_malformed_config.yaml',
+      );
       memoryFileSystem.file(malformedConfigPath).writeAsStringSync('''
 title: My Site
   invalid_key: value # Incorrect indentation
@@ -262,18 +313,31 @@ title: My Site
 
       final config = Configuration();
       // Expects YamlException due to malformed YAML.
-      expect(() => config.read({'config': ['_malformed_config.yaml']}), throwsA(isA<yaml_parser.YamlException>()));
+      expect(
+        () => config.read({
+          'config': ['_malformed_config.yaml'],
+        }),
+        throwsA(isA<yaml_parser.YamlException>()),
+      );
     });
 
-    test('11. Reading config file with invalid extension should throw FormatException', () {
-      final invalidExtConfigPath = p.join(realProjectRoot, '_config.txt');
-      memoryFileSystem.file(invalidExtConfigPath).writeAsStringSync('''
+    test(
+      '11. Reading config file with invalid extension should throw FormatException',
+      () {
+        final invalidExtConfigPath = p.join(realProjectRoot, '_config.txt');
+        memoryFileSystem.file(invalidExtConfigPath).writeAsStringSync('''
 title: Invalid Extension
 ''');
 
-      final config = Configuration();
-      // Expects FormatException because the extension is not .yaml or .yml.
-      expect(() => config.read({'config': ['_config.txt']}), throwsA(isA<FormatException>()));
-    });
+        final config = Configuration();
+        // Expects FormatException because the extension is not .yaml or .yml.
+        expect(
+          () => config.read({
+            'config': ['_config.txt'],
+          }),
+          throwsA(isA<FormatException>()),
+        );
+      },
+    );
   });
 }

@@ -13,16 +13,16 @@ import 'package:path/path.dart' as p;
 class SitemapPlugin extends BasePlugin {
   /// The output file path for the sitemap
   final String outputPath;
-  
+
   /// Default change frequency for posts
   final String defaultPostChangeFreq;
-  
+
   /// Default change frequency for pages
   final String defaultPageChangeFreq;
-  
+
   /// Default priority for posts
   final double defaultPostPriority;
-  
+
   /// Default priority for pages
   final double defaultPagePriority;
 
@@ -36,30 +36,28 @@ class SitemapPlugin extends BasePlugin {
 
   @override
   PluginMetadata get metadata => PluginMetadata(
-        name: 'SitemapPlugin',
-        version: '1.0.0',
-        description: 'Generates XML sitemap for all site content',
-      );
+    name: 'SitemapPlugin',
+    version: '1.0.0',
+    description: 'Generates XML sitemap for all site content',
+  );
 
   @override
   Future<void> afterRender() async {
     try {
       logger.info('(${metadata.name}) Generating sitemap');
-      
+
       final site = Site.instance;
-      
+
       // Collect all content: posts and pages (exclude drafts)
       final allContent = <Base>[];
-      
+
       // Add posts (exclude drafts and index pages)
       allContent.addAll(
-        site.posts.where((post) => !post.isDraft() && !post.isIndex)
+        site.posts.where((post) => !post.isDraft() && !post.isIndex),
       );
-      
+
       // Add pages (exclude index pages that are just post listings)
-      allContent.addAll(
-        site.pages.where((page) => !page.isDraft())
-      );
+      allContent.addAll(site.pages.where((page) => !page.isDraft()));
 
       if (allContent.isEmpty) {
         logger.info('(${metadata.name}) No content found for sitemap');
@@ -68,13 +66,15 @@ class SitemapPlugin extends BasePlugin {
 
       // Generate sitemap XML
       final sitemapContent = _generateSitemapXml(site, allContent);
-      
+
       // Write sitemap file
       final outputFile = p.join(site.destination.path, outputPath);
       final file = await fs.file(outputFile).create(recursive: true);
       await file.writeAsString(sitemapContent);
-      
-      logger.info('(${metadata.name}) Sitemap generated at $outputPath with ${allContent.length} entries');
+
+      logger.info(
+        '(${metadata.name}) Sitemap generated at $outputPath with ${allContent.length} entries',
+      );
     } catch (e) {
       logger.severe('(${metadata.name}) Failed to generate sitemap: $e');
     }
@@ -83,38 +83,40 @@ class SitemapPlugin extends BasePlugin {
   String _generateSitemapXml(Site site, List<Base> content) {
     final config = site.config;
     final siteUrl = config.get<String>('url') ?? 'http://localhost:4000';
-    
+
     final buffer = StringBuffer();
-    
+
     // XML declaration and urlset opening
     buffer.writeln('<?xml version="1.0" encoding="UTF-8"?>');
-    buffer.writeln('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">');
-    
+    buffer.writeln(
+      '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+    );
+
     // Add home page entry
     buffer.writeln('  <url>');
     buffer.writeln('    <loc>$siteUrl/</loc>');
     buffer.writeln('    <changefreq>daily</changefreq>');
     buffer.writeln('    <priority>1.0</priority>');
     buffer.writeln('  </url>');
-    
+
     // Add entries for each piece of content
     for (final item in content) {
       final loc = '$siteUrl/${item.link()}';
-      final changefreq =
-          item.isPost ? defaultPostChangeFreq : defaultPageChangeFreq;
-      final priority =
-          item.isPost ? defaultPostPriority : defaultPagePriority;
-      
+      final changefreq = item.isPost
+          ? defaultPostChangeFreq
+          : defaultPageChangeFreq;
+      final priority = item.isPost ? defaultPostPriority : defaultPagePriority;
+
       buffer.writeln('  <url>');
       buffer.writeln('    <loc>${_escapeXml(loc)}</loc>');
       buffer.writeln('    <changefreq>${_escapeXml(changefreq)}</changefreq>');
       buffer.writeln('    <priority>${priority.toStringAsFixed(1)}</priority>');
       buffer.writeln('  </url>');
     }
-    
+
     // Close urlset
     buffer.writeln('</urlset>');
-    
+
     return buffer.toString();
   }
 
@@ -126,4 +128,4 @@ class SitemapPlugin extends BasePlugin {
         .replaceAll('"', '&quot;')
         .replaceAll("'", '&#39;');
   }
-} 
+}

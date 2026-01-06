@@ -10,6 +10,7 @@ import 'package:gengen/readers/static_reader.dart';
 import 'package:gengen/readers/theme_reader.dart';
 import 'package:gengen/site.dart';
 import 'package:gengen/utilities.dart';
+import 'package:gengen/models/base.dart';
 import 'package:more/collection.dart';
 import 'package:path/path.dart';
 
@@ -53,16 +54,16 @@ class Reader {
         dotStaticFiles.add(fileEntity);
       }
     }
+    final themeContent = ThemeReader().read();
     await readPosts();
     await readCollections();
     readPages(dotPages);
-    readStaticFiles(dotStaticFiles);
+    readThemePages(themeContent.pages);
+    readStaticFiles(dotStaticFiles, themeContent.assets);
   }
 
   Future<void> readPosts() async {
-    Site.instance.posts = PostReader().readPosts(
-      Site.instance.postPath,
-    );
+    Site.instance.posts = PostReader().readPosts(Site.instance.postPath);
   }
 
   Future<void> readCollections() async {
@@ -77,34 +78,61 @@ class Reader {
   }
 
   Future<void> readPlugins() async {
-    Site.instance.plugins.addAll(
-      await PluginReader().read(),
-    );
+    Site.instance.plugins.addAll(await PluginReader().read());
   }
 
   Future<void> readData() async {
-    await DataReader().read();
+    final dataReader = DataReader();
+
+    Map<String, dynamic> themeData = {};
+    Map<String, dynamic> themePluginData = {};
+    if (site.theme.loaded) {
+      themeData = await dataReader.readFrom(site.theme.dataPath);
+      themePluginData = await dataReader.readPluginData(site.theme.pluginPath);
+    }
+
+    final sitePluginData = await dataReader.readPluginData(site.pluginPath);
+    final pluginData = deepMerge(themePluginData, sitePluginData);
+
+    final siteData = await dataReader.readFrom(site.dataPath);
+    var merged = deepMerge(pluginData, themeData);
+    merged = deepMerge(merged, siteData);
+
+    site.config.add("data", merged);
   }
 
   void readPages(List<String> dotPages) {
     PageReader().read(dotPages).forEach((page) {
-      var search =
-          Site.instance.pages.where((element) => element.source == page.source);
+      var search = Site.instance.pages.where(
+        (element) => element.source == page.source,
+      );
       if (search.isEmpty) {
         Site.instance.pages.add(page);
       }
     });
   }
 
-  void readStaticFiles(List<String> dotStaticFiles) {
-    var files = [
-      ...ThemeReader().read(),
-      ...StaticReader().read(dotStaticFiles)
-    ];
-    
+  void readThemePages(List<Base> themePages) {
+    for (final page in themePages) {
+      var search = Site.instance.pages.where(
+        (element) => element.source == page.source,
+      );
+      if (search.isEmpty) {
+        Site.instance.pages.add(page);
+      }
+    }
+  }
+
+  void readStaticFiles(
+    List<String> dotStaticFiles, [
+    List<Base> themeAssets = const [],
+  ]) {
+    var files = [...themeAssets, ...StaticReader().read(dotStaticFiles)];
+
     for (var file in files) {
-      var search = Site.instance.staticFiles
-          .where((element) => element.source == file.source);
+      var search = Site.instance.staticFiles.where(
+        (element) => element.source == file.source,
+      );
       if (search.isEmpty) {
         Site.instance.staticFiles.add(file);
       }
@@ -115,7 +143,10 @@ class Reader {
     var directory = fs.directory(base);
     var filter = EntryFilter();
 
-    final allFiles = directory.listSync(recursive: true).map((e) => e.path).toList();
+    final allFiles = directory
+        .listSync(recursive: true)
+        .map((e) => e.path)
+        .toList();
     final filteredFiles = filter.filter(allFiles);
 
     return filteredFiles.where((entry) {
@@ -130,7 +161,7 @@ class Reader {
     if (!await directory.exists()) {
       return [];
     }
-    
+
     var filter = EntryFilter();
 
     return filter

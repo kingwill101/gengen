@@ -58,7 +58,8 @@ extension PermalinkExtension on Base {
   }
 
   String? _explicitPermalink() {
-    final value = frontMatter['permalink'] ??
+    final value =
+        frontMatter['permalink'] ??
         dirConfig['permalink'] ??
         defaultMatter['permalink'];
     if (value == null) return null;
@@ -147,7 +148,8 @@ extension PermalinkExtension on Base {
     Map<String, dynamic> config = this.config;
 
     // For title, only use frontMatter and defaultMatter, not site-wide config
-    String? title = (frontMatter['title'] ?? defaultMatter['title']) as String? ?? "";
+    String? title =
+        (frontMatter['title'] ?? defaultMatter['title']) as String? ?? "";
     String? slug = config['slug'] as String? ?? "";
 
     if (slug.isNotEmpty) {
@@ -165,18 +167,21 @@ extension PermalinkExtension on Base {
     // Check for explicit categories first, then default to "posts" for posts
     String categories = "";
     if (config.containsKey("categories") && config['categories'] != null) {
-      List<String> categoryList = List<String>.from(config['categories'] as List);
+      List<String> categoryList = List<String>.from(
+        config['categories'] as List,
+      );
       categories = categoryList.isNotEmpty ? categoryList.first : "";
     }
-    
+
     // For posts without explicit categories, default to "posts"
     // Tags should NOT be used as categories
     if (isPost && categories.isEmpty) {
       categories = "posts";
     }
 
-    final rawName =
-        p.withoutExtension(p.basename(source)).replaceAll(RegExp(r'\.*$'), '');
+    final rawName = p
+        .withoutExtension(p.basename(source))
+        .replaceAll(RegExp(r'\.*$'), '');
 
     permalink = permalink
         .replaceAll(':categories', categories)
@@ -300,10 +305,12 @@ extension PermalinkExtension on Base {
     // Check for explicit categories first, then default to "posts" for posts
     String categories = "";
     if (config.containsKey("categories") && config['categories'] != null) {
-      List<String> categoryList = List<String>.from(config['categories'] as List);
+      List<String> categoryList = List<String>.from(
+        config['categories'] as List,
+      );
       categories = categoryList.isNotEmpty ? categoryList.first : "";
     }
-    
+
     // For posts without explicit categories, default to "posts"
     // Tags should NOT be used as categories
     if (isPost && categories.isEmpty) {
@@ -314,10 +321,12 @@ extension PermalinkExtension on Base {
     placeholders['slugified_categories'] = slugifyList(tags);
     placeholders['collection'] = collectionLabel;
     placeholders['path'] = pathPlaceholder;
-    placeholders['basename'] =
-        normalize(p.withoutExtension(p.basename(source)));
-    placeholders['name'] =
-        p.withoutExtension(p.basename(source)).replaceAll(RegExp(r'\.*$'), '');
+    placeholders['basename'] = normalize(
+      p.withoutExtension(p.basename(source)),
+    );
+    placeholders['name'] = p
+        .withoutExtension(p.basename(source))
+        .replaceAll(RegExp(r'\.*$'), '');
     placeholders['output_ext'] = '.html';
 
     DateTime? parsedDate;
@@ -344,38 +353,38 @@ extension PermalinkExtension on Base {
     }
 
     if (parsedDate != null) {
-        placeholders['year'] = parsedDate.year.toString();
-        placeholders['month'] = parsedDate.month.toString().padLeft(2, '0');
-        placeholders['day'] = parsedDate.day.toString().padLeft(2, '0');
-        placeholders['short_year'] = parsedDate.year.toString().substring(2);
-        placeholders['i_month'] = parsedDate.month.toString();
-        placeholders['short_month'] = DateFormat('MMM').format(parsedDate);
-        placeholders['long_month'] = DateFormat('MMMM').format(parsedDate);
-        placeholders['i_day'] = parsedDate.day.toString();
-        placeholders['y_day'] = int.parse(
-          DateFormat('D').format(parsedDate),
-        ).toString().padLeft(3, '0');
-        placeholders['hour'] = parsedDate.hour.toString().padLeft(2, '0');
-        placeholders['minute'] = parsedDate.minute.toString().padLeft(2, '0');
-        placeholders['second'] = parsedDate.second.toString().padLeft(2, '0');
-        placeholders['w_year'] = parsedDate.year.toString().substring(2);
-        placeholders['w_day'] = parsedDate.weekday.toString();
-        placeholders['short_day'] = DateFormat('E').format(parsedDate);
-        placeholders['long_day'] = DateFormat('EEEE').format(parsedDate);
-        placeholders['hour'] = parsedDate.hour.toString().padLeft(2, '0');
-        placeholders['minute'] = parsedDate.minute.toString().padLeft(2, '0');
-        placeholders['second'] = parsedDate.second.toString().padLeft(2, '0');
+      placeholders['year'] = parsedDate.year.toString();
+      placeholders['month'] = parsedDate.month.toString().padLeft(2, '0');
+      placeholders['day'] = parsedDate.day.toString().padLeft(2, '0');
+      placeholders['short_year'] = parsedDate.year.toString().substring(2);
+      placeholders['i_month'] = parsedDate.month.toString();
+      placeholders['short_month'] = DateFormat('MMM').format(parsedDate);
+      placeholders['long_month'] = DateFormat('MMMM').format(parsedDate);
+      placeholders['i_day'] = parsedDate.day.toString();
+      placeholders['y_day'] = int.parse(
+        DateFormat('D').format(parsedDate),
+      ).toString().padLeft(3, '0');
+      placeholders['hour'] = parsedDate.hour.toString().padLeft(2, '0');
+      placeholders['minute'] = parsedDate.minute.toString().padLeft(2, '0');
+      placeholders['second'] = parsedDate.second.toString().padLeft(2, '0');
+      placeholders['w_year'] = parsedDate.year.toString().substring(2);
+      placeholders['w_day'] = parsedDate.weekday.toString();
+      placeholders['short_day'] = DateFormat('E').format(parsedDate);
+      placeholders['long_day'] = DateFormat('EEEE').format(parsedDate);
+      placeholders['hour'] = parsedDate.hour.toString().padLeft(2, '0');
+      placeholders['minute'] = parsedDate.minute.toString().padLeft(2, '0');
+      placeholders['second'] = parsedDate.second.toString().padLeft(2, '0');
 
-        // Calculate the first day of the year
-        DateTime firstDayOfYear = DateTime(parsedDate.year, 1, 1);
+      // Calculate the first day of the year
+      DateTime firstDayOfYear = DateTime(parsedDate.year, 1, 1);
 
-        // Calculate the number of days from the first day of the year
-        int dayOfYear = parsedDate.difference(firstDayOfYear).inDays;
+      // Calculate the number of days from the first day of the year
+      int dayOfYear = parsedDate.difference(firstDayOfYear).inDays;
 
-        // Determine the week number (week 1 starts on January 1st)
-        int weekNumber = (dayOfYear / 7).ceil() + 1;
-        String formattedWeekNumber = weekNumber.toString().padLeft(2, '0');
-        placeholders['week'] = formattedWeekNumber;
+      // Determine the week number (week 1 starts on January 1st)
+      int weekNumber = (dayOfYear / 7).ceil() + 1;
+      String formattedWeekNumber = weekNumber.toString().padLeft(2, '0');
+      placeholders['week'] = formattedWeekNumber;
     }
 
     return placeholders;

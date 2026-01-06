@@ -15,8 +15,9 @@ class Highlight extends AbstractTag with CustomTagParser {
       highlightContent += evaluator.evaluate(node).toString();
     }
 
-    buffer
-        .write(highlight.parse(highlightContent, language: language).toHtml());
+    buffer.write(
+      highlight.parse(highlightContent, language: language).toHtml(),
+    );
   }
 
   @override
@@ -35,15 +36,18 @@ Parser<Tag> someTagWithEnd(String name) {
           (tag() | text()).plusLazy(someEndTag(name)) &
           someEndTag(name))
       .map((v) {
-    return (v[0] as Tag)
-        .copyWith(body: (v[1] as List).map((e) => e as ASTNode).toList());
-  });
+        return (v[0] as Tag).copyWith(
+          body: (v[1] as List).map((e) => e as ASTNode).toList(),
+        );
+      });
 }
 
 Parser<Tag> someEndTag(String name) {
   final tagName = name.startsWith("end") ? name : "end$name";
   var parser = ((tagStart()) & string(tagName).trim() & (tagEnd()));
-  return parser.map((values) {
-    return Tag(tagName, []);
-  }).labeled('someEndTag');
+  return parser
+      .map((values) {
+        return Tag(tagName, []);
+      })
+      .labeled('someEndTag');
 }

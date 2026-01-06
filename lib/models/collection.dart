@@ -10,8 +10,8 @@ class ContentCollection {
     required this.metadata,
     List<Base>? docs,
     List<Base>? files,
-  })  : docs = docs ?? <Base>[],
-        files = files ?? <Base>[];
+  }) : docs = docs ?? <Base>[],
+       files = files ?? <Base>[];
 
   factory ContentCollection.fromConfig(String label, Object config) {
     final metadata = <String, dynamic>{};
@@ -22,10 +22,7 @@ class ContentCollection {
       metadata['output'] = config;
     }
 
-    return ContentCollection(
-      label: label,
-      metadata: metadata,
-    );
+    return ContentCollection(label: label, metadata: metadata);
   }
 
   final String label;

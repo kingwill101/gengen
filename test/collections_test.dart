@@ -21,8 +21,12 @@ void main() {
       memoryFileSystem.directory(sourcePath).createSync(recursive: true);
 
       // Minimal theme/layout structure
-      final themeLayoutsPath =
-          p.join(sourcePath, '_themes', 'default', '_layouts');
+      final themeLayoutsPath = p.join(
+        sourcePath,
+        '_themes',
+        'default',
+        '_layouts',
+      );
       memoryFileSystem.directory(themeLayoutsPath).createSync(recursive: true);
       memoryFileSystem
           .file(p.join(themeLayoutsPath, 'default.html'))
@@ -31,12 +35,12 @@ void main() {
       // Collection content
       final docsPath = p.join(sourcePath, '_docs');
       memoryFileSystem.directory(docsPath).createSync(recursive: true);
-      memoryFileSystem
-          .file(p.join(docsPath, 'intro.md'))
-          .writeAsStringSync('''---
+      memoryFileSystem.file(p.join(docsPath, 'intro.md')).writeAsStringSync(
+        '''---
 title: Intro
 ---
-Welcome to the docs.''');
+Welcome to the docs.''',
+      );
     });
 
     tearDown(() {
@@ -44,23 +48,22 @@ Welcome to the docs.''');
     });
 
     test('reads configured collections and exposes Liquid data', () async {
-      Site.init(overrides: {
-        'source': sourcePath,
-        'destination': p.join(projectRoot, 'public'),
-        'theme': 'default',
-        'collections': {
-          'docs': {
-            'output': true,
-            'permalink': '/:collection/:path/',
-          }
+      Site.init(
+        overrides: {
+          'source': sourcePath,
+          'destination': p.join(projectRoot, 'public'),
+          'theme': 'default',
+          'collections': {
+            'docs': {'output': true, 'permalink': '/:collection/:path/'},
+          },
+          'defaults': [
+            {
+              'scope': {'type': 'docs'},
+              'values': {'layout': 'doc'},
+            },
+          ],
         },
-        'defaults': [
-          {
-            'scope': {'type': 'docs'},
-            'values': {'layout': 'doc'},
-          }
-        ],
-      });
+      );
 
       final site = Site.instance;
       await site.read();
@@ -84,17 +87,16 @@ Welcome to the docs.''');
     });
 
     test('does not write output when collection output is false', () async {
-      Site.init(overrides: {
-        'source': sourcePath,
-        'destination': p.join(projectRoot, 'public'),
-        'theme': 'default',
-        'collections': {
-          'docs': {
-            'output': false,
-            'permalink': '/:collection/:path/',
-          }
+      Site.init(
+        overrides: {
+          'source': sourcePath,
+          'destination': p.join(projectRoot, 'public'),
+          'theme': 'default',
+          'collections': {
+            'docs': {'output': false, 'permalink': '/:collection/:path/'},
+          },
         },
-      });
+      );
 
       final site = Site.instance;
       await site.process();

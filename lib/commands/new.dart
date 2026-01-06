@@ -244,9 +244,7 @@ void _applyTheme(String siteDirectory, String themeName) {
   final bundleKey = 'theme_$normalized';
 
   if (!bundleData.containsKey(bundleKey)) {
-    log.warning(
-      "Theme '$themeName' not found. Skipping theme scaffolding.",
-    );
+    log.warning("Theme '$themeName' not found. Skipping theme scaffolding.");
     return;
   }
 

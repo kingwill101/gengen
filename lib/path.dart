@@ -54,15 +54,17 @@ mixin PathMixin {
 
   String get postPath {
     final postDir = config.get<String>("post_dir") ?? "";
-    final combined =
-        collectionsDir.isEmpty ? postDir : join(collectionsDir, postDir);
+    final combined = collectionsDir.isEmpty
+        ? postDir
+        : join(collectionsDir, postDir);
     return pathFor(combined);
   }
 
   String get draftPath {
     final draftDir = config.get<String>("draft_dir") ?? "";
-    final combined =
-        collectionsDir.isEmpty ? draftDir : join(collectionsDir, draftDir);
+    final combined = collectionsDir.isEmpty
+        ? draftDir
+        : join(collectionsDir, draftDir);
     return pathFor(combined);
   }
 
@@ -84,17 +86,17 @@ mixin PathMixin {
   }
 
   Map<String, dynamic> toJson() => {
-        "includesPath": includesPath,
-        "layoutsPath": layoutsPath,
-        "sassPath": sassPath,
-        "assetsPath": assetsPath,
-        "postPath": postPath,
-        "draftPath": draftPath,
-        "collectionsPath": collectionsPath,
-        "dataPath": dataPath,
-        "pluginPath: ": pluginPath,
-        "themesDir": themesDir,
-        "output": output,
-        "postOutputPath": postOutputPath,
-      };
+    "includesPath": includesPath,
+    "layoutsPath": layoutsPath,
+    "sassPath": sassPath,
+    "assetsPath": assetsPath,
+    "postPath": postPath,
+    "draftPath": draftPath,
+    "collectionsPath": collectionsPath,
+    "dataPath": dataPath,
+    "pluginPath: ": pluginPath,
+    "themesDir": themesDir,
+    "output": output,
+    "postOutputPath": postOutputPath,
+  };
 }

@@ -16,12 +16,12 @@ class IncludeRelative extends AbstractTag with CustomTagParser, AsyncTag {
             any().starLazy(tagEnd()).flatten() &
             tagEnd())
         .map((values) {
-      final raw = (values[2] as String).trim();
-      if (raw.isEmpty) {
-        return Tag('include_relative', []);
-      }
-      return Tag('include_relative', [TextNode(raw)]);
-    });
+          final raw = (values[2] as String).trim();
+          if (raw.isEmpty) {
+            return Tag('include_relative', []);
+          }
+          return Tag('include_relative', [TextNode(raw)]);
+        });
   }
 
   @override
@@ -93,7 +93,10 @@ class IncludeRelative extends AbstractTag with CustomTagParser, AsyncTag {
     if (node is MemberAccess) {
       final base = _renderNode(node.object) ?? '';
       if (node.members.isEmpty) return base;
-      final segments = node.members.map(_renderNode).whereType<String>().toList();
+      final segments = node.members
+          .map(_renderNode)
+          .whereType<String>()
+          .toList();
       if (segments.isEmpty) return base;
       return ([base, ...segments]).join('.');
     }
@@ -108,9 +111,9 @@ class IncludeRelative extends AbstractTag with CustomTagParser, AsyncTag {
     if (page is Map && page['path'] != null) {
       final pagePath = page['path'].toString();
       if (page['collection'] != null) {
-        return p.dirname(site.inSourceDir(
-          p.join(site.collectionsDir, pagePath),
-        ));
+        return p.dirname(
+          site.inSourceDir(p.join(site.collectionsDir, pagePath)),
+        );
       }
       return p.dirname(site.inSourceDir(pagePath));
     }

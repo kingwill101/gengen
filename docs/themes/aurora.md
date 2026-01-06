@@ -21,6 +21,8 @@ Aurora lives under `_themes/aurora/` and follows the standard GenGen theme layou
 
 ```
 _themes/aurora/
+├── content/
+│   └── index.html      # Theme homepage (front matter page)
 ├── _layouts/
 │   ├── default.html     # Shell with header / footer
 │   ├── page.html        # Static page layout
@@ -39,6 +41,9 @@ _themes/aurora/
 ```
 
 The Sass partials compile into `/assets/css/aurora.css` through the built-in Sass plugin, so no additional tooling is required.
+
+Aurora ships a theme homepage under `content/index.html` with YAML front matter.
+If your site adds its own `index.md` or `index.html`, the site version takes priority.
 
 ## Home Hero Spotlight
 

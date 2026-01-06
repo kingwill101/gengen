@@ -263,8 +263,9 @@ class Configuration {
     _config = deepMerge(_config, overrides);
 
     if (overrideSource != null) {
-      _config["source"] =
-          isRelative(overrideSource) ? absolute(overrideSource) : overrideSource;
+      _config["source"] = isRelative(overrideSource)
+          ? absolute(overrideSource)
+          : overrideSource;
     }
 
     checkIncludeExclude(_config);

@@ -1,5 +1,1 @@
 name: aurora
-version: 0.1.0
-description: "Bold editorial theme with hero, cards, and media embeds"
-sass:
-  input: assets/css/aurora.scss

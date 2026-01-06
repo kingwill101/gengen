@@ -23,7 +23,11 @@ class GenGenException implements Exception {
 
 /// Exception thrown when site initialization fails.
 class SiteInitializationException extends GenGenException {
-  const SiteInitializationException(super.message, [super.cause, super.stackTrace]);
+  const SiteInitializationException(
+    super.message, [
+    super.cause,
+    super.stackTrace,
+  ]);
 }
 
 /// Exception thrown when site building/generation fails.

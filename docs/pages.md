@@ -330,6 +330,13 @@ your-site/
 - **Subdirectories**: For organized content (services/web-design.md)
 - **Special directories**: Avoid `_posts/` for regular pages (reserved for blog posts). Posts can live in subdirectories under `_posts/` and do not require a date in the filename.
 
+### Theme Pages
+
+Themes can ship pages via a `content/` directory. Any **theme content file with
+YAML front matter** is treated as a page and rendered into the final site output
+using its relative path inside the theme `content/` folder. If the site provides
+a file at the same relative path, the site file overrides the theme page.
+
 ### Generated Output Structure
 
 Your pages create organized directory structures:

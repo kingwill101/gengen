@@ -11,8 +11,9 @@ void main() {
   setUp(() {
     memoryFileSystem = MemoryFileSystem();
     gengen_fs.fs = memoryFileSystem;
-    memoryFileSystem.currentDirectory =
-        memoryFileSystem.directory(realProjectRoot)..createSync(recursive: true);
+    memoryFileSystem.currentDirectory = memoryFileSystem.directory(
+      realProjectRoot,
+    )..createSync(recursive: true);
   });
 
   group('Utilities Tests', () {
@@ -23,8 +24,10 @@ void main() {
       });
 
       test('should remove special characters', () {
-        expect(slugify('hello!@#\$%^&*()_+-=[]{}\\|;:\'",.<>/?`~ world'),
-            'hello-world');
+        expect(
+          slugify('hello!@#\$%^&*()_+-=[]{}\\|;:\'",.<>/?`~ world'),
+          'hello-world',
+        );
       });
 
       test('should handle multiple spaces and hyphens', () {
@@ -93,12 +96,19 @@ Content
     group('isBinaryFile', () {
       test('should return true for a file containing null byte', () {
         final filePath = p.join(realProjectRoot, 'binary.dat');
-        memoryFileSystem.file(filePath).writeAsBytesSync([0x48, 0x65, 0x00, 0x6F]); // He\0o
+        memoryFileSystem.file(filePath).writeAsBytesSync([
+          0x48,
+          0x65,
+          0x00,
+          0x6F,
+        ]); // He\0o
         expect(isBinaryFile(filePath), isTrue);
       });
       test('should return false for a text file', () {
         final filePath = p.join(realProjectRoot, 'text.txt');
-        memoryFileSystem.file(filePath).writeAsStringSync('This is a text file.');
+        memoryFileSystem
+            .file(filePath)
+            .writeAsStringSync('This is a text file.');
         expect(isBinaryFile(filePath), isFalse);
       });
     });
@@ -133,4 +143,4 @@ Content
       });
     });
   });
-} 
+}

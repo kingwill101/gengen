@@ -159,6 +159,26 @@ Available commands:
 
 ### Library API
 
+## Testing & Coverage
+
+Run the test suite:
+
+```bash
+dart test
+```
+
+Generate an LCOV coverage report (saved to `coverage/lcov.info`):
+
+```bash
+just coverage
+```
+
+If `lcov`/`genhtml` is installed, you can also generate HTML output:
+
+```bash
+just coverage-html
+```
+
 See [README_LIBRARY.md](README_LIBRARY.md) for comprehensive library documentation.
 
 ## Documentation

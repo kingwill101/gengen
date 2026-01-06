@@ -86,4 +86,4 @@ class PluginBody extends AbstractTag {
     // Plugin assets are served from /assets/plugins/[plugin-name]/[asset-path]
     return '/assets/plugins/$pluginName/$assetPath';
   }
-} 
+}

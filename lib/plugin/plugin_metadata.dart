@@ -24,10 +24,8 @@ class PluginMetadata with _$PluginMetadata {
 
 @freezed
 class PluginAsset with _$PluginAsset {
-  const factory PluginAsset({
-    required String name,
-    required String path,
-  }) = _PluginAsset;
+  const factory PluginAsset({required String name, required String path}) =
+      _PluginAsset;
 
   factory PluginAsset.fromJson(Map<String, Object?> json) =>
       _$PluginAssetFromJson(json);

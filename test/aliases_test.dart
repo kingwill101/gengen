@@ -21,7 +21,7 @@ void main() {
       projectRoot = memoryFileSystem.currentDirectory.path;
       final sourcePath = p.join(projectRoot, 'source');
       final publicPath = p.join(projectRoot, 'public');
-      
+
       memoryFileSystem.directory(sourcePath).createSync(recursive: true);
       memoryFileSystem.directory(publicPath).createSync(recursive: true);
 
@@ -30,12 +30,19 @@ void main() {
       memoryFileSystem.directory(layoutsPath).createSync(recursive: true);
       memoryFileSystem
           .file(p.join(layoutsPath, 'default.html'))
-          .writeAsStringSync('<!DOCTYPE html><html><body>{{ content }}</body></html>');
+          .writeAsStringSync(
+            '<!DOCTYPE html><html><body>{{ content }}</body></html>',
+          );
 
-      Site.init(overrides: {
-        'source': sourcePath,
-        'destination': publicPath,
-      });
+      Site.init(
+        overrides: {
+          'source': sourcePath,
+          'destination': publicPath,
+          'plugins': {
+            'enabled': ['core', 'content'],
+          },
+        },
+      );
       site = Site.instance;
     });
 
@@ -69,19 +76,26 @@ This is our about page.
       expect(memoryFileSystem.file(aliasPath).existsSync(), isTrue);
 
       // Check content is identical
-      final mainContent = memoryFileSystem.file(mainPagePath).readAsStringSync();
+      final mainContent = memoryFileSystem
+          .file(mainPagePath)
+          .readAsStringSync();
       final aliasContent = memoryFileSystem.file(aliasPath).readAsStringSync();
       expect(aliasContent, equals(mainContent));
-      
+
       // Check content includes the processed markdown
-      expect(mainContent, contains('<h1 id="about-our-company">About Our Company</h1>'));
+      expect(
+        mainContent,
+        contains('<h1 id="about-our-company">About Our Company</h1>'),
+      );
       expect(mainContent, contains('This is our about page.'));
     });
 
-    test('should create multiple alias files for pages with multiple aliases', () async {
-      // Create a page with multiple aliases
-      final contactPath = p.join(site.config.source, 'contact.md');
-      memoryFileSystem.file(contactPath).writeAsStringSync('''---
+    test(
+      'should create multiple alias files for pages with multiple aliases',
+      () async {
+        // Create a page with multiple aliases
+        final contactPath = p.join(site.config.source, 'contact.md');
+        memoryFileSystem.file(contactPath).writeAsStringSync('''---
 title: Contact Us
 layout: default
 permalink: /contact/
@@ -95,27 +109,46 @@ aliases:
 Get in touch with us!
 ''');
 
-      await site.process();
-      await site.write();
+        await site.process();
+        await site.write();
 
-      // Check main page exists
-      final mainPagePath = p.join(site.destination.path, 'contact', 'index.html');
-      expect(memoryFileSystem.file(mainPagePath).existsSync(), isTrue);
+        // Check main page exists
+        final mainPagePath = p.join(
+          site.destination.path,
+          'contact',
+          'index.html',
+        );
+        expect(memoryFileSystem.file(mainPagePath).existsSync(), isTrue);
 
-      // Check all alias files exist
-      final aliases = ['contact-us.html', 'get-in-touch.html', 'support.html'];
-      final mainContent = memoryFileSystem.file(mainPagePath).readAsStringSync();
-      
-      for (final alias in aliases) {
-        final aliasPath = p.join(site.destination.path, alias);
-        expect(memoryFileSystem.file(aliasPath).existsSync(), isTrue, 
-               reason: 'Alias file $alias should exist');
-        
-        final aliasContent = memoryFileSystem.file(aliasPath).readAsStringSync();
-        expect(aliasContent, equals(mainContent),
-               reason: 'Alias $alias should have identical content to main page');
-      }
-    });
+        // Check all alias files exist
+        final aliases = [
+          'contact-us.html',
+          'get-in-touch.html',
+          'support.html',
+        ];
+        final mainContent = memoryFileSystem
+            .file(mainPagePath)
+            .readAsStringSync();
+
+        for (final alias in aliases) {
+          final aliasPath = p.join(site.destination.path, alias);
+          expect(
+            memoryFileSystem.file(aliasPath).existsSync(),
+            isTrue,
+            reason: 'Alias file $alias should exist',
+          );
+
+          final aliasContent = memoryFileSystem
+              .file(aliasPath)
+              .readAsStringSync();
+          expect(
+            aliasContent,
+            equals(mainContent),
+            reason: 'Alias $alias should have identical content to main page',
+          );
+        }
+      },
+    );
 
     test('should create alias files with directory structure', () async {
       // Create a page with aliases that include directory paths
@@ -138,26 +171,40 @@ We offer various services.
       await site.write();
 
       // Check main page exists
-      final mainPagePath = p.join(site.destination.path, 'services', 'index.html');
+      final mainPagePath = p.join(
+        site.destination.path,
+        'services',
+        'index.html',
+      );
       expect(memoryFileSystem.file(mainPagePath).existsSync(), isTrue);
 
       // Check alias files with directory structure exist
       final aliases = [
         'old-site/services.html',
-        'company/what-we-do.html', 
-        'info/services-offered.html'
+        'company/what-we-do.html',
+        'info/services-offered.html',
       ];
-      
-      final mainContent = memoryFileSystem.file(mainPagePath).readAsStringSync();
-      
+
+      final mainContent = memoryFileSystem
+          .file(mainPagePath)
+          .readAsStringSync();
+
       for (final alias in aliases) {
         final aliasPath = p.join(site.destination.path, alias);
-        expect(memoryFileSystem.file(aliasPath).existsSync(), isTrue,
-               reason: 'Alias file $alias should exist');
-        
-        final aliasContent = memoryFileSystem.file(aliasPath).readAsStringSync();
-        expect(aliasContent, equals(mainContent),
-               reason: 'Alias $alias should have identical content to main page');
+        expect(
+          memoryFileSystem.file(aliasPath).existsSync(),
+          isTrue,
+          reason: 'Alias file $alias should exist',
+        );
+
+        final aliasContent = memoryFileSystem
+            .file(aliasPath)
+            .readAsStringSync();
+        expect(
+          aliasContent,
+          equals(mainContent),
+          reason: 'Alias $alias should have identical content to main page',
+        );
       }
     });
 
@@ -165,7 +212,7 @@ We offer various services.
       // Create posts directory
       final postsPath = p.join(site.config.source, '_posts');
       memoryFileSystem.directory(postsPath).createSync(recursive: true);
-      
+
       // Create a post with aliases
       final postPath = p.join(postsPath, '2024-01-15-my-post.md');
       memoryFileSystem.file(postPath).writeAsStringSync('''---
@@ -186,25 +233,38 @@ This is a great blog post!
       await site.write();
 
       // Check main post exists
-      final mainPostPath = p.join(site.destination.path, 'blog', 'my-awesome-post', 'index.html');
+      final mainPostPath = p.join(
+        site.destination.path,
+        'blog',
+        'my-awesome-post',
+        'index.html',
+      );
       expect(memoryFileSystem.file(mainPostPath).existsSync(), isTrue);
 
       // Check alias files exist
-      final aliases = [
-        '2024/01/15/my-post.html',
-        'old-blog/awesome-post.html'
-      ];
-      
-      final mainContent = memoryFileSystem.file(mainPostPath).readAsStringSync();
-      
+      final aliases = ['2024/01/15/my-post.html', 'old-blog/awesome-post.html'];
+
+      final mainContent = memoryFileSystem
+          .file(mainPostPath)
+          .readAsStringSync();
+
       for (final alias in aliases) {
         final aliasPath = p.join(site.destination.path, alias);
-        expect(memoryFileSystem.file(aliasPath).existsSync(), isTrue,
-               reason: 'Post alias file $alias should exist');
-        
-        final aliasContent = memoryFileSystem.file(aliasPath).readAsStringSync();
-        expect(aliasContent, equals(mainContent),
-               reason: 'Post alias $alias should have identical content to main post');
+        expect(
+          memoryFileSystem.file(aliasPath).existsSync(),
+          isTrue,
+          reason: 'Post alias file $alias should exist',
+        );
+
+        final aliasContent = memoryFileSystem
+            .file(aliasPath)
+            .readAsStringSync();
+        expect(
+          aliasContent,
+          equals(mainContent),
+          reason:
+              'Post alias $alias should have identical content to main post',
+        );
       }
     });
 
@@ -232,21 +292,28 @@ Meet our amazing team!
       expect(memoryFileSystem.file(mainPagePath).existsSync(), isTrue);
 
       // Check alias files exist (leading slashes should be removed)
-      final aliases = [
-        'about-us/team.html',
-        'company/people.html'
-      ];
-      
-      final mainContent = memoryFileSystem.file(mainPagePath).readAsStringSync();
-      
+      final aliases = ['about-us/team.html', 'company/people.html'];
+
+      final mainContent = memoryFileSystem
+          .file(mainPagePath)
+          .readAsStringSync();
+
       for (final alias in aliases) {
         final aliasPath = p.join(site.destination.path, alias);
-        expect(memoryFileSystem.file(aliasPath).existsSync(), isTrue,
-               reason: 'Alias file $alias should exist (leading slash removed)');
-        
-        final aliasContent = memoryFileSystem.file(aliasPath).readAsStringSync();
-        expect(aliasContent, equals(mainContent),
-               reason: 'Alias $alias should have identical content to main page');
+        expect(
+          memoryFileSystem.file(aliasPath).existsSync(),
+          isTrue,
+          reason: 'Alias file $alias should exist (leading slash removed)',
+        );
+
+        final aliasContent = memoryFileSystem
+            .file(aliasPath)
+            .readAsStringSync();
+        expect(
+          aliasContent,
+          equals(mainContent),
+          reason: 'Alias $alias should have identical content to main page',
+        );
       }
     });
 
@@ -267,7 +334,11 @@ This page has no aliases.
       await site.write();
 
       // Check main page exists
-      final mainPagePath = p.join(site.destination.path, 'no-alias', 'index.html');
+      final mainPagePath = p.join(
+        site.destination.path,
+        'no-alias',
+        'index.html',
+      );
       expect(memoryFileSystem.file(mainPagePath).existsSync(), isTrue);
 
       // Check content is processed correctly
@@ -276,11 +347,11 @@ This page has no aliases.
       expect(content, contains('This page has no aliases.'));
     });
 
-         test('should use html extension for alias files', () async {
-       // Create a page with various alias file extensions
-       // Note: GenGen automatically sets alias extensions to match the source file (.html)
-       final extensionsPath = p.join(site.config.source, 'extensions.md');
-       memoryFileSystem.file(extensionsPath).writeAsStringSync('''---
+    test('should use html extension for alias files', () async {
+      // Create a page with various alias file extensions
+      // Note: GenGen automatically sets alias extensions to match the source file (.html)
+      final extensionsPath = p.join(site.config.source, 'extensions.md');
+      memoryFileSystem.file(extensionsPath).writeAsStringSync('''---
 title: Extension Test
 layout: default
 permalink: /extensions/
@@ -294,32 +365,46 @@ aliases:
 Testing different file extensions in aliases.
 ''');
 
-       await site.process();
-       await site.write();
+      await site.process();
+      await site.write();
 
-       // Check main page exists
-       final mainPagePath = p.join(site.destination.path, 'extensions', 'index.html');
-       expect(memoryFileSystem.file(mainPagePath).existsSync(), isTrue);
+      // Check main page exists
+      final mainPagePath = p.join(
+        site.destination.path,
+        'extensions',
+        'index.html',
+      );
+      expect(memoryFileSystem.file(mainPagePath).existsSync(), isTrue);
 
-       // Check alias files - GenGen converts all to .html extension to match source
-       final aliases = [
-         'old-page.html',
-         'legacy.html',  // .htm becomes .html
-         'backup.html'   // .php becomes .html
-       ];
-       
-       final mainContent = memoryFileSystem.file(mainPagePath).readAsStringSync();
-       
-       for (final alias in aliases) {
-         final aliasPath = p.join(site.destination.path, alias);
-         expect(memoryFileSystem.file(aliasPath).existsSync(), isTrue,
-                reason: 'Alias file $alias should exist with .html extension');
-         
-         final aliasContent = memoryFileSystem.file(aliasPath).readAsStringSync();
-         expect(aliasContent, equals(mainContent),
-                reason: 'Alias $alias should have identical content to main page');
-       }
-     });
+      // Check alias files - GenGen converts all to .html extension to match source
+      final aliases = [
+        'old-page.html',
+        'legacy.html', // .htm becomes .html
+        'backup.html', // .php becomes .html
+      ];
+
+      final mainContent = memoryFileSystem
+          .file(mainPagePath)
+          .readAsStringSync();
+
+      for (final alias in aliases) {
+        final aliasPath = p.join(site.destination.path, alias);
+        expect(
+          memoryFileSystem.file(aliasPath).existsSync(),
+          isTrue,
+          reason: 'Alias file $alias should exist with .html extension',
+        );
+
+        final aliasContent = memoryFileSystem
+            .file(aliasPath)
+            .readAsStringSync();
+        expect(
+          aliasContent,
+          equals(mainContent),
+          reason: 'Alias $alias should have identical content to main page',
+        );
+      }
+    });
 
     test('should handle empty aliases array', () async {
       // Create a page with empty aliases array
@@ -339,12 +424,19 @@ This page has an empty aliases array.
       await site.write();
 
       // Check main page exists
-      final mainPagePath = p.join(site.destination.path, 'empty-alias', 'index.html');
+      final mainPagePath = p.join(
+        site.destination.path,
+        'empty-alias',
+        'index.html',
+      );
       expect(memoryFileSystem.file(mainPagePath).existsSync(), isTrue);
 
       // Check content is processed correctly
       final content = memoryFileSystem.file(mainPagePath).readAsStringSync();
-      expect(content, contains('<h1 id="empty-alias-test">Empty Alias Test</h1>'));
+      expect(
+        content,
+        contains('<h1 id="empty-alias-test">Empty Alias Test</h1>'),
+      );
     });
   });
-} 
+}

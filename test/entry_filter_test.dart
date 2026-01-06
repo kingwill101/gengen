@@ -19,21 +19,21 @@ void main() {
       sourcePath = p.join(projectRoot, 'source');
       memoryFileSystem.directory(sourcePath).createSync(recursive: true);
 
-      Site.init(overrides: {
-        'source': sourcePath,
-        'destination': p.join(projectRoot, 'public'),
-        'exclude': [
-          'excluded_dir/**',
-          'excluded_file.md',
-          '*.txt',
-          'notes/**',
-          '_drafts/**',
-          '*_notes.md',
-        ],
-        'include': [
-          'notes/important_notes.md',
-        ]
-      });
+      Site.init(
+        overrides: {
+          'source': sourcePath,
+          'destination': p.join(projectRoot, 'public'),
+          'exclude': [
+            'excluded_dir/**',
+            'excluded_file.md',
+            '*.txt',
+            'notes/**',
+            '_drafts/**',
+            '*_notes.md',
+          ],
+          'include': ['notes/important_notes.md'],
+        },
+      );
     });
 
     test('glob package should handle basic patterns correctly', () {
@@ -52,20 +52,26 @@ void main() {
 
     test('globInclude should match patterns correctly', () {
       final filter = EntryFilter();
-      
+
       expect(filter.globInclude({'*.txt'}, 'secret.txt'), isTrue);
       expect(filter.globInclude({'*.txt'}, 'secret.md'), isFalse);
       expect(filter.globInclude({'*_notes.md'}, 'meeting_notes.md'), isTrue);
       expect(filter.globInclude({'*_notes.md'}, 'important_notes.md'), isTrue);
       expect(filter.globInclude({'notes/**'}, 'notes/test.md'), isTrue);
       expect(filter.globInclude({'notes/**'}, 'docs/test.md'), isFalse);
-      expect(filter.globInclude({'excluded_dir/**'}, 'excluded_dir/excluded.md'), isTrue);
-      expect(filter.globInclude({'excluded_dir/**'}, 'other_dir/file.md'), isFalse);
+      expect(
+        filter.globInclude({'excluded_dir/**'}, 'excluded_dir/excluded.md'),
+        isTrue,
+      );
+      expect(
+        filter.globInclude({'excluded_dir/**'}, 'other_dir/file.md'),
+        isFalse,
+      );
     });
 
     test('isExcluded should work with various patterns', () {
       final filter = EntryFilter();
-      
+
       expect(filter.isExcluded('secret.txt'), isTrue);
       expect(filter.isExcluded('excluded_file.md'), isTrue);
       expect(filter.isExcluded('meeting_notes.md'), isTrue);
@@ -76,7 +82,7 @@ void main() {
 
     test('isIncluded should work with include patterns', () {
       final filter = EntryFilter();
-      
+
       expect(filter.isIncluded('notes/important_notes.md'), isTrue);
       expect(filter.isIncluded('notes/meeting_notes.md'), isFalse);
       expect(filter.isIncluded('normal.md'), isFalse);
@@ -84,7 +90,7 @@ void main() {
 
     test('filter should respect exclude and include rules', () {
       final filter = EntryFilter();
-      
+
       final entries = [
         p.join(sourcePath, 'index.md'),
         p.join(sourcePath, 'secret.txt'),
@@ -93,9 +99,9 @@ void main() {
         p.join(sourcePath, 'notes', 'important_notes.md'),
         p.join(sourcePath, 'excluded_dir', 'excluded.md'),
       ];
-      
+
       final filtered = filter.filter(entries);
-      
+
       print('Input entries:');
       for (var entry in entries) {
         print('  - $entry');
@@ -104,11 +110,14 @@ void main() {
       for (var entry in filtered) {
         print('  - $entry');
       }
-      
+
       // Should include index.md and important_notes.md
       expect(filtered.length, equals(2));
       expect(filtered.any((e) => e.endsWith('index.md')), isTrue);
-      expect(filtered.any((e) => e.endsWith('notes/important_notes.md')), isTrue);
+      expect(
+        filtered.any((e) => e.endsWith('notes/important_notes.md')),
+        isTrue,
+      );
     });
   });
-} 
+}

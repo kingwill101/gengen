@@ -9,8 +9,7 @@ import 'package:gengen/site.dart';
 import 'package:gengen/models/base.dart';
 import 'package:gengen/utilities.dart';
 import 'package:liquify/liquify.dart' as liquify show TemplateNotFoundException;
-import 'package:liquify/parser.dart'
-    as liquify_shared;
+import 'package:liquify/parser.dart' as liquify_shared;
 
 class LiquidPlugin extends BasePlugin {
   final root = ContentRoot();
@@ -41,8 +40,11 @@ class LiquidPlugin extends BasePlugin {
     }
 
     logger.info('(${metadata.name}) converting ${page.source}');
-    final rendered =
-        await _renderLiquid(content, page, templateName: page.source);
+    final rendered = await _renderLiquid(
+      content,
+      page,
+      templateName: page.source,
+    );
     page.renderer.content = rendered;
     return rendered;
   }
@@ -180,5 +182,4 @@ class LiquidPlugin extends BasePlugin {
 
     return '$targetLine\n$pointer';
   }
-
 }

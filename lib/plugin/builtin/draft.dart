@@ -1,7 +1,7 @@
 /// # GenGen Draft Plugin
 ///
 /// This plugin provides comprehensive draft post functionality for GenGen static sites.
-/// It handles draft posts that are stored in the `_drafts` directory and provides 
+/// It handles draft posts that are stored in the `_drafts` directory and provides
 /// filtering based on the `publish_drafts` configuration setting.
 ///
 /// ## Features
@@ -132,7 +132,7 @@ import 'package:path/path.dart' as p;
 
 /// The main draft plugin that provides comprehensive draft post functionality.
 ///
-  /// This plugin handles both posts in the `_drafts` directory and posts marked
+/// This plugin handles both posts in the `_drafts` directory and posts marked
 /// with `draft: true` in their front matter. It provides filtering based on
 /// the `publish_drafts` configuration setting.
 ///
@@ -172,7 +172,7 @@ class DraftPlugin extends BasePlugin {
     // Read draft posts using the existing PostReader
     final postReader = PostReader();
     final draftPosts = postReader.readDrafts(draftPath);
-    
+
     if (draftPosts.isEmpty) {
       logger.info('(${metadata.name}) No draft posts found');
       return;
@@ -184,11 +184,13 @@ class DraftPlugin extends BasePlugin {
     for (final post in draftPosts) {
       // Set draft flag in front matter
       post.frontMatter['draft'] = true;
-      
+
       // Add to our tracking list
       _draftPosts.add(post);
-      
-      logger.info('(${metadata.name}) Marked draft post: ${p.basename(post.source)}');
+
+      logger.info(
+        '(${metadata.name}) Marked draft post: ${p.basename(post.source)}',
+      );
     }
 
     // Add draft posts to the existing posts collection
@@ -206,10 +208,15 @@ class DraftPlugin extends BasePlugin {
   /// with `draft: true` in their front matter.
   @override
   Future<void> beforeRender() async {
-    final publishDrafts = site.config.get<bool>('publish_drafts', defaultValue: false)!;
-    
+    final publishDrafts = site.config.get<bool>(
+      'publish_drafts',
+      defaultValue: false,
+    )!;
+
     if (publishDrafts) {
-      logger.info('(${metadata.name}) Publishing drafts is enabled - keeping all draft posts');
+      logger.info(
+        '(${metadata.name}) Publishing drafts is enabled - keeping all draft posts',
+      );
       return;
     }
 
@@ -228,10 +235,12 @@ class DraftPlugin extends BasePlugin {
     site.posts.removeWhere((post) => post.isDraft());
 
     logger.info('(${metadata.name}) Filtered out $draftCount draft posts');
-    
+
     // Log which drafts were filtered for debugging
     for (final draft in allDrafts) {
-      logger.info('(${metadata.name}) Filtered draft: ${p.basename(draft.source)}');
+      logger.info(
+        '(${metadata.name}) Filtered draft: ${p.basename(draft.source)}',
+      );
     }
   }
 
@@ -271,4 +280,4 @@ class DraftPlugin extends BasePlugin {
   void reset() {
     _draftPosts.clear();
   }
-} 
+}

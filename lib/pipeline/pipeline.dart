@@ -4,10 +4,7 @@ class Pipeline<T> {
   final List<Handle<T>> handlers;
   final T? data;
 
-  const Pipeline([
-    this.data,
-    this.handlers = const [],
-  ]);
+  const Pipeline([this.data, this.handlers = const []]);
 
   Pipeline<T> add(Handle<T> handle) {
     handlers.add(handle);

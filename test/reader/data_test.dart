@@ -42,15 +42,19 @@ tom:
 ''');
 
     // Create profiles.yml file (mentioned in the original test expectation)
-    memoryFileSystem.file(p.join(dataPath, 'profiles.yml')).writeAsStringSync('''
+    memoryFileSystem.file(p.join(dataPath, 'profiles.yml')).writeAsStringSync(
+      '''
 - name: Profile 1
 - name: Profile 2
-''');
+''',
+    );
 
     // Create basic layouts directory (required for proper site initialization)
     final layoutsPath = p.join(sourcePath, '_layouts');
     memoryFileSystem.directory(layoutsPath).createSync(recursive: true);
-    memoryFileSystem.file(p.join(layoutsPath, 'default.html')).writeAsStringSync('''
+    memoryFileSystem
+        .file(p.join(layoutsPath, 'default.html'))
+        .writeAsStringSync('''
 <!DOCTYPE html>
 <html>
 <head>
@@ -71,10 +75,12 @@ tom:
         .file(p.join(sourcePath, 'robots.txt'))
         .writeAsStringSync('User-agent: *');
 
-    Site.init(overrides: {
-      'source': sourcePath,
-      'destination': p.join(projectRoot, 'public'),
-    });
+    Site.init(
+      overrides: {
+        'source': sourcePath,
+        'destination': p.join(projectRoot, 'public'),
+      },
+    );
     await site.read();
   });
 
@@ -88,33 +94,21 @@ tom:
     expect(data.keys, unorderedEquals(['users', 'pages', 'profiles']));
     expect(
       data['users'],
-      equals(
-          {
-            'dick': {'name': 'Dick'},
-            'harry': {'name': 'Harry'},
-            'tom': {'name': 'Tom'},
-          } 
-      ),
+      equals({
+        'dick': {'name': 'Dick'},
+        'harry': {'name': 'Harry'},
+        'tom': {'name': 'Tom'},
+      }),
     );
 
-    expect(
-      data['pages'],
-      equals(
-          [
-            'home',
-            'about',
-            'contact',
-          ]
-        
-      ),
-    );
+    expect(data['pages'], equals(['home', 'about', 'contact']));
   });
 
   test("loads in templates", () async {
     final root = MapRoot({});
 
     var template = GenGenTempate.r(
-        r'''
+      r'''
 {{site.data.users.tom.name}}
 {{site.data.users.dick.name}}
 {{site.data.users.harry.name}}
@@ -122,12 +116,15 @@ tom:
 {{page}}
 {% endfor %}
 ''',
-        contentRoot: root,
-        data: {
-          "site": {"data": site.data}
-        });
+      contentRoot: root,
+      data: {
+        "site": {"data": site.data},
+      },
+    );
     var result = await template.render();
-    expect(result, equals(r'''
+    expect(
+      result,
+      equals(r'''
 Tom
 Dick
 Harry
@@ -138,6 +135,7 @@ about
 
 contact
 
-'''));
+'''),
+    );
   });
 }

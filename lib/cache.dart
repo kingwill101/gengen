@@ -1,7 +1,7 @@
 import 'dart:convert'; // For converting strings to bytes
 import 'package:crypto/crypto.dart';
 
-Map<String, String>  _cache = {};
+Map<String, String> _cache = {};
 
 mixin CacheMixin {
   // final _cache = <String, String>{};

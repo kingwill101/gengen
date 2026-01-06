@@ -23,7 +23,9 @@ void main() {
 
     final layoutsPath = p.join(sourcePath, '_layouts');
     memoryFileSystem.directory(layoutsPath).createSync(recursive: true);
-    memoryFileSystem.file(p.join(layoutsPath, 'default.html')).writeAsStringSync('''
+    memoryFileSystem
+        .file(p.join(layoutsPath, 'default.html'))
+        .writeAsStringSync('''
 <!DOCTYPE html>
 <html>
 <head>
@@ -38,7 +40,8 @@ void main() {
 
     final postsPath = p.join(sourcePath, '_posts');
     memoryFileSystem.directory(postsPath).createSync();
-    memoryFileSystem.file(p.join(postsPath, '2024-01-01-my-post.md'))
+    memoryFileSystem
+        .file(p.join(postsPath, '2024-01-01-my-post.md'))
         .writeAsStringSync('''
 ---
 title: My First Post
@@ -63,33 +66,48 @@ This is my **{{ page.title }}**.
     });
 
     test('should initialize and process a basic site', () async {
-      Site.init(overrides:  {
-        'source': p.join(projectRoot, 'source'),
-        'destination': p.join(projectRoot, 'public'),
-        'permalink': 'pretty',
-      });
+      Site.init(
+        overrides: {
+          'source': p.join(projectRoot, 'source'),
+          'destination': p.join(projectRoot, 'public'),
+          'permalink': 'pretty',
+        },
+      );
 
-      await Site.              instance.process();
+      await Site.instance.process();
 
-      final publicDir =
-          memoryFileSystem.directory(p.join(projectRoot, 'public'));
+      final publicDir = memoryFileSystem.directory(
+        p.join(projectRoot, 'public'),
+      );
       expect(publicDir.existsSync(), isTrue);
       final files = publicDir.listSync(recursive: true);
       for (var file in files) {
         print(file.path);
       }
 
-      final postFile = memoryFileSystem.file(p.join(
-          publicDir.path, 'posts', '2024', '01', '01', 'my-post', 'index.html'));
+      final postFile = memoryFileSystem.file(
+        p.join(
+          publicDir.path,
+          'posts',
+          '2024',
+          '01',
+          '01',
+          'my-post',
+          'index.html',
+        ),
+      );
       expect(postFile.existsSync(), isTrue);
 
       final postContent = postFile.readAsStringSync();
       expect(postContent, contains('<h1>My First Post</h1>'));
-      expect(postContent,
-          contains('<p>This is my <strong>My First Post</strong>.</p>'));
+      expect(
+        postContent,
+        contains('<p>This is my <strong>My First Post</strong>.</p>'),
+      );
 
-      final cssFile =
-          memoryFileSystem.file(p.join(publicDir.path, 'assets', 'style.css'));
+      final cssFile = memoryFileSystem.file(
+        p.join(publicDir.path, 'assets', 'style.css'),
+      );
       expect(cssFile.existsSync(), isTrue);
       expect(cssFile.readAsStringSync(), 'body { color: red; }');
     });
@@ -100,24 +118,36 @@ This is my **{{ page.title }}**.
       publicDir.createSync();
       final dummyFile = memoryFileSystem.file(p.join(publicPath, 'stale.html'));
       dummyFile.writeAsStringSync('I should be deleted');
-      expect(dummyFile.existsSync(), isTrue,
-          reason: 'Dummy file should exist before process');
+      expect(
+        dummyFile.existsSync(),
+        isTrue,
+        reason: 'Dummy file should exist before process',
+      );
 
-      Site.init(overrides: {
-        'source': p.join(projectRoot, 'source'),
-        'destination': publicPath,
-        'clean': true,
-      });
+      Site.init(
+        overrides: {
+          'source': p.join(projectRoot, 'source'),
+          'destination': publicPath,
+          'clean': true,
+        },
+      );
 
       await Site.instance.process();
 
-      expect(dummyFile.existsSync(), isFalse,
-          reason: 'Dummy file should be deleted after clean process');
+      expect(
+        dummyFile.existsSync(),
+        isFalse,
+        reason: 'Dummy file should be deleted after clean process',
+      );
 
-      final newCssFile =
-          memoryFileSystem.file(p.join(publicPath, 'assets', 'style.css'));
-      expect(newCssFile.existsSync(), isTrue,
-          reason: 'Newly generated files should exist');
+      final newCssFile = memoryFileSystem.file(
+        p.join(publicPath, 'assets', 'style.css'),
+      );
+      expect(
+        newCssFile.existsSync(),
+        isTrue,
+        reason: 'Newly generated files should exist',
+      );
     });
 
     test('exclude option should prevent files from being copied', () async {
@@ -129,23 +159,33 @@ This is my **{{ page.title }}**.
           .file(p.join(projectRoot, 'source', 'secret', 'file.txt'))
           .writeAsStringSync('this is a secret');
 
-      Site.init(overrides: {
-        'source': p.join(projectRoot, 'source'),
-        'destination': p.join(projectRoot, 'public'),
-        'exclude': ['secret'],
-      });
+      Site.init(
+        overrides: {
+          'source': p.join(projectRoot, 'source'),
+          'destination': p.join(projectRoot, 'public'),
+          'exclude': ['secret'],
+        },
+      );
 
       await Site.instance.process();
 
-      final excludedFile = memoryFileSystem
-          .file(p.join(projectRoot, 'public', 'secret', 'file.txt'));
-      expect(excludedFile.existsSync(), isFalse,
-          reason: 'Excluded file should not be in the destination');
+      final excludedFile = memoryFileSystem.file(
+        p.join(projectRoot, 'public', 'secret', 'file.txt'),
+      );
+      expect(
+        excludedFile.existsSync(),
+        isFalse,
+        reason: 'Excluded file should not be in the destination',
+      );
 
-      final cssFile = memoryFileSystem
-          .file(p.join(projectRoot, 'public', 'assets', 'style.css'));
-      expect(cssFile.existsSync(), isTrue,
-          reason: 'Other files should still be processed');
+      final cssFile = memoryFileSystem.file(
+        p.join(projectRoot, 'public', 'assets', 'style.css'),
+      );
+      expect(
+        cssFile.existsSync(),
+        isTrue,
+        reason: 'Other files should still be processed',
+      );
     });
   });
-} 
+}

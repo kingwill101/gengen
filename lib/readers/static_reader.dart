@@ -8,12 +8,12 @@ class StaticReader {
 
   List<Base> read(List<String> files) {
     unfilteredContent.clear(); // Clear any previous content
-    
+
     for (var file in files) {
       final staticFile = Static(file);
       unfilteredContent.add(staticFile);
     }
-    
+
     return unfilteredContent;
   }
 }

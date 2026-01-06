@@ -2,7 +2,7 @@
 ///
 /// This plugin provides alias functionality for GenGen static sites.
 /// It automatically creates additional HTML files at alias locations that contain the
-/// same content as the original page or post, enabling backward compatibility and 
+/// same content as the original page or post, enabling backward compatibility and
 /// multiple URLs for the same content.
 ///
 /// ## Features
@@ -60,7 +60,7 @@ library;
 /// ---
 /// title: Getting Started
 /// date: 2024-01-15
-/// aliases: 
+/// aliases:
 ///   - "/2024/01/15/getting-started.html"
 ///   - "/blog/tutorial.html"
 /// ---
@@ -115,18 +115,17 @@ import 'package:path/path.dart' as p;
 class AliasPlugin extends BasePlugin {
   @override
   PluginMetadata get metadata => PluginMetadata(
-        name: 'AliasPlugin',
-        version: '1.0.0',
-        description: 'Creates alias files for pages and posts',
-      );
-
+    name: 'AliasPlugin',
+    version: '1.0.0',
+    description: 'Creates alias files for pages and posts',
+  );
 
   /// Hook that runs after all content has been written.
   /// This is the ideal time to create aliases since the source files exist.
   @override
   Future<void> afterWrite() async {
     logger.info('(${metadata.name}) Starting alias generation');
-    
+
     int aliasCount = 0;
     int errorCount = 0;
 
@@ -150,7 +149,7 @@ class AliasPlugin extends BasePlugin {
     if (errorCount > 0) {
       logger.warning('(${metadata.name}) $errorCount alias creation errors');
     }
-    
+
     logger.info('(${metadata.name}) Alias generation complete');
   }
 
@@ -178,7 +177,7 @@ class AliasPlugin extends BasePlugin {
     final sourceFile = gengen_fs.fs.file(base.filePath);
     if (!sourceFile.existsSync()) {
       logger.warning(
-        '(${metadata.name}) Source file not found for ${base.relativePath}: ${base.filePath}'
+        '(${metadata.name}) Source file not found for ${base.relativePath}: ${base.filePath}',
       );
       return AliasResult(created: 0, errors: 1);
     }
@@ -189,7 +188,7 @@ class AliasPlugin extends BasePlugin {
       sourceContent = sourceFile.readAsStringSync();
     } catch (e) {
       logger.warning(
-        '(${metadata.name}) Failed to read source file ${base.filePath}: $e'
+        '(${metadata.name}) Failed to read source file ${base.filePath}: $e',
       );
       return AliasResult(created: 0, errors: 1);
     }
@@ -209,7 +208,7 @@ class AliasPlugin extends BasePlugin {
         }
       } catch (e) {
         logger.warning(
-          '(${metadata.name}) Failed to create alias "$aliasPath" for ${base.relativePath}: $e'
+          '(${metadata.name}) Failed to create alias "$aliasPath" for ${base.relativePath}: $e',
         );
         errors++;
       }
@@ -238,7 +237,7 @@ class AliasPlugin extends BasePlugin {
   ) async {
     // Normalize the alias path
     String normalizedPath = aliasPath;
-    
+
     // Remove leading slash if present (treat as relative to output directory)
     if (normalizedPath.startsWith('/')) {
       normalizedPath = normalizedPath.substring(1);
@@ -258,12 +257,12 @@ class AliasPlugin extends BasePlugin {
       await aliasFile.writeAsString(sourceContent);
 
       logger.info(
-        '(${metadata.name}) Created alias "$aliasPath" -> "${aliasFile.absolute}"'
+        '(${metadata.name}) Created alias "$aliasPath" -> "${aliasFile.absolute}"',
       );
       return true;
     } catch (e) {
       logger.warning(
-        '(${metadata.name}) Failed to create alias "$aliasPath" for ${base.relativePath}: $e'
+        '(${metadata.name}) Failed to create alias "$aliasPath" for ${base.relativePath}: $e',
       );
       return false;
     }
@@ -278,14 +277,11 @@ class AliasPlugin extends BasePlugin {
 class AliasResult {
   /// Number of aliases successfully created
   final int created;
-  
+
   /// Number of errors that occurred during alias creation
   final int errors;
 
-  const AliasResult({
-    required this.created,
-    required this.errors,
-  });
+  const AliasResult({required this.created, required this.errors});
 
   /// Combines this result with another result.
   ///
@@ -296,4 +292,4 @@ class AliasResult {
       errors: errors + other.errors,
     );
   }
-} 
+}

@@ -117,14 +117,14 @@ bool hasYamlHeader(String fullPath) {
   }
 
   String content = readFileSafe(fullPath);
-  
+
   // Check if the file has frontmatter delimiters (--- or +++)
   // This includes files with empty frontmatter like ---\n---
   final RegExp frontMatterPattern = RegExp(
     r'^\s*[+-]{3}[\s\S]*?[+-]{3}',
     dotAll: false,
   );
-  
+
   if (frontMatterPattern.hasMatch(content)) {
     return true;
   }
@@ -181,8 +181,9 @@ String extractExcerpt(
   dom.Document document = html_parser.parse(htmlContent);
 
   // Find relevant elements
-  List<dom.Element> relevantElements =
-      document.querySelectorAll('p, div, article');
+  List<dom.Element> relevantElements = document.querySelectorAll(
+    'p, div, article',
+  );
 
   // Extract and clean text
   List<String> allSentences = relevantElements.expand((element) {
@@ -221,15 +222,18 @@ String extractExcerpt(
       (sentence) => sentence.contains(keyword),
       orElse: () => '',
     );
-    excerpt =
-        sentenceWithKeyword.length <= maxLength ? sentenceWithKeyword : excerpt;
+    excerpt = sentenceWithKeyword.length <= maxLength
+        ? sentenceWithKeyword
+        : excerpt;
   }
 
   return excerpt.trim();
 }
 
-DateTime parseDate(String dateString,
-    {String? format = "yyyy-MM-dd HH:mm:ss"}) {
+DateTime parseDate(
+  String dateString, {
+  String? format = "yyyy-MM-dd HH:mm:ss",
+}) {
   DateFormat dateFormat = DateFormat(format);
 
   try {
@@ -244,7 +248,9 @@ DateTime parseDate(String dateString,
 }
 
 Map<String, dynamic> deepMerge(
-    Map<String, dynamic> m1, Map<String, dynamic> m2) {
+  Map<String, dynamic> m1,
+  Map<String, dynamic> m2,
+) {
   var result = {...m1};
   for (var key in m2.keys) {
     var v2 = m2[key];

@@ -12,7 +12,8 @@ part of 'plugin_metadata.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
+  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
+);
 
 PluginMetadata _$PluginMetadataFromJson(Map<String, dynamic> json) {
   return _PluginMetadata.fromJson(json);
@@ -45,21 +46,23 @@ mixin _$PluginMetadata {
 /// @nodoc
 abstract class $PluginMetadataCopyWith<$Res> {
   factory $PluginMetadataCopyWith(
-          PluginMetadata value, $Res Function(PluginMetadata) then) =
-      _$PluginMetadataCopyWithImpl<$Res, PluginMetadata>;
+    PluginMetadata value,
+    $Res Function(PluginMetadata) then,
+  ) = _$PluginMetadataCopyWithImpl<$Res, PluginMetadata>;
   @useResult
-  $Res call(
-      {String name,
-      String entrypoint,
-      String? url,
-      String? path,
-      String? description,
-      String? author,
-      String? authorUrl,
-      String? license,
-      String? version,
-      List<String> include,
-      List<PluginAsset> files});
+  $Res call({
+    String name,
+    String entrypoint,
+    String? url,
+    String? path,
+    String? description,
+    String? author,
+    String? authorUrl,
+    String? license,
+    String? version,
+    List<String> include,
+    List<PluginAsset> files,
+  });
 }
 
 /// @nodoc
@@ -89,75 +92,80 @@ class _$PluginMetadataCopyWithImpl<$Res, $Val extends PluginMetadata>
     Object? include = null,
     Object? files = null,
   }) {
-    return _then(_value.copyWith(
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      entrypoint: null == entrypoint
-          ? _value.entrypoint
-          : entrypoint // ignore: cast_nullable_to_non_nullable
-              as String,
-      url: freezed == url
-          ? _value.url
-          : url // ignore: cast_nullable_to_non_nullable
-              as String?,
-      path: freezed == path
-          ? _value.path
-          : path // ignore: cast_nullable_to_non_nullable
-              as String?,
-      description: freezed == description
-          ? _value.description
-          : description // ignore: cast_nullable_to_non_nullable
-              as String?,
-      author: freezed == author
-          ? _value.author
-          : author // ignore: cast_nullable_to_non_nullable
-              as String?,
-      authorUrl: freezed == authorUrl
-          ? _value.authorUrl
-          : authorUrl // ignore: cast_nullable_to_non_nullable
-              as String?,
-      license: freezed == license
-          ? _value.license
-          : license // ignore: cast_nullable_to_non_nullable
-              as String?,
-      version: freezed == version
-          ? _value.version
-          : version // ignore: cast_nullable_to_non_nullable
-              as String?,
-      include: null == include
-          ? _value.include
-          : include // ignore: cast_nullable_to_non_nullable
-              as List<String>,
-      files: null == files
-          ? _value.files
-          : files // ignore: cast_nullable_to_non_nullable
-              as List<PluginAsset>,
-    ) as $Val);
+    return _then(
+      _value.copyWith(
+            name: null == name
+                ? _value.name
+                : name // ignore: cast_nullable_to_non_nullable
+                      as String,
+            entrypoint: null == entrypoint
+                ? _value.entrypoint
+                : entrypoint // ignore: cast_nullable_to_non_nullable
+                      as String,
+            url: freezed == url
+                ? _value.url
+                : url // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            path: freezed == path
+                ? _value.path
+                : path // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            description: freezed == description
+                ? _value.description
+                : description // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            author: freezed == author
+                ? _value.author
+                : author // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            authorUrl: freezed == authorUrl
+                ? _value.authorUrl
+                : authorUrl // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            license: freezed == license
+                ? _value.license
+                : license // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            version: freezed == version
+                ? _value.version
+                : version // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            include: null == include
+                ? _value.include
+                : include // ignore: cast_nullable_to_non_nullable
+                      as List<String>,
+            files: null == files
+                ? _value.files
+                : files // ignore: cast_nullable_to_non_nullable
+                      as List<PluginAsset>,
+          )
+          as $Val,
+    );
   }
 }
 
 /// @nodoc
 abstract class _$$PluginMetadataImplCopyWith<$Res>
     implements $PluginMetadataCopyWith<$Res> {
-  factory _$$PluginMetadataImplCopyWith(_$PluginMetadataImpl value,
-          $Res Function(_$PluginMetadataImpl) then) =
-      __$$PluginMetadataImplCopyWithImpl<$Res>;
+  factory _$$PluginMetadataImplCopyWith(
+    _$PluginMetadataImpl value,
+    $Res Function(_$PluginMetadataImpl) then,
+  ) = __$$PluginMetadataImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call(
-      {String name,
-      String entrypoint,
-      String? url,
-      String? path,
-      String? description,
-      String? author,
-      String? authorUrl,
-      String? license,
-      String? version,
-      List<String> include,
-      List<PluginAsset> files});
+  $Res call({
+    String name,
+    String entrypoint,
+    String? url,
+    String? path,
+    String? description,
+    String? author,
+    String? authorUrl,
+    String? license,
+    String? version,
+    List<String> include,
+    List<PluginAsset> files,
+  });
 }
 
 /// @nodoc
@@ -165,8 +173,9 @@ class __$$PluginMetadataImplCopyWithImpl<$Res>
     extends _$PluginMetadataCopyWithImpl<$Res, _$PluginMetadataImpl>
     implements _$$PluginMetadataImplCopyWith<$Res> {
   __$$PluginMetadataImplCopyWithImpl(
-      _$PluginMetadataImpl _value, $Res Function(_$PluginMetadataImpl) _then)
-      : super(_value, _then);
+    _$PluginMetadataImpl _value,
+    $Res Function(_$PluginMetadataImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of PluginMetadata
   /// with the given fields replaced by the non-null parameter values.
@@ -185,72 +194,74 @@ class __$$PluginMetadataImplCopyWithImpl<$Res>
     Object? include = null,
     Object? files = null,
   }) {
-    return _then(_$PluginMetadataImpl(
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      entrypoint: null == entrypoint
-          ? _value.entrypoint
-          : entrypoint // ignore: cast_nullable_to_non_nullable
-              as String,
-      url: freezed == url
-          ? _value.url
-          : url // ignore: cast_nullable_to_non_nullable
-              as String?,
-      path: freezed == path
-          ? _value.path
-          : path // ignore: cast_nullable_to_non_nullable
-              as String?,
-      description: freezed == description
-          ? _value.description
-          : description // ignore: cast_nullable_to_non_nullable
-              as String?,
-      author: freezed == author
-          ? _value.author
-          : author // ignore: cast_nullable_to_non_nullable
-              as String?,
-      authorUrl: freezed == authorUrl
-          ? _value.authorUrl
-          : authorUrl // ignore: cast_nullable_to_non_nullable
-              as String?,
-      license: freezed == license
-          ? _value.license
-          : license // ignore: cast_nullable_to_non_nullable
-              as String?,
-      version: freezed == version
-          ? _value.version
-          : version // ignore: cast_nullable_to_non_nullable
-              as String?,
-      include: null == include
-          ? _value._include
-          : include // ignore: cast_nullable_to_non_nullable
-              as List<String>,
-      files: null == files
-          ? _value._files
-          : files // ignore: cast_nullable_to_non_nullable
-              as List<PluginAsset>,
-    ));
+    return _then(
+      _$PluginMetadataImpl(
+        name: null == name
+            ? _value.name
+            : name // ignore: cast_nullable_to_non_nullable
+                  as String,
+        entrypoint: null == entrypoint
+            ? _value.entrypoint
+            : entrypoint // ignore: cast_nullable_to_non_nullable
+                  as String,
+        url: freezed == url
+            ? _value.url
+            : url // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        path: freezed == path
+            ? _value.path
+            : path // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        description: freezed == description
+            ? _value.description
+            : description // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        author: freezed == author
+            ? _value.author
+            : author // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        authorUrl: freezed == authorUrl
+            ? _value.authorUrl
+            : authorUrl // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        license: freezed == license
+            ? _value.license
+            : license // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        version: freezed == version
+            ? _value.version
+            : version // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        include: null == include
+            ? _value._include
+            : include // ignore: cast_nullable_to_non_nullable
+                  as List<String>,
+        files: null == files
+            ? _value._files
+            : files // ignore: cast_nullable_to_non_nullable
+                  as List<PluginAsset>,
+      ),
+    );
   }
 }
 
 /// @nodoc
 @JsonSerializable()
 class _$PluginMetadataImpl implements _PluginMetadata {
-  const _$PluginMetadataImpl(
-      {required this.name,
-      this.entrypoint = "plugin:Plugin",
-      this.url,
-      this.path,
-      this.description,
-      this.author,
-      this.authorUrl,
-      this.license,
-      this.version,
-      final List<String> include = const [],
-      final List<PluginAsset> files = const []})
-      : _include = include,
-        _files = files;
+  const _$PluginMetadataImpl({
+    required this.name,
+    this.entrypoint = "plugin:Plugin",
+    this.url,
+    this.path,
+    this.description,
+    this.author,
+    this.authorUrl,
+    this.license,
+    this.version,
+    final List<String> include = const [],
+    final List<PluginAsset> files = const [],
+  }) : _include = include,
+       _files = files;
 
   factory _$PluginMetadataImpl.fromJson(Map<String, dynamic> json) =>
       _$$PluginMetadataImplFromJson(json);
@@ -321,18 +332,19 @@ class _$PluginMetadataImpl implements _PluginMetadata {
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
-      runtimeType,
-      name,
-      entrypoint,
-      url,
-      path,
-      description,
-      author,
-      authorUrl,
-      license,
-      version,
-      const DeepCollectionEquality().hash(_include),
-      const DeepCollectionEquality().hash(_files));
+    runtimeType,
+    name,
+    entrypoint,
+    url,
+    path,
+    description,
+    author,
+    authorUrl,
+    license,
+    version,
+    const DeepCollectionEquality().hash(_include),
+    const DeepCollectionEquality().hash(_files),
+  );
 
   /// Create a copy of PluginMetadata
   /// with the given fields replaced by the non-null parameter values.
@@ -341,29 +353,30 @@ class _$PluginMetadataImpl implements _PluginMetadata {
   @pragma('vm:prefer-inline')
   _$$PluginMetadataImplCopyWith<_$PluginMetadataImpl> get copyWith =>
       __$$PluginMetadataImplCopyWithImpl<_$PluginMetadataImpl>(
-          this, _$identity);
+        this,
+        _$identity,
+      );
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$PluginMetadataImplToJson(
-      this,
-    );
+    return _$$PluginMetadataImplToJson(this);
   }
 }
 
 abstract class _PluginMetadata implements PluginMetadata {
-  const factory _PluginMetadata(
-      {required final String name,
-      final String entrypoint,
-      final String? url,
-      final String? path,
-      final String? description,
-      final String? author,
-      final String? authorUrl,
-      final String? license,
-      final String? version,
-      final List<String> include,
-      final List<PluginAsset> files}) = _$PluginMetadataImpl;
+  const factory _PluginMetadata({
+    required final String name,
+    final String entrypoint,
+    final String? url,
+    final String? path,
+    final String? description,
+    final String? author,
+    final String? authorUrl,
+    final String? license,
+    final String? version,
+    final List<String> include,
+    final List<PluginAsset> files,
+  }) = _$PluginMetadataImpl;
 
   factory _PluginMetadata.fromJson(Map<String, dynamic> json) =
       _$PluginMetadataImpl.fromJson;
@@ -421,8 +434,9 @@ mixin _$PluginAsset {
 /// @nodoc
 abstract class $PluginAssetCopyWith<$Res> {
   factory $PluginAssetCopyWith(
-          PluginAsset value, $Res Function(PluginAsset) then) =
-      _$PluginAssetCopyWithImpl<$Res, PluginAsset>;
+    PluginAsset value,
+    $Res Function(PluginAsset) then,
+  ) = _$PluginAssetCopyWithImpl<$Res, PluginAsset>;
   @useResult
   $Res call({String name, String path});
 }
@@ -441,20 +455,20 @@ class _$PluginAssetCopyWithImpl<$Res, $Val extends PluginAsset>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? name = null,
-    Object? path = null,
-  }) {
-    return _then(_value.copyWith(
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      path: null == path
-          ? _value.path
-          : path // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
+  $Res call({Object? name = null, Object? path = null}) {
+    return _then(
+      _value.copyWith(
+            name: null == name
+                ? _value.name
+                : name // ignore: cast_nullable_to_non_nullable
+                      as String,
+            path: null == path
+                ? _value.path
+                : path // ignore: cast_nullable_to_non_nullable
+                      as String,
+          )
+          as $Val,
+    );
   }
 }
 
@@ -462,8 +476,9 @@ class _$PluginAssetCopyWithImpl<$Res, $Val extends PluginAsset>
 abstract class _$$PluginAssetImplCopyWith<$Res>
     implements $PluginAssetCopyWith<$Res> {
   factory _$$PluginAssetImplCopyWith(
-          _$PluginAssetImpl value, $Res Function(_$PluginAssetImpl) then) =
-      __$$PluginAssetImplCopyWithImpl<$Res>;
+    _$PluginAssetImpl value,
+    $Res Function(_$PluginAssetImpl) then,
+  ) = __$$PluginAssetImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({String name, String path});
@@ -474,27 +489,27 @@ class __$$PluginAssetImplCopyWithImpl<$Res>
     extends _$PluginAssetCopyWithImpl<$Res, _$PluginAssetImpl>
     implements _$$PluginAssetImplCopyWith<$Res> {
   __$$PluginAssetImplCopyWithImpl(
-      _$PluginAssetImpl _value, $Res Function(_$PluginAssetImpl) _then)
-      : super(_value, _then);
+    _$PluginAssetImpl _value,
+    $Res Function(_$PluginAssetImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of PluginAsset
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? name = null,
-    Object? path = null,
-  }) {
-    return _then(_$PluginAssetImpl(
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      path: null == path
-          ? _value.path
-          : path // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
+  $Res call({Object? name = null, Object? path = null}) {
+    return _then(
+      _$PluginAssetImpl(
+        name: null == name
+            ? _value.name
+            : name // ignore: cast_nullable_to_non_nullable
+                  as String,
+        path: null == path
+            ? _value.path
+            : path // ignore: cast_nullable_to_non_nullable
+                  as String,
+      ),
+    );
   }
 }
 
@@ -539,16 +554,15 @@ class _$PluginAssetImpl implements _PluginAsset {
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$PluginAssetImplToJson(
-      this,
-    );
+    return _$$PluginAssetImplToJson(this);
   }
 }
 
 abstract class _PluginAsset implements PluginAsset {
-  const factory _PluginAsset(
-      {required final String name,
-      required final String path}) = _$PluginAssetImpl;
+  const factory _PluginAsset({
+    required final String name,
+    required final String path,
+  }) = _$PluginAssetImpl;
 
   factory _PluginAsset.fromJson(Map<String, dynamic> json) =
       _$PluginAssetImpl.fromJson;
