@@ -5,15 +5,11 @@ This example demonstrates GenGen's Hugo-inspired module system for themes and pl
 ## Quick Start
 
 ```bash
-# 1. Fetch modules declared in config.yaml
-gengen mod get --source=examples/modules-demo
-
-# 2. Mount the theme (creates symlink to cached module)
-mkdir -p examples/modules-demo/_themes
-ln -s ~/.gengen/cache/modules/github.com/kingwill101/gengen_content/*/themes/minimal examples/modules-demo/_themes/minimal
-
-# 3. Build the site
+# Build automatically fetches modules if needed
 gengen build examples/modules-demo
+
+# Or serve with live reload
+gengen serve examples/modules-demo
 ```
 
 ## Features Demonstrated
@@ -22,6 +18,7 @@ gengen build examples/modules-demo
 - Version constraints (semver, git refs)
 - Lockfile for reproducible builds
 - Local development replacements
+- Automatic module fetching on build/serve
 
 ## Configuration
 

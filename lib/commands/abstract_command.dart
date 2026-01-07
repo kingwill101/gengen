@@ -24,6 +24,10 @@ abstract class AbstractCommand extends Command<void> {
     );
   }
 
+  /// Override to true in commands that handle their own Site initialization
+  /// (e.g., to fetch modules first)
+  bool get skipAutoInit => false;
+
   @override
   Future<void> run() async {
     final overrides = <String, dynamic>{...?argResults?.map};
@@ -32,7 +36,9 @@ abstract class AbstractCommand extends Command<void> {
       overrides['source'] = argResults!.rest.first;
     }
 
-    Site.init(overrides: overrides);
+    if (!skipAutoInit) {
+      Site.init(overrides: overrides);
+    }
     var result = start();
     if (result is Future<void>) {
       await result;

@@ -138,13 +138,30 @@ class Theme with PathMixin {
 
       if (modulePath == null) continue;
 
-      // Check if theme exists as a subdirectory in this module
-      final themePath = p.join(modulePath, themeName);
-      if (fs.directory(themePath).existsSync()) {
-        final configFile = fs.file(p.join(themePath, 'config.yaml'));
-        if (configFile.existsSync()) {
-          log.fine('Found theme "$themeName" in module ${import_.path}');
-          return themePath;
+      // Check multiple possible locations for the theme
+      final possiblePaths = [
+        p.join(modulePath, themeName), // Direct: module/themeName
+        p.join(modulePath, 'themes', themeName), // Standard: module/themes/themeName
+        p.join(modulePath, '_themes', themeName), // Jekyll-style: module/_themes/themeName
+      ];
+
+      for (final themePath in possiblePaths) {
+        if (fs.directory(themePath).existsSync()) {
+          final configFile = fs.file(p.join(themePath, 'config.yaml'));
+          if (configFile.existsSync()) {
+            log.fine('Found theme "$themeName" in module ${import_.path}');
+            return themePath;
+          }
+          // Also check for theme without config (layouts/includes exist)
+          final hasLayouts =
+              fs.directory(p.join(themePath, '_layouts')).existsSync();
+          final hasIncludes =
+              fs.directory(p.join(themePath, '_includes')).existsSync();
+          if (hasLayouts || hasIncludes) {
+            log.fine(
+                'Found theme "$themeName" in module ${import_.path} (no config)');
+            return themePath;
+          }
         }
       }
     }
