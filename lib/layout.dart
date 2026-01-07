@@ -1,10 +1,8 @@
 import 'package:gengen/content/tokenizer.dart';
-import 'package:gengen/site.dart';
 import 'package:gengen/utilities.dart';
-import 'package:gengen/watcher.dart';
 import 'package:path/path.dart';
 
-class Layout with WatcherMixin {
+class Layout {
   String content;
   Map<String, dynamic> data = {};
   String ext;
@@ -37,15 +35,6 @@ class Layout with WatcherMixin {
   String toString() {
     return "<$runtimeType @path=$path>";
   }
-
-  @override
-  void onFileChange() {
-    parse();
-    Site.instance.notifyFileChange(path);
-  }
-
-  @override
-  String get source => path;
 
   Map<String, Object> toJson() {
     return {

@@ -12,7 +12,7 @@ void main() {
     }
     initLog();
     Site.init(
-      overrides: {'source': 'examples/plugins', 'destination': 'build'},
+      overrides: {'source': 'examples/basic', 'destination': 'build'},
     );
     site.read();
   });

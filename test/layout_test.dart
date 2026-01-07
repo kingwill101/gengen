@@ -64,7 +64,7 @@ title: Base Layout
       expect(layout.content.trim(), '<div>Old</div>');
 
       file.writeAsStringSync('<div>New</div>');
-      layout.onFileChange();
+      layout.parse(); // Re-parse to pick up changes
 
       expect(layout.content.trim(), '<div>New</div>');
     });

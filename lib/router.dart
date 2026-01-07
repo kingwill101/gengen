@@ -72,11 +72,11 @@ Future<Response> _serveStatic(EngineContext ctx) async {
     final original = await file.readAsString();
     final requested = ctx.request.requestedUri;
     final wsScheme = requested.scheme == 'https' ? 'wss' : 'ws';
-    final wsUri = requested.replace(
+    final wsUri = Uri(
       scheme: wsScheme,
+      host: requested.host,
+      port: requested.port,
       path: '/debug/ws',
-      query: '',
-      fragment: '',
     );
 
     final injection = webSocketInjection(wsUri);

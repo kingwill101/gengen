@@ -11,6 +11,7 @@ import 'package:gengen/readers/theme_reader.dart';
 import 'package:gengen/site.dart';
 import 'package:gengen/utilities.dart';
 import 'package:gengen/models/base.dart';
+import 'package:gengen/models/page.dart';
 import 'package:more/collection.dart';
 import 'package:path/path.dart';
 
@@ -64,6 +65,30 @@ class Reader {
 
   Future<void> readPosts() async {
     Site.instance.posts = PostReader().readPosts(Site.instance.postPath);
+    
+    // Also read index pages from _posts directory and add them to pages
+    _readPostIndexPages();
+  }
+  
+  void _readPostIndexPages() {
+    final postDir = Site.instance.inSourceDir(Site.instance.postPath);
+    final directory = fs.directory(postDir);
+    
+    if (!directory.existsSync()) return;
+    
+    // Look for index.html or index.md in _posts
+    for (final ext in ['.html', '.md', '.markdown']) {
+      final indexPath = join(postDir, 'index$ext');
+      if (fs.file(indexPath).existsSync()) {
+        final page = Page(indexPath);
+        // Check if not already added
+        final exists = Site.instance.pages.any((p) => p.source == page.source);
+        if (!exists) {
+          Site.instance.pages.add(page);
+        }
+        break; // Only add one index file
+      }
+    }
   }
 
   Future<void> readCollections() async {

@@ -1,0 +1,10 @@
+name: default
+version: 0.1.0
+description: "Lightweight starter theme for new GenGen sites"
+license: MIT
+layouts:
+  - default
+  - page
+  - post
+sass:
+  input: assets/css/main.scss

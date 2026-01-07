@@ -36,7 +36,8 @@ plugins:
   enabled:
     - core
 
-# Plugin configuration
 pagination:
   enabled: true
-  per_page: 5
+  items_per_page: 5
+  collection: posts
+  permalink: "/page/:num/"

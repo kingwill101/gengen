@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:collection/collection.dart';
+import 'package:watcher/watcher.dart';
 
 import 'package:gengen/configuration.dart';
 import 'package:gengen/drops/collection_drop.dart';
@@ -17,6 +18,7 @@ import 'package:gengen/plugin/plugin.dart';
 import 'package:gengen/plugin/plugin_manager.dart';
 import 'package:gengen/reader.dart';
 import 'package:gengen/theme.dart';
+import 'package:gengen/watcher.dart';
 import 'package:path/path.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -71,11 +73,15 @@ class Site with PathMixin {
   final StreamController<String> _fileChangeController =
       StreamController.broadcast();
 
+  /// Site watcher for file system changes
+  SiteWatcher? _siteWatcher;
+
   Stream<String> get fileChangeStream =>
       _fileChangeController.stream.debounceTime(Duration(milliseconds: 500));
 
   void dispose() {
     _fileChangeController.close();
+    _siteWatcher?.dispose();
   }
 
   void notifyFileChange(String filePath) {
@@ -252,18 +258,67 @@ class Site with PathMixin {
   }
 
   Future<void> watch() async {
-    for (var value in [
-      ...staticFiles,
-      ...posts,
-      ...pages,
-      ...collectionItems,
-    ]) {
-      value.watch();
+    // Stop any existing watcher
+    await _siteWatcher?.stop();
+
+    // Directories to watch
+    final dirsToWatch = <String>[
+      config.source, // Root source directory
+    ];
+
+    // Add collection directories
+    for (final collectionName in collections.keys) {
+      final collectionDir = join(config.source, '_$collectionName');
+      if (fs.directory(collectionDir).existsSync()) {
+        dirsToWatch.add(collectionDir);
+      }
     }
 
-    for (var value in layouts.values) {
-      value.watch();
+    _siteWatcher = SiteWatcher(
+      directories: dirsToWatch,
+      onEvent: _handleWatchEvent,
+    );
+
+    await _siteWatcher!.start();
+    log.info('Watching ${dirsToWatch.length} directories for changes');
+  }
+
+  /// Handles watch events from the SiteWatcher
+  void _handleWatchEvent(WatchEvent event) {
+    final path = event.path;
+
+    // Skip temp files and destination folder
+    if (basename(path).startsWith('.')) return;
+    if (path.contains(destination.path)) return;
+
+    switch (event.type) {
+      case ChangeType.ADD:
+        log.info('New file detected: $path');
+        _rebuildAndNotify(path);
+        break;
+      case ChangeType.MODIFY:
+        log.info('File modified: $path');
+        _rebuildAndNotify(path);
+        break;
+      case ChangeType.REMOVE:
+        log.info('File deleted: $path');
+        _rebuildAndNotify(path);
+        break;
     }
+  }
+
+  /// Rebuild site and notify of change
+  void _rebuildAndNotify(String path) {
+    Future.microtask(() async {
+      try {
+        await process();
+        notifyFileChange(path);
+      } catch (e, stackTrace) {
+        log.severe('Error processing file change: $e');
+        log.fine('$stackTrace');
+        notifyFileChange(path);
+      }
+    });
   }
 
   String inSourceDir(String path) => join(config.source, path);

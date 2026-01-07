@@ -9,12 +9,11 @@ import 'package:gengen/models/permalink_structure.dart';
 import 'package:gengen/renderer.dart';
 import 'package:gengen/site.dart';
 import 'package:gengen/utilities.dart';
-import 'package:gengen/watcher.dart';
 import 'package:more/collection.dart';
 import 'package:path/path.dart' as p;
 import 'package:path/path.dart';
 
-class Base with WatcherMixin {
+class Base {
   final Set<String> sassExtensions = const {".sass", ".scss"};
   final Set<String> htmlExtensions = const {'.html', '.xhtml', '.htm'};
   final Set<String> markdownExtensions = const {'.md', '.markdown'};
@@ -94,8 +93,10 @@ class Base with WatcherMixin {
 
   Map<String, dynamic> dirConfig = const {};
 
+  /// Metadata for file change tracking
+  final Map<String, dynamic> metadata = <String, dynamic>{};
+
   late String name;
-  @override
   late String source;
   late String content;
 
@@ -308,13 +309,6 @@ class Base with WatcherMixin {
   }
 
   DocumentDrop get to_liquid => DocumentDrop(this);
-
-  @override
-  void onFileChange() {
-    //listing pages will have stale content if we don't  process everything
-    site.process();
-    site.notifyFileChange(filePath);
-  }
 
   void populateDerivedFrontMatter() {
     if (!isCollection && !isPost) {

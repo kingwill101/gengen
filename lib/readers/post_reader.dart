@@ -57,9 +57,10 @@ class PostReader {
         // Skip processing them as content files
         continue;
       } else if (filename == 'index') {
-        // index.html files are special index pages that list posts
-        var doc = Page(path);
-        docs.add(doc);
+        // index.html/index.md files in _posts are special index pages
+        // They should be added to pages list, not posts
+        // Skip here and let them be handled by the page reader
+        continue;
       } else {
         // Regular posts
         var doc = Post(path);

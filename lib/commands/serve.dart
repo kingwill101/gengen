@@ -56,11 +56,15 @@ class Serve extends AbstractCommand {
       Site.resetInstance();
       Site.init(overrides: overrides);
 
-      Site.instance.process();
-      site.watch();
-      route();
-    } on Exception catch (e, _) {
-      log.severe(e.toString());
+      await Site.instance.process();
+      await site.watch();
+      await route();
+
+      // Keep the server running indefinitely
+      await Completer<void>().future;
+    } catch (e, stackTrace) {
+      log.severe('Serve command error: $e');
+      log.severe('Stack trace: $stackTrace');
     }
   }
 

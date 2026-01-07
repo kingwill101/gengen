@@ -79,6 +79,10 @@ class GenGenTempate {
     );
     liquid.FilterRegistry.registerModule('ur', UrlModule());
     liquid.FilterRegistry.registerModule('data', DataModule());
+    
+    // Register date filter directly to override the default DateModule's date filter
+    // This supports strftime format strings (e.g., '%B %d, %Y') used in Jekyll/Liquid
+    liquid.FilterRegistry.register('date', dateFilter);
 
     for (final plugin in site.plugins) {
       final filters = plugin.getLiquidFilters();

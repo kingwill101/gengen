@@ -348,13 +348,36 @@ class PaginationPlugin extends BasePlugin {
       return;
     }
 
-    final indexPage = site.pages.whereType<Page>().firstWhereOrNull(
+    // Find index pages for pagination
+    // For posts collection, prefer _posts/index.html over root index
+    Page? indexPage;
+    Page? postsIndexPage;
+
+    // Check for index page in _posts/ directory (for posts collection)
+    if (collection == 'posts') {
+      final pagesInPosts = site.posts.whereType<Page>().toList();
+      postsIndexPage = pagesInPosts.firstWhereOrNull(
+        (page) =>
+            page.isIndex &&
+            (page.source.contains('_posts/') || page.source.contains('_posts\\')),
+      );
+    }
+
+    // Check site.pages for the configured index page
+    indexPage = site.pages.whereType<Page>().firstWhereOrNull(
       (page) =>
           p.basenameWithoutExtension(page.source) == indexname ||
           p.basename(page.source) == '$indexname.html',
     );
 
-    if (indexPage == null) {
+    // Also check posts for index pages if not found in pages
+    indexPage ??= site.posts.whereType<Page>().firstWhereOrNull(
+      (page) =>
+          p.basenameWithoutExtension(page.source) == indexname ||
+          p.basename(page.source) == '$indexname.html',
+    );
+
+    if (indexPage == null && postsIndexPage == null) {
       logger.warning(
         '(${metadata.name}) No index page found for pagination template. '
         'Skipping pagination generation. Create an index.html file with '
@@ -362,6 +385,15 @@ class PaginationPlugin extends BasePlugin {
       );
       return;
     }
+
+    // Use posts index page as primary if available and we're paginating posts
+    if (postsIndexPage != null && collection == 'posts') {
+      indexPage = postsIndexPage;
+      logger.info('(${metadata.name}) Using _posts/index as pagination template');
+    }
+
+    // At this point we must have an index page
+    final paginationIndexPage = indexPage!;
 
     final totalPages = (items.length / itemsPerPage).ceil();
     logger.info(
@@ -429,8 +461,8 @@ class PaginationPlugin extends BasePlugin {
       if (pageNum == 1) {
         _paginationData = paginationDrop;
         _paginatedItems = pagination.currentPageItems;
-        indexPage.frontMatter = {
-          ...indexPage.frontMatter,
+        paginationIndexPage.frontMatter = {
+          ...paginationIndexPage.frontMatter,
           'paginate': paginationDrop,
           'pagination': paginationDrop,
         };
@@ -443,7 +475,7 @@ class PaginationPlugin extends BasePlugin {
           paginationDrop,
           pageData,
           permalink,
-          indexPage,
+          paginationIndexPage,
         );
       }
     }

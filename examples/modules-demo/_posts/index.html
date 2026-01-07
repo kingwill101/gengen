@@ -1,0 +1,19 @@
+---
+layout: default
+title: "Blog"
+---
+
+{% for post in page.paginate.items %}
+    <article>
+    <h2><a href="{{ post.url }}">{{ post.title }}</a></h2>
+    <p>{{ post.date | date: '%B %d, %Y' }}</p>
+    </article>
+{% endfor %}
+
+{% if page.paginate.total_pages > 1 %}
+<nav>
+    {% if page.paginate.has_previous %}<a href="...">← Previous</a>{% endif %}
+    {% if page.paginate.has_next %}<a href="/page/{{ page.paginate.current_page |
+    plus: 1 }}/">Next →</a>{% endif %}
+    </nav>
+{% endif %}

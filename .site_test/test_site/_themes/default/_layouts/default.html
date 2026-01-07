@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% render 'head' %}
+  </head>
+  <body class="site-body">
+    <header class="site-header">
+      <div class="site-header__inner">
+        <a class="site-title" href="/">{{ site.config['title'] }}</a>
+        {% if site.config['description'] %}
+        <p class="site-tagline">{{ site.config['description'] }}</p>
+        {% endif %}
+        <nav class="site-nav" aria-label="Primary">
+          <a href="/"{% if page.url == '/' %} class="is-active"{% endif %}>Home</a>
+          <a href="/about/"{% if page.url == '/about/' %} class="is-active"{% endif %}>About</a>
+          {% if site.posts.size > 0 %}
+          <a href="/posts/"{% if page.url == '/posts/' %} class="is-active"{% endif %}>Posts</a>
+          {% endif %}
+        </nav>
+      </div>
+    </header>
+
+    <main class="site-main" id="main-content">{{ content }}</main>
+
+    {% render 'foot' %}
+  </body>
+</html>
