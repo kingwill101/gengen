@@ -1,0 +1,1700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="description" content="Using and configuring plugins to extend GenGen functionality">
+
+
+<title>
+  Plugins · GenGen Documentation
+</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="/gengen/assets/css/main.css">
+
+
+
+
+
+</head>
+
+<body class="docs-body">
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  
+
+
+<header class="docs-header">
+  <div class="docs-header__inner">
+    <div class="docs-header__brand">
+      <a class="brand-link" href="/gengen/">
+        <span class="brand-logo">📘</span>
+        <span class="brand-text">
+          <span class="brand-title">GenGen Documentation</span>
+          
+            <span class="brand-subtitle">A powerful static site generator</span>
+          
+        </span>
+      </a>
+    </div>
+
+    
+    <nav class="docs-header__nav" aria-label="Primary">
+      
+        <a href="/gengen/"
+           class="nav-link">
+          Home
+        </a>
+      
+        <a href="/gengen/installation/"
+           class="nav-link">
+          Getting Started
+        </a>
+      
+        <a href="/gengen/configuration/"
+           class="nav-link">
+          Configuration
+        </a>
+      
+        <a href="/gengen/examples/"
+           class="nav-link">
+          Examples
+        </a>
+      
+    </nav>
+    
+
+    <div class="docs-header__actions">
+      <form class="docs-search" role="search">
+  <label for="docs-search-input" class="sr-only">Search documentation</label>
+  <input
+    id="docs-search-input"
+    name="q"
+    type="search"
+    placeholder="Search the docs..."
+    autocomplete="off"
+  >
+  <button type="submit" aria-label="Submit search">
+    🔍
+  </button>
+</form>
+
+      <button class="theme-toggle" type="button" aria-label="Toggle theme">
+        <span class="theme-toggle__icon">🌗</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+
+  
+    <main id="main-content" class="docs-main">
+      
+
+
+
+
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+  
+    
+  
+    
+  
+
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+  
+    
+  
+    
+      
+      
+    
+  
+    
+  
+
+  
+    
+  
+    
+  
+    
+  
+
+  
+    
+  
+    
+  
+    
+  
+
+
+<nav class="docs-breadcrumbs" aria-label="Breadcrumb">
+  <a href="/gengen/" class="docs-breadcrumbs__link">Home</a>
+  
+    <span class="docs-breadcrumbs__separator">/</span>
+    <span class="docs-breadcrumbs__crumb">Advanced Features</span>
+  
+  
+    <span class="docs-breadcrumbs__separator">/</span>
+    <span class="docs-breadcrumbs__crumb docs-breadcrumbs__crumb--current">Plugins</span>
+  
+</nav>
+
+
+      <div class="docs-layout">
+        <aside class="docs-sidebar" aria-label="Documentation navigation">
+  <div class="docs-sidebar__inner">
+    <div class="docs-sidebar__title">
+      <span class="docs-sidebar__label">Documentation</span>
+      <button class="docs-sidebar__toggle" type="button" aria-label="Toggle navigation">
+        ☰
+      </button>
+    </div>
+
+    
+    
+      <ul class="docs-sidebar__sections">
+        
+          <li class="docs-sidebar__section">
+            <h2>
+              <span class="docs-sidebar__icon">🚀</span>
+              Getting Started
+            </h2>
+            
+              <ul class="docs-sidebar__pages">
+                
+                  <li>
+                    <a href="/gengen/"
+                       class="docs-sidebar__link"
+                       >
+                      Overview
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Introduction to GenGen and quick start guide</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/installation/"
+                       class="docs-sidebar__link"
+                       >
+                      Installation
+                    </a>
+                    
+                      <p class="docs-sidebar__description">How to install and set up GenGen</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/configuration/"
+                       class="docs-sidebar__link"
+                       >
+                      Configuration
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Complete guide to configuring GenGen</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/pages/"
+                       class="docs-sidebar__link"
+                       >
+                      Pages & Content
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Creating and structuring pages and posts</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/collections/"
+                       class="docs-sidebar__link"
+                       >
+                      Collections
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Group structured content with collections</p>
+                    
+                  </li>
+                
+              </ul>
+            
+          </li>
+        
+          <li class="docs-sidebar__section">
+            <h2>
+              <span class="docs-sidebar__icon">🔗</span>
+              URL Structure
+            </h2>
+            
+              <ul class="docs-sidebar__pages">
+                
+                  <li>
+                    <a href="/gengen/permalinks/"
+                       class="docs-sidebar__link"
+                       >
+                      Permalinks
+                    </a>
+                    
+                      <p class="docs-sidebar__description">URL structure and permalink configuration</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/aliases/"
+                       class="docs-sidebar__link"
+                       >
+                      Aliases
+                    </a>
+                    
+                      <p class="docs-sidebar__description">URL redirects and content migration</p>
+                    
+                  </li>
+                
+              </ul>
+            
+          </li>
+        
+          <li class="docs-sidebar__section">
+            <h2>
+              <span class="docs-sidebar__icon">🎨</span>
+              Styling & Assets
+            </h2>
+            
+              <ul class="docs-sidebar__pages">
+                
+                  <li>
+                    <a href="/gengen/sass/"
+                       class="docs-sidebar__link"
+                       >
+                      Sass Processing
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Using Sass/SCSS with _sass directory structure</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/syntax-highlighting/"
+                       class="docs-sidebar__link"
+                       >
+                      Syntax Highlighting
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Code highlighting with the highlight tag</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/assets/"
+                       class="docs-sidebar__link"
+                       >
+                      Assets Management
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Managing static assets and files</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/themes/aurora/"
+                       class="docs-sidebar__link"
+                       >
+                      Aurora Theme
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Modern aurora-inspired starter theme</p>
+                    
+                  </li>
+                
+              </ul>
+            
+          </li>
+        
+          <li class="docs-sidebar__section">
+            <h2>
+              <span class="docs-sidebar__icon">⚡</span>
+              Advanced Features
+            </h2>
+            
+              <ul class="docs-sidebar__pages">
+                
+                  <li>
+                    <a href="/gengen/pagination/"
+                       class="docs-sidebar__link"
+                       >
+                      Pagination
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Automatic pagination for posts and content</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/plugins/"
+                       class="docs-sidebar__link is-active"
+                       >
+                      Plugins
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Using and developing custom plugins</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/liquid/"
+                       class="docs-sidebar__link"
+                       >
+                      Liquid Templates
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Using Liquid templating language</p>
+                    
+                  </li>
+                
+              </ul>
+            
+          </li>
+        
+          <li class="docs-sidebar__section">
+            <h2>
+              <span class="docs-sidebar__icon">🚀</span>
+              Deployment
+            </h2>
+            
+              <ul class="docs-sidebar__pages">
+                
+                  <li>
+                    <a href="/gengen/build/"
+                       class="docs-sidebar__link"
+                       >
+                      Build Process
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Understanding the build process</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/deploy-github/"
+                       class="docs-sidebar__link"
+                       >
+                      GitHub Pages
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Deploy to GitHub Pages</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/deploy-netlify/"
+                       class="docs-sidebar__link"
+                       >
+                      Netlify
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Deploy to Netlify</p>
+                    
+                  </li>
+                
+              </ul>
+            
+          </li>
+        
+          <li class="docs-sidebar__section">
+            <h2>
+              <span class="docs-sidebar__icon">📚</span>
+              Reference
+            </h2>
+            
+              <ul class="docs-sidebar__pages">
+                
+                  <li>
+                    <a href="/gengen/cli/"
+                       class="docs-sidebar__link"
+                       >
+                      CLI Commands
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Command-line interface reference</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/api/"
+                       class="docs-sidebar__link"
+                       >
+                      API Reference
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Complete API documentation</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/troubleshooting/"
+                       class="docs-sidebar__link"
+                       >
+                      Troubleshooting
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Common issues and solutions</p>
+                    
+                  </li>
+                
+              </ul>
+            
+          </li>
+        
+      </ul>
+    
+  </div>
+</aside>
+
+
+        <article class="docs-article">
+          <header class="docs-article__header">
+  <div class="docs-article__meta">
+    
+    
+  </div>
+  <h1>Plugins</h1>
+  
+    <p class="docs-article__description">Using and configuring plugins to extend GenGen functionality</p>
+  
+</header>
+
+          <div class="docs-article__body">
+            <h1 id="gengen-plugins">GenGen Plugins</h1>
+<p>GenGen uses a powerful plugin system to extend functionality. Plugins can be configured through your site's configuration file, and you can enable/disable them individually or by groups.</p>
+<h2 id="plugin-configuration">Plugin Configuration</h2>
+<h3 id="basic-configuration">Basic Configuration</h3>
+<p>Plugins are configured in your <code>config.yaml</code> file under the <code>plugins</code> section:</p>
+<pre><code class="language-yaml">plugins:
+  enabled:
+    - core          # Enable the core plugin group
+    - seo           # Enable SEO plugins
+  disabled:
+    - TailwindPlugin  # Disable a specific plugin
+</code></pre>
+<h3 id="plugin-groups">Plugin Groups</h3>
+<p>GenGen organizes plugins into logical groups for easier management:</p>
+<ul>
+<li>
+<p><strong>core</strong>: Essential plugins for basic functionality</p>
+</li>
+<li>
+<p><strong>seo</strong>: Search engine optimization and discoverability plugins</p>
+</li>
+<li>
+<p><strong>assets</strong>: Asset processing and compilation plugins</p>
+</li>
+<li>
+<p><strong>content</strong>: Content enhancement and organization plugins</p>
+</li>
+</ul>
+<h3 id="default-configuration">Default Configuration</h3>
+<p>By default, GenGen enables only the <code>core</code> group:</p>
+<pre><code class="language-yaml">plugins:
+  enabled:
+    - core
+
+  disabled: []
+  groups:
+    core:
+      - DraftPlugin
+      - MarkdownPlugin
+      - LiquidPlugin
+
+    seo:
+      - RssPlugin
+      - SitemapPlugin
+
+    assets:
+      - SassPlugin
+      - TailwindPlugin
+
+    content:
+      - PaginationPlugin
+      - AliasPlugin
+
+
+</code></pre>
+<h3 id="configuration-examples">Configuration Examples</h3>
+<p><strong>Minimal setup with core plugins only:</strong></p>
+<pre><code class="language-yaml">{"plugins":{"enabled":["core"]}}
+</code></pre>
+<p><strong>Blog setup with SEO and content plugins:</strong></p>
+<pre><code class="language-yaml">{"plugins":{"enabled":["core","seo","content"]}}
+</code></pre>
+<p><strong>Full-featured site with all plugin groups:</strong></p>
+<pre><code class="language-yaml">{"plugins":{"enabled":["core","seo","assets","content"]}}
+</code></pre>
+<p><strong>Custom plugin selection:</strong></p>
+<pre><code class="language-yaml">{"plugins":{"enabled":["MarkdownPlugin","LiquidPlugin","SassPlugin","RssPlugin"],"disabled":[]}}
+</code></pre>
+<p><strong>Enable groups but disable specific plugins:</strong></p>
+<pre><code class="language-yaml">{"plugins":{"enabled":["core","assets"],"disabled":["TailwindPlugin"]}}
+</code></pre>
+<h3 id="safe-mode">Safe Mode</h3>
+<p>Safe mode disables <strong>Lua plugins</strong> unless they are explicitly allowlisted.</p>
+<pre><code class="language-yaml">safe: true
+safe_plugins:
+  - "site-enhancer"
+  - "theme-banner"
+</code></pre>
+<p>You can also enable safe mode from the CLI:</p>
+<pre><code class="language-bash">gengen build --safe
+</code></pre>
+<h3 id="plugin-data-files">Plugin Data Files</h3>
+<p>Plugins can include a <code>_data/</code> directory inside the plugin folder. These files
+are merged into <code>site.data</code> at build time. Precedence is:
+<code>site _data</code> → <code>theme _data</code> → <code>plugin _data</code>.</p>
+<h2 id="built-in-plugins">Built-in Plugins</h2>
+<p>GenGen comes with several built-in plugins that provide core functionality:</p>
+<h3 id="core-plugins">Core Plugins</h3>
+<p>Essential plugins for basic functionality</p>
+<h4 id="draftplugin">DraftPlugin</h4>
+<p>Handles draft posts and pages. Posts with <code>draft: true</code> are excluded unless <code>publish_drafts</code> is enabled.</p>
+<p><strong>Default configuration:</strong></p>
+<pre><code class="language-yaml">publish_drafts:
+false
+</code></pre>
+<p><strong>Features:</strong></p>
+<ul>
+<li>Draft post filtering</li>
+<li>Development mode support</li>
+<li>Conditional publishing</li>
+</ul>
+<h4 id="markdownplugin">MarkdownPlugin</h4>
+<p>Processes Markdown files and converts them to HTML with CommonMark specification.</p>
+<p><strong>Supported file extensions:</strong></p>
+<ul>
+<li><code>.md</code></li>
+<li><code>.markdown</code></li>
+</ul>
+<p><strong>Features:</strong></p>
+<ul>
+<li>GitHub Flavored Markdown</li>
+<li>Syntax highlighting</li>
+<li>Table support</li>
+<li>Task lists</li>
+<li>Footnotes</li>
+</ul>
+<h4 id="liquidplugin">LiquidPlugin</h4>
+<p>Processes Liquid templates for dynamic content generation.</p>
+<p><strong>Features:</strong></p>
+<ul>
+<li>Site data access</li>
+<li>Template inheritance</li>
+<li>Custom filters and tags</li>
+<li>Variable interpolation</li>
+</ul>
+<p><strong>Available objects:</strong></p>
+<ul>
+<li><code>site: Site-wide data and configuration</code></li>
+<li><code>page: Current page data</code></li>
+<li><code>post: Current post data (for posts)</code></li>
+<li><code>content: Rendered content</code></li>
+</ul>
+<h3 id="seo-plugins">SEO Plugins</h3>
+<p>Search engine optimization and discoverability plugins</p>
+<h4 id="rssplugin">RssPlugin</h4>
+<p>Generates RSS 2.0 compliant XML feeds for your site's posts.</p>
+<p><strong>Default configuration:</strong></p>
+<pre><code class="language-yaml">rss:
+{"path":"feed.xml","limit":20,"full_content":false}
+</code></pre>
+<p><strong>Features:</strong></p>
+<ul>
+<li>RSS 2.0 compliance</li>
+<li>Automatic post discovery</li>
+<li>Configurable post limits</li>
+<li>Full content or excerpt mode</li>
+<li>Dublin Core metadata</li>
+<li>Proper XML encoding</li>
+</ul>
+<h4 id="sitemapplugin">SitemapPlugin</h4>
+<p>Generates XML sitemaps following sitemap.org protocol for better search engine indexing.</p>
+<p><strong>Default configuration:</strong></p>
+<pre><code class="language-yaml">sitemap:
+{"path":"sitemap.xml","include_posts":true,"include_pages":true}
+</code></pre>
+<p><strong>Features:</strong></p>
+<ul>
+<li>Sitemap.org protocol compliance</li>
+<li>Automatic URL discovery</li>
+<li>Priority and change frequency settings</li>
+<li>Excludes draft content</li>
+<li>SEO-optimized structure</li>
+</ul>
+<h3 id="asset-plugins">Asset Plugins</h3>
+<p>Asset processing and compilation plugins</p>
+<h4 id="sassplugin">SassPlugin</h4>
+<p>Compiles Sass/SCSS files to CSS with support for imports, variables, and mixins.</p>
+<p><strong>Default configuration:</strong></p>
+<pre><code class="language-yaml">sass:
+{"style":"compressed","source_map":false,"load_paths":["_sass"]}
+</code></pre>
+<p><strong>Features:</strong></p>
+<ul>
+<li>SCSS and Sass syntax support</li>
+<li>Import resolution</li>
+<li>Source maps (optional)</li>
+<li>Multiple output styles</li>
+<li>Variable and mixin support</li>
+</ul>
+<h4 id="tailwindplugin">TailwindPlugin</h4>
+<p>Processes Tailwind CSS for utility-first styling.</p>
+<p><strong>Default configuration:</strong></p>
+<pre><code class="language-yaml">tailwind:
+{"executable":"./tailwindcss","input":"assets/css/tailwind.css","output":"assets/css/styles.css"}
+</code></pre>
+<p><strong>Features:</strong></p>
+<ul>
+<li>Automatic Tailwind compilation</li>
+<li>Configurable input/output paths</li>
+<li>Production optimization</li>
+<li>Custom executable path</li>
+<li>JIT mode support</li>
+</ul>
+<p><strong>Requirements:</strong></p>
+<ul>
+<li>Tailwind CSS executable</li>
+</ul>
+<h3 id="content-plugins">Content Plugins</h3>
+<p>Content enhancement and organization plugins</p>
+<h4 id="paginationplugin">PaginationPlugin</h4>
+<p>Automatically paginates long lists of posts across multiple pages.</p>
+<p><strong>Default configuration:</strong></p>
+<pre><code class="language-yaml">pagination:
+{"enabled":true,"per_page":10,"permalink":"/page/:num/","title_suffix":" - Page :num"}
+</code></pre>
+<p><strong>Features:</strong></p>
+<ul>
+<li>Configurable posts per page</li>
+<li>Custom permalink structure</li>
+<li>Navigation helpers</li>
+<li>SEO-friendly URLs</li>
+<li>Template variables</li>
+</ul>
+<h4 id="aliasplugin">AliasPlugin</h4>
+<p>Creates URL aliases and redirects for pages and posts.</p>
+<p><strong>Features:</strong></p>
+<ul>
+<li>Multiple aliases per page</li>
+<li>Automatic redirect generation</li>
+<li>SEO-friendly redirects</li>
+<li>Link equity maintenance</li>
+<li>Migration support</li>
+</ul>
+<p><strong>Usage:</strong>
+Add <code>aliases:</code> array to front matter</p>
+<h2 id="plugin-management-commands">Plugin Management Commands</h2>
+<p>GenGen provides a command-line interface for managing plugins:</p>
+<pre><code class="language-bash"># 
+gengen plugins
+
+# --available
+gengen plugins --available
+
+# --enabled
+gengen plugins --enabled
+
+# --groups
+gengen plugins --groups
+</code></pre>
+<h2 id="configuration-examples-2">Configuration Examples</h2>
+<p>Here are some common configuration patterns:</p>
+<h3 id="basic-site-configuration">Basic Site Configuration</h3>
+<p>Minimal configuration for a simple site</p>
+<pre><code class="language-yaml">title: "My Site"
+url: "https://example.com"
+
+plugins:
+  enabled:
+    - core
+
+</code></pre>
+<h3 id="blog-site-configuration">Blog Site Configuration</h3>
+<p>Configuration for a blog with SEO features</p>
+<pre><code class="language-yaml">title: "My Blog"
+url: "https://blog.example.com"
+description: "A blog about interesting topics"
+
+plugins:
+  enabled:
+    - core
+    - seo
+    - content
+
+# RSS configuration
+rss:
+  path: feed.xml
+  limit: 20
+  full_content: false
+
+# Pagination
+pagination:
+  enabled: true
+  per_page: 5
+  permalink: "/page/:num/"
+
+</code></pre>
+<h3 id="portfolio-site-configuration">Portfolio Site Configuration</h3>
+<p>Configuration for a portfolio with custom styling</p>
+<pre><code class="language-yaml">title: "John Doe - Portfolio"
+url: "https://johndoe.dev"
+description: "Web developer and designer"
+
+plugins:
+  enabled:
+    - core
+    - assets
+    - seo
+
+# Sass configuration
+sass:
+  style: compressed
+  source_map: false
+
+# Tailwind configuration
+tailwind:
+  executable: "./tailwindcss"
+  input: "assets/css/tailwind.css"
+  output: "assets/css/styles.css"
+
+</code></pre>
+<h3 id="full-featured-site-configuration">Full-Featured Site Configuration</h3>
+<p>Complete configuration with all plugin groups enabled</p>
+<pre><code class="language-yaml">title: "Complete Site"
+url: "https://complete.example.com"
+description: "A fully-featured GenGen site"
+
+plugins:
+  enabled:
+    - core
+    - seo
+    - assets
+    - content
+
+# Individual plugin configurations
+rss:
+  path: feed.xml
+  limit: 25
+  full_content: true
+
+sitemap:
+  path: sitemap.xml
+  include_posts: true
+  include_pages: true
+
+sass:
+  style: compressed
+  source_map: true
+  load_paths: ["_sass", "node_modules"]
+
+tailwind:
+  executable: "./node_modules/.bin/tailwindcss"
+  input: "assets/css/tailwind.css"
+  output: "assets/css/styles.css"
+
+pagination:
+  enabled: true
+  per_page: 8
+  permalink: "/blog/page/:num/"
+  title_suffix: " - Page :num"
+
+# Draft publishing for development
+publish_drafts: false
+
+</code></pre>
+<h3 id="custom-plugin-selection">Custom Plugin Selection</h3>
+<p>Selective plugin configuration without groups</p>
+<pre><code class="language-yaml">title: "Custom Site"
+url: "https://custom.example.com"
+
+plugins:
+  enabled:
+    - MarkdownPlugin
+    - LiquidPlugin
+    - SassPlugin
+    - RssPlugin
+    - PaginationPlugin
+  disabled: []
+
+</code></pre>
+<h3 id="development-configuration">Development Configuration</h3>
+<p>Configuration optimized for development</p>
+<pre><code class="language-yaml">title: "Dev Site"
+url: "http://localhost:4000"
+
+plugins:
+  enabled:
+    - core
+    - assets
+
+# Development settings
+publish_drafts: true
+
+sass:
+  style: expanded
+  source_map: true
+
+# Disable external dependencies in development
+plugins:
+  disabled:
+    - TailwindPlugin
+
+</code></pre>
+<h3 id="production-configuration">Production Configuration</h3>
+<p>Optimized configuration for production deployment</p>
+<pre><code class="language-yaml">title: "Production Site"
+url: "https://mysite.com"
+
+plugins:
+  enabled:
+    - core
+    - seo
+    - assets
+    - content
+
+# Production optimizations
+sass:
+  style: compressed
+  source_map: false
+
+rss:
+  path: feed.xml
+  limit: 20
+  full_content: false
+
+sitemap:
+  path: sitemap.xml
+  include_posts: true
+  include_pages: true
+
+pagination:
+  enabled: true
+  per_page: 10
+  permalink: "/page/:num/"
+
+</code></pre>
+<h2 id="writing-custom-plugins">Writing Custom Plugins</h2>
+<p>GenGen custom plugins are <strong>Lua-based</strong> and auto-discovered. Each plugin lives in its
+own directory with a <code>config.yaml</code> and a Lua entrypoint.</p>
+<blockquote>
+<p>Legacy Dart-based plugins are still discovered but will log warnings during load.
+New plugins should use Lua.</p>
+</blockquote>
+<h3 id="where-plugins-live">Where plugins live</h3>
+<p>GenGen loads plugins from two locations:</p>
+<ul>
+<li><strong>Site plugins</strong>: <code><site>/_plugins/<plugin>/</code></li>
+<li><strong>Theme plugins</strong>: <code><site>/_themes/<theme>/_plugins/<plugin>/</code></li>
+</ul>
+<p>You can customize the site plugins folder with <code>plugin_dir</code> in <code>config.yaml</code>
+(default: <code>_plugins</code>).</p>
+<h3 id="plugin-directory-structure">Plugin directory structure</h3>
+<pre><code>_plugins/
+  my-plugin/
+    config.yaml
+    main.lua
+    assets/
+      banner.css
+
+_themes/
+  default/
+    _plugins/
+      theme-banner/
+        config.yaml
+        main.lua
+        theme.css
+</code></pre>
+<h3 id="plugin-config-reference">Plugin config reference</h3>
+<div class="mobile-side-scroller">
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+  <tr>
+      <td><p><code>name</code></p></td>
+      <td><p>Required. Plugin identifier used in asset URLs; typically matches the plugin folder name.</p></td>
+    </tr>
+  <tr>
+      <td><p><code>entrypoint</code></p></td>
+      <td><p>Required. Lua entrypoint in "file.lua:init_function" format.</p></td>
+    </tr>
+  <tr>
+      <td><p><code>description</code></p></td>
+      <td><p>Optional description shown in docs or tooling.</p></td>
+    </tr>
+  <tr>
+      <td><p><code>author</code></p></td>
+      <td><p>Optional author name.</p></td>
+    </tr>
+  <tr>
+      <td><p><code>authorUrl</code></p></td>
+      <td><p>Optional author URL.</p></td>
+    </tr>
+  <tr>
+      <td><p><code>version</code></p></td>
+      <td><p>Optional version string.</p></td>
+    </tr>
+  <tr>
+      <td><p><code>license</code></p></td>
+      <td><p>Optional license identifier.</p></td>
+    </tr>
+  <tr>
+      <td><p><code>url</code></p></td>
+      <td><p>Optional homepage URL.</p></td>
+    </tr>
+  <tr>
+      <td><p><code>files</code></p></td>
+      <td><p>Optional explicit asset list. Each entry has name/path; path can be a glob. If omitted, GenGen scans the plugin directory. Non-Lua files are copied to /assets/plugins/<plugin-name>.</p></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<p>Example with explicit files:</p>
+<pre><code class="language-yaml">name: site-enhancer
+entrypoint: main.lua:init_plugin
+description: Adds a callout and writes extra output.
+files:
+  - name: styles
+    path: "assets/*.css"
+  - name: banner
+    path: "images/banner.png"
+</code></pre>
+<p>If <code>files</code> is omitted, GenGen scans the plugin directory and registers all files.
+Non-Lua files are copied to <code>/assets/plugins/<plugin-name>/</code>.</p>
+<h3 id="quick-start-site-plugin">Quick start: site plugin</h3>
+<p><strong><code>_plugins/my-plugin/config.yaml</code>:</strong></p>
+<pre><code class="language-yaml">name: my-plugin
+entrypoint: main.lua:init_plugin
+description: A custom plugin for GenGen
+author: Your Name
+version: 1.0.0
+</code></pre>
+<p><strong><code>_plugins/my-plugin/main.lua</code>:</strong></p>
+<pre><code class="language-lua">function init_plugin(metadata)
+  return {
+    head_injection = '<meta name="my-plugin" content="enabled">',
+
+    css_assets = { 'assets/styles.css' },
+
+    convert = function(content, page)
+      return '<div class="plugin-callout">Injected by Lua</div>\n' .. content
+    end,
+
+    after_generate = function()
+      gengen.content.write_site('assets/my-plugin.txt', 'Generated by my-plugin')
+    end
+  }
+end
+</code></pre>
+<h3 id="quick-start-theme-plugin">Quick start: theme plugin</h3>
+<p><strong><code>_themes/default/_plugins/theme-banner/config.yaml</code>:</strong></p>
+<pre><code class="language-yaml">name: theme-banner
+entrypoint: main.lua:init_plugin
+description: Theme-level badge and CSS.
+</code></pre>
+<p><strong><code>_themes/default/_plugins/theme-banner/main.lua</code>:</strong></p>
+<pre><code class="language-lua">function init_plugin(metadata)
+  return {
+    css_assets = { 'theme.css' },
+    body_injection = '<div class="plugin-pill">Theme plugin active</div>'
+  }
+end
+</code></pre>
+<h3 id="lua-hook-reference">Lua hook reference</h3>
+<p>All hook names are <strong>snake_case</strong>. Missing hooks are treated as no-ops.</p>
+<h4 id="lifecycle-hooks">Lifecycle hooks</h4>
+<div class="mobile-side-scroller">
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+  <tr>
+      <td><p><code>after_init</code></p></td>
+      <td><p>Called once after the plugin is initialized.</p></td>
+    </tr>
+  <tr>
+      <td><p><code>before_read</code></p></td>
+      <td><p>Called before content is read.</p></td>
+    </tr>
+  <tr>
+      <td><p><code>after_read</code></p></td>
+      <td><p>Called after content is read.</p></td>
+    </tr>
+  <tr>
+      <td><p><code>before_generate</code></p></td>
+      <td><p>Called before generators run.</p></td>
+    </tr>
+  <tr>
+      <td><p><code>generate</code></p></td>
+      <td><p>Called during generation.</p></td>
+    </tr>
+  <tr>
+      <td><p><code>after_generate</code></p></td>
+      <td><p>Called after generators finish.</p></td>
+    </tr>
+  <tr>
+      <td><p><code>before_render</code></p></td>
+      <td><p>Called before rendering.</p></td>
+    </tr>
+  <tr>
+      <td><p><code>after_render</code></p></td>
+      <td><p>Called after rendering.</p></td>
+    </tr>
+  <tr>
+      <td><p><code>before_write</code></p></td>
+      <td><p>Called before writing files.</p></td>
+    </tr>
+  <tr>
+      <td><p><code>after_write</code></p></td>
+      <td><p>Called after writing files.</p></td>
+    </tr>
+  <tr>
+      <td><p><code>before_convert</code></p></td>
+      <td><p>Called before convert hooks run.</p></td>
+    </tr>
+  <tr>
+      <td><p><code>after_convert</code></p></td>
+      <td><p>Called after convert hooks run.</p></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<h4 id="convert-hook">Convert hook</h4>
+<div class="mobile-side-scroller">
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+  <tr>
+      <td><p><code>convert(content, page) -> string</code></p></td>
+      <td><p>Called for each document. Must return a string. Returning nil or non-strings throws a plugin error.</p></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<h4 id="asset-and-head-hooks">Asset and head hooks</h4>
+<div class="mobile-side-scroller">
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+  <tr>
+      <td><p><code>head_injection</code></p></td>
+      <td><p>String or function returning a string injected into <head>.</p></td>
+    </tr>
+  <tr>
+      <td><p><code>body_injection</code></p></td>
+      <td><p>String or function returning a string injected before </body>.</p></td>
+    </tr>
+  <tr>
+      <td><p><code>css_assets</code></p></td>
+      <td><p>List or function returning a list of CSS asset paths relative to the plugin directory.</p></td>
+    </tr>
+  <tr>
+      <td><p><code>js_assets</code></p></td>
+      <td><p>List or function returning a list of JS asset paths relative to the plugin directory.</p></td>
+    </tr>
+  <tr>
+      <td><p><code>meta_tags</code></p></td>
+      <td><p>Map or function returning a map of meta tag name/value pairs.</p></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<p>Asset paths are <strong>relative to the plugin directory</strong> and are served at
+<code>/assets/plugins/<plugin-name>/<asset-path></code>.</p>
+<h4 id="liquid-filters">Liquid filters</h4>
+<div class="mobile-side-scroller">
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+  <tr>
+      <td><p><code>liquid_filters</code></p></td>
+      <td><p>Map or function returning a map of Liquid filter functions keyed by filter name.</p></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<p>Filters receive <code>(value, args, named_args)</code> and return the transformed value.</p>
+<pre><code class="language-lua">liquid_filters = {
+  shout = function(value, args, named)
+    return string.upper(tostring(value))
+  end
+}
+</code></pre>
+<h3 id="page-object-in-convert">Page object in <code>convert</code></h3>
+<p>The <code>page</code> argument is a plain Lua table derived from the internal document model.</p>
+<div class="mobile-side-scroller">
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p><code>name</code></p></td>
+<td><p>Source name relative to the site root.</p></td>
+</tr>
+<tr>
+<td><p><code>relativePath</code></p></td>
+<td><p>Path relative to collections root for posts/collections, or site source for pages.</p></td>
+</tr>
+<tr>
+<td><p><code>filePath</code></p></td>
+<td><p>Absolute file path.</p></td>
+</tr>
+<tr>
+<td><p><code>ext</code></p></td>
+<td><p>File extension including the dot.</p></td>
+</tr>
+<tr>
+<td><p><code>isPost</code></p></td>
+<td><p>True for posts.</p></td>
+</tr>
+<tr>
+<td><p><code>isCollection</code></p></td>
+<td><p>True for collection documents.</p></td>
+</tr>
+<tr>
+<td><p><code>collection</code></p></td>
+<td><p>Collection label (posts, pages, or custom collection name).</p></td>
+</tr>
+<tr>
+<td><p><code>output</code></p></td>
+<td><p>True when the document is written to destination.</p></td>
+</tr>
+<tr>
+<td><p><code>isDraft</code></p></td>
+<td><p>True for drafts.</p></td>
+</tr>
+<tr>
+<td><p><code>isStatic</code></p></td>
+<td><p>True for static files.</p></td>
+</tr>
+<tr>
+<td><p><code>isAsset</code></p></td>
+<td><p>True for asset-like content (for example Sass).</p></td>
+</tr>
+<tr>
+<td><p><code>isPage</code></p></td>
+<td><p>True for pages.</p></td>
+</tr>
+<tr>
+<td><p><code>permalink</code></p></td>
+<td><p>Resolved output permalink.</p></td>
+</tr>
+<tr>
+<td><p><code>frontMatter</code></p></td>
+<td><p>Raw front matter map.</p></td>
+</tr>
+<tr>
+<td><p><code>config</code></p></td>
+<td><p>Merged config (site + dir + front matter + defaults).</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="lua-standard-library-gengen-table">Lua standard library (<code>gengen</code> table)</h3>
+<p>GenGen exposes a standard library inside Lua plugins:</p>
+<h4 id="logging">Logging</h4>
+<div class="mobile-side-scroller">
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+  <tr>
+      <td><p><code>gengen.log.debug(message)</code></p></td>
+      <td><p>Debug log entry.</p></td>
+    </tr>
+  <tr>
+      <td><p><code>gengen.log.info(message)</code></p></td>
+      <td><p>Info log entry.</p></td>
+    </tr>
+  <tr>
+      <td><p><code>gengen.log.warn(message)</code></p></td>
+      <td><p>Warning log entry.</p></td>
+    </tr>
+  <tr>
+      <td><p><code>gengen.log.error(message)</code></p></td>
+      <td><p>Error log entry.</p></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<h4 id="configuration">Configuration</h4>
+<div class="mobile-side-scroller">
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+  <tr>
+      <td><p><code>gengen.config.get(key, default)</code></p></td>
+      <td><p>Read site configuration with optional default.</p></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<h4 id="paths">Paths</h4>
+<div class="mobile-side-scroller">
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+  <tr>
+      <td><p><code>gengen.paths.plugin(relative)</code></p></td>
+      <td><p>Resolve a path inside the plugin folder.</p></td>
+    </tr>
+  <tr>
+      <td><p><code>gengen.paths.plugin_root()</code></p></td>
+      <td><p>Absolute plugin root path.</p></td>
+    </tr>
+  <tr>
+      <td><p><code>gengen.paths.site_source(relative)</code></p></td>
+      <td><p>Resolve a path in the site source.</p></td>
+    </tr>
+  <tr>
+      <td><p><code>gengen.paths.site_destination(relative)</code></p></td>
+      <td><p>Resolve a path in the site destination.</p></td>
+    </tr>
+  <tr>
+      <td><p><code>gengen.paths.join(...parts)</code></p></td>
+      <td><p>Join path segments.</p></td>
+    </tr>
+  <tr>
+      <td><p><code>gengen.paths.basename(path)</code></p></td>
+      <td><p>Basename of a path.</p></td>
+    </tr>
+  <tr>
+      <td><p><code>gengen.paths.dirname(path)</code></p></td>
+      <td><p>Directory name of a path.</p></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<h4 id="content">Content</h4>
+<div class="mobile-side-scroller">
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+  <tr>
+      <td><p><code>gengen.content.read_plugin(path)</code></p></td>
+      <td><p>Read a file from the plugin directory.</p></td>
+    </tr>
+  <tr>
+      <td><p><code>gengen.content.read_site(path)</code></p></td>
+      <td><p>Read a file from the site source.</p></td>
+    </tr>
+  <tr>
+      <td><p><code>gengen.content.write_site(path, content)</code></p></td>
+      <td><p>Write a file to the site destination.</p></td>
+    </tr>
+  <tr>
+      <td><p><code>gengen.content.exists_plugin(path)</code></p></td>
+      <td><p>Check if a plugin file exists.</p></td>
+    </tr>
+  <tr>
+      <td><p><code>gengen.content.exists_site(path)</code></p></td>
+      <td><p>Check if a site file exists.</p></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<h4 id="utilities">Utilities</h4>
+<div class="mobile-side-scroller">
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+  <tr>
+      <td><p><code>gengen.util.slugify(value)</code></p></td>
+      <td><p>Slugify a string.</p></td>
+    </tr>
+  <tr>
+      <td><p><code>gengen.util.contains_markdown(value)</code></p></td>
+      <td><p>Return true if the string contains markdown markers.</p></td>
+    </tr>
+  <tr>
+      <td><p><code>gengen.util.excerpt(html, maxLength)</code></p></td>
+      <td><p>Extract a plain-text excerpt from HTML (default maxLength 200).</p></td>
+    </tr>
+  <tr>
+      <td><p><code>gengen.util.parse_date(dateString, format)</code></p></td>
+      <td><p>Parse a date string and return ISO string.</p></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<h4 id="plugin-metadata">Plugin metadata</h4>
+<div class="mobile-side-scroller">
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+  <tr>
+      <td><p><code>gengen.plugin.metadata</code></p></td>
+      <td><p>Plugin metadata map (name, version, author, path, and more).</p></td>
+    </tr>
+  <tr>
+      <td><p><code>gengen.plugin.name</code></p></td>
+      <td><p>Plugin name.</p></td>
+    </tr>
+  <tr>
+      <td><p><code>gengen.plugin.version</code></p></td>
+      <td><p>Plugin version.</p></td>
+    </tr>
+  <tr>
+      <td><p><code>gengen.plugin.description</code></p></td>
+      <td><p>Plugin description.</p></td>
+    </tr>
+  <tr>
+      <td><p><code>gengen.plugin.author</code></p></td>
+      <td><p>Plugin author.</p></td>
+    </tr>
+  <tr>
+      <td><p><code>gengen.plugin.path</code></p></td>
+      <td><p>Plugin root path.</p></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<h3 id="execution-order">Execution order</h3>
+<p>Plugins run in discovery order: <strong>site plugins first</strong>, then <strong>theme plugins</strong>.
+Conversion hooks run after Liquid renders content and before layout rendering.</p>
+<h2 id="template-integration">Template Integration</h2>
+<p>To enable automatic asset injection in your templates:</p>
+<pre><code class="language-html"><!DOCTYPE html>
+<html>
+<head>
+    <title>Plugins</title>
+    <!-- Plugin assets will be automatically injected here -->
+    
+</head>
+<body>
+    
+    
+    <!-- Plugin body assets will be automatically injected here -->
+    
+</body>
+</html>
+</code></pre>
+<p><code>injects `head_injection`, CSS assets, and meta tags from plugins.</code> injects <code>body_injection</code> and JavaScript assets.</p>
+<h2 id="best-practices">Best Practices</h2>
+<ol>
+<li><strong>Use plugin groups</strong>: Organize related plugins into logical groups</li>
+<li><strong>Start with core</strong>: Always enable at least the core plugin group</li>
+<li><strong>Test configurations</strong>: Verify your plugin configuration works as expected</li>
+<li><strong>Monitor performance</strong>: Some plugins may impact build times</li>
+<li><strong>Keep plugins updated</strong>: Ensure custom plugins work with GenGen updates</li>
+<li><strong>Document dependencies</strong>: Clearly document any external tool requirements</li>
+</ol>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<h3 id="common-issues">Common Issues</h3>
+<p><strong>Plugin not loading:</strong></p>
+<ul>
+<li>Check that the plugin name is spelled correctly</li>
+<li>Verify the plugin is in the enabled list or group</li>
+<li>Ensure the plugin isn't in the disabled list</li>
+</ul>
+<p><strong>Build errors:</strong></p>
+<ul>
+<li>Check plugin configuration syntax</li>
+<li>Verify external tool dependencies (e.g., Tailwind CSS executable)</li>
+<li>Review plugin-specific configuration options</li>
+</ul>
+<p><strong>Performance issues:</strong></p>
+<ul>
+<li>Disable unnecessary plugins</li>
+<li>Check for plugin conflicts</li>
+<li>Monitor build times with different plugin combinations</li>
+</ul>
+<h3 id="debug-commands">Debug Commands</h3>
+<pre><code class="language-bash"># Check current plugin status
+gengen plugins
+
+# Build with verbose logging
+gengen build --verbose
+
+# Check site configuration
+gengen dump
+</code></pre>
+<h2 id="contributing-plugins">Contributing Plugins</h2>
+<p>When contributing plugins to GenGen:</p>
+<ol>
+<li>Follow the established plugin structure</li>
+<li>Include comprehensive documentation</li>
+<li>Add appropriate tests</li>
+<li>Consider plugin groups and categorization</li>
+<li>Ensure compatibility with existing plugins</li>
+</ol>
+<h2 id="conclusion">Conclusion</h2>
+<p>GenGen's plugin system provides powerful extensibility while maintaining simplicity through configuration-based management. Whether you're using built-in plugins or developing custom ones, the system is designed to be flexible and developer-friendly.</p>
+
+          </div>
+          
+
+
+
+
+  
+    
+      
+        
+      
+    
+  
+    
+      
+        
+      
+    
+  
+    
+      
+        
+      
+    
+  
+    
+      
+        
+      
+    
+  
+    
+      
+        
+      
+    
+  
+
+  
+    
+      
+        
+      
+    
+  
+    
+      
+        
+      
+    
+  
+
+  
+    
+      
+        
+      
+    
+  
+    
+      
+        
+      
+    
+  
+    
+      
+        
+      
+    
+  
+    
+      
+        
+      
+    
+  
+
+  
+    
+      
+        
+      
+    
+  
+    
+      
+        
+        
+        
+      
+    
+  
+    
+      
+    
+  
+
+  
+    
+  
+    
+  
+    
+  
+
+  
+    
+  
+    
+  
+    
+  
+
+
+<nav class="docs-pagination" aria-label="Page navigation">
+  
+    <a class="docs-pagination__link docs-pagination__link--prev" href="/gengen/pagination/">
+      <span class="docs-pagination__label">Previous</span>
+      <span class="docs-pagination__title">Pagination</span>
+    </a>
+  
+
+  
+    <a class="docs-pagination__link docs-pagination__link--next" href="/gengen/liquid/">
+      <span class="docs-pagination__label">Next</span>
+      <span class="docs-pagination__title">Liquid Templates</span>
+    </a>
+  
+</nav>
+
+        </article>
+
+        <aside class="docs-toc" aria-label="On this page">
+  
+    <div class="docs-toc__inner">
+      <h3 class="docs-toc__title">On this page</h3>
+      <div id="docs-toc-list" class="docs-toc__list">
+        <!-- Table of contents populated by docs.js -->
+      </div>
+    </div>
+  
+</aside>
+
+      </div>
+    </main>
+  
+
+  
+<footer class="docs-footer">
+  <div class="docs-footer__inner">
+    <div class="docs-footer__brand">
+      <p>© 2026 GenGen Documentation. Built with GenGen.</p>
+      
+        <p class="docs-footer__version">Version 1.0.0</p>
+      
+    </div>
+    
+    <nav class="docs-footer__nav" aria-label="Footer">
+      
+        <a href="https://github.com/gengen/gengen"
+           class="docs-footer__link"
+           target="_blank" rel="noopener">
+          GitHub
+        </a>
+      
+        <a href="https://github.com/gengen/gengen/issues"
+           class="docs-footer__link"
+           target="_blank" rel="noopener">
+          Issues
+        </a>
+      
+        <a href="https://github.com/gengen/gengen/discussions"
+           class="docs-footer__link"
+           target="_blank" rel="noopener">
+          Discussions
+        </a>
+      
+    </nav>
+    
+  </div>
+</footer>
+
+  <script src="/gengen/assets/js/docs.js"></script>
+
+</body>
+</html>

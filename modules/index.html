@@ -1,0 +1,179 @@
+<h1 id="module-versioning">Module Versioning</h1>
+<p>GenGen supports versioned themes and plugins through a module system inspired by Hugo Modules. This allows you to declare dependencies on remote themes and plugins with specific versions, ensuring reproducible builds.</p>
+<h2 id="quick-start">Quick Start</h2>
+<p>Add a <code>module</code> section to your site's config file:</p>
+<pre><code class="language-yaml"># config.yaml or gengen.yaml
+module:
+  imports:
+    - path: github.com/user/gengen-theme-minimal
+      version: ^1.0.0
+    - path: github.com/user/gengen-plugin-seo
+      version: ">=2.0.0 <3.0.0"
+</code></pre>
+<p>Then run:</p>
+<pre><code class="language-bash">gengen mod get
+</code></pre>
+<h2 id="module-sources">Module Sources</h2>
+<p>GenGen supports three types of module sources:</p>
+<h3 id="git-repositories">Git Repositories</h3>
+<pre><code class="language-yaml">module:
+  imports:
+    - path: github.com/user/repo
+      version: ^1.0.0
+    - path: gitlab.com/org/theme
+      version: branch:main
+    - path: bitbucket.org/team/plugin
+      version: tag:v2.0.0
+</code></pre>
+<h3 id="local-paths">Local Paths</h3>
+<pre><code class="language-yaml">module:
+  imports:
+    - path: ../my-local-theme
+    - path: /absolute/path/to/plugin
+</code></pre>
+<h3 id="pubdev-packages">pub.dev Packages</h3>
+<pre><code class="language-yaml">module:
+  imports:
+    - path: pub:gengen_theme_aurora
+      version: ^0.5.0
+</code></pre>
+<h2 id="version-constraints">Version Constraints</h2>
+<p>GenGen uses pub-style version constraints:</p>
+<table>
+<thead>
+<tr>
+<th>Constraint</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>^1.0.0</code></td>
+<td>Compatible with 1.x.x (≥1.0.0 and <2.0.0)</td>
+</tr>
+<tr>
+<td><code>>=1.0.0 <2.0.0</code></td>
+<td>Explicit range</td>
+</tr>
+<tr>
+<td><code>1.2.3</code></td>
+<td>Exact version</td>
+</tr>
+<tr>
+<td><code>any</code></td>
+<td>Any version</td>
+</tr>
+</tbody>
+</table>
+<p>For git repositories, you can also use:</p>
+<table>
+<thead>
+<tr>
+<th>Constraint</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>branch:main</code></td>
+<td>Specific branch</td>
+</tr>
+<tr>
+<td><code>tag:v1.0.0</code></td>
+<td>Specific tag</td>
+</tr>
+<tr>
+<td><code>commit:abc123</code></td>
+<td>Specific commit</td>
+</tr>
+</tbody>
+</table>
+<h2 id="development-overrides">Development Overrides</h2>
+<p>Use replacements to override modules with local paths during development:</p>
+<pre><code class="language-yaml">module:
+  imports:
+    - path: github.com/user/gengen-theme-minimal
+      version: ^1.0.0
+  replacements:
+    - path: github.com/user/gengen-theme-minimal
+      local: ../my-fork-of-minimal
+</code></pre>
+<h2 id="cli-commands">CLI Commands</h2>
+<h3 id="gengen-mod-get"><code>gengen mod get</code></h3>
+<p>Fetch all declared modules and update the lockfile.</p>
+<pre><code class="language-bash">gengen mod get
+</code></pre>
+<h3 id="gengen-mod-update"><code>gengen mod update</code></h3>
+<p>Update modules to latest versions matching constraints.</p>
+<pre><code class="language-bash"># Update all modules
+gengen mod update --all
+
+# Update specific module
+gengen mod update github.com/user/theme
+</code></pre>
+<h3 id="gengen-mod-list"><code>gengen mod list</code></h3>
+<p>List all declared and resolved modules.</p>
+<pre><code class="language-bash"># Show declared modules
+gengen mod list
+
+# Show locked versions
+gengen mod list --locked
+</code></pre>
+<h3 id="gengen-mod-tidy"><code>gengen mod tidy</code></h3>
+<p>Remove unused modules from the lockfile.</p>
+<pre><code class="language-bash">gengen mod tidy
+</code></pre>
+<h3 id="gengen-mod-verify"><code>gengen mod verify</code></h3>
+<p>Verify cached modules match lockfile checksums.</p>
+<pre><code class="language-bash">gengen mod verify
+</code></pre>
+<h2 id="lockfile">Lockfile</h2>
+<p>GenGen generates a <code>gengen.lock</code> file to ensure reproducible builds. This file should be committed to version control.</p>
+<pre><code class="language-yaml"># gengen.lock (auto-generated)
+packages:
+  "github.com/user/gengen-theme-minimal":
+    version: "1.2.3"
+    resolved: "https://github.com/user/gengen-theme-minimal.git"
+    sha: "abc123def456"
+</code></pre>
+<h2 id="cache">Cache</h2>
+<p>Modules are cached in <code>~/.gengen/cache/modules/</code> and organized by source and version:</p>
+<pre><code>~/.gengen/cache/modules/
+└── github.com/
+    └── user/
+        └── gengen-theme-minimal/
+            └── v1.2.3/
+                ├── _layouts/
+                ├── assets/
+                └── config.yaml
+</code></pre>
+<h2 id="precedence">Precedence</h2>
+<p>Module resolution follows this priority order:</p>
+<ol>
+<li><strong>Replacements</strong> - Local overrides for development</li>
+<li><strong>Local directories</strong> - <code>_themes/</code> and <code>_plugins/</code> in your site</li>
+<li><strong>Cached modules</strong> - From <code>~/.gengen/cache/modules/</code></li>
+<li><strong>Remote fetch</strong> - Download from source if not cached</li>
+</ol>
+<p>Local themes and plugins always take precedence over modules, allowing you to customize or override module content.</p>
+<h2 id="using-themes-from-modules">Using Themes from Modules</h2>
+<p>Specify the module path as your theme:</p>
+<pre><code class="language-yaml"># config.yaml
+theme: github.com/user/gengen-theme-minimal
+</code></pre>
+<p>Or use the short name if declared in imports:</p>
+<pre><code class="language-yaml">module:
+  imports:
+    - path: github.com/user/gengen-theme-minimal
+      version: ^1.0.0
+
+theme: gengen-theme-minimal
+</code></pre>
+<h2 id="migration-from-local-themes">Migration from Local Themes</h2>
+<p>Existing sites using local <code>_themes/</code> directories continue to work without changes. To migrate to modules:</p>
+<ol>
+<li>Add module declarations to your config</li>
+<li>Run <code>gengen mod get</code></li>
+<li>Optionally remove the local <code>_themes/</code> directory</li>
+</ol>
+<p>Your local themes will take precedence until removed, so you can migrate gradually.</p>

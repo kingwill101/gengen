@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="description" content="Learn how to create and structure pages in your GenGen site">
+
+
+<title>
+  Creating Pages · GenGen Documentation
+</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="/gengen/assets/css/main.css">
+
+
+
+
+
+</head>
+
+<body class="docs-body">
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  
+
+
+<header class="docs-header">
+  <div class="docs-header__inner">
+    <div class="docs-header__brand">
+      <a class="brand-link" href="/gengen/">
+        <span class="brand-logo">📘</span>
+        <span class="brand-text">
+          <span class="brand-title">GenGen Documentation</span>
+          
+            <span class="brand-subtitle">A powerful static site generator</span>
+          
+        </span>
+      </a>
+    </div>
+
+    
+    <nav class="docs-header__nav" aria-label="Primary">
+      
+        <a href="/gengen/"
+           class="nav-link">
+          Home
+        </a>
+      
+        <a href="/gengen/installation/"
+           class="nav-link">
+          Getting Started
+        </a>
+      
+        <a href="/gengen/configuration/"
+           class="nav-link">
+          Configuration
+        </a>
+      
+        <a href="/gengen/examples/"
+           class="nav-link">
+          Examples
+        </a>
+      
+    </nav>
+    
+
+    <div class="docs-header__actions">
+      <form class="docs-search" role="search">
+  <label for="docs-search-input" class="sr-only">Search documentation</label>
+  <input
+    id="docs-search-input"
+    name="q"
+    type="search"
+    placeholder="Search the docs..."
+    autocomplete="off"
+  >
+  <button type="submit" aria-label="Submit search">
+    🔍
+  </button>
+</form>
+
+      <button class="theme-toggle" type="button" aria-label="Toggle theme">
+        <span class="theme-toggle__icon">🌗</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+
+  
+    <main id="main-content" class="docs-main">
+      
+
+
+
+
+  
+    
+  
+    
+  
+    
+  
+    
+      
+      
+    
+  
+    
+  
+
+  
+    
+  
+    
+  
+
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+  
+    
+  
+    
+  
+    
+  
+
+  
+    
+  
+    
+  
+    
+  
+
+  
+    
+  
+    
+  
+    
+  
+
+
+<nav class="docs-breadcrumbs" aria-label="Breadcrumb">
+  <a href="/gengen/" class="docs-breadcrumbs__link">Home</a>
+  
+    <span class="docs-breadcrumbs__separator">/</span>
+    <span class="docs-breadcrumbs__crumb">Getting Started</span>
+  
+  
+    <span class="docs-breadcrumbs__separator">/</span>
+    <span class="docs-breadcrumbs__crumb docs-breadcrumbs__crumb--current">Pages & Content</span>
+  
+</nav>
+
+
+      <div class="docs-layout">
+        <aside class="docs-sidebar" aria-label="Documentation navigation">
+  <div class="docs-sidebar__inner">
+    <div class="docs-sidebar__title">
+      <span class="docs-sidebar__label">Documentation</span>
+      <button class="docs-sidebar__toggle" type="button" aria-label="Toggle navigation">
+        ☰
+      </button>
+    </div>
+
+    
+    
+      <ul class="docs-sidebar__sections">
+        
+          <li class="docs-sidebar__section">
+            <h2>
+              <span class="docs-sidebar__icon">🚀</span>
+              Getting Started
+            </h2>
+            
+              <ul class="docs-sidebar__pages">
+                
+                  <li>
+                    <a href="/gengen/"
+                       class="docs-sidebar__link"
+                       >
+                      Overview
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Introduction to GenGen and quick start guide</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/installation/"
+                       class="docs-sidebar__link"
+                       >
+                      Installation
+                    </a>
+                    
+                      <p class="docs-sidebar__description">How to install and set up GenGen</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/configuration/"
+                       class="docs-sidebar__link"
+                       >
+                      Configuration
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Complete guide to configuring GenGen</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/pages/"
+                       class="docs-sidebar__link is-active"
+                       >
+                      Pages & Content
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Creating and structuring pages and posts</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/collections/"
+                       class="docs-sidebar__link"
+                       >
+                      Collections
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Group structured content with collections</p>
+                    
+                  </li>
+                
+              </ul>
+            
+          </li>
+        
+          <li class="docs-sidebar__section">
+            <h2>
+              <span class="docs-sidebar__icon">🔗</span>
+              URL Structure
+            </h2>
+            
+              <ul class="docs-sidebar__pages">
+                
+                  <li>
+                    <a href="/gengen/permalinks/"
+                       class="docs-sidebar__link"
+                       >
+                      Permalinks
+                    </a>
+                    
+                      <p class="docs-sidebar__description">URL structure and permalink configuration</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/aliases/"
+                       class="docs-sidebar__link"
+                       >
+                      Aliases
+                    </a>
+                    
+                      <p class="docs-sidebar__description">URL redirects and content migration</p>
+                    
+                  </li>
+                
+              </ul>
+            
+          </li>
+        
+          <li class="docs-sidebar__section">
+            <h2>
+              <span class="docs-sidebar__icon">🎨</span>
+              Styling & Assets
+            </h2>
+            
+              <ul class="docs-sidebar__pages">
+                
+                  <li>
+                    <a href="/gengen/sass/"
+                       class="docs-sidebar__link"
+                       >
+                      Sass Processing
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Using Sass/SCSS with _sass directory structure</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/syntax-highlighting/"
+                       class="docs-sidebar__link"
+                       >
+                      Syntax Highlighting
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Code highlighting with the highlight tag</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/assets/"
+                       class="docs-sidebar__link"
+                       >
+                      Assets Management
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Managing static assets and files</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/themes/aurora/"
+                       class="docs-sidebar__link"
+                       >
+                      Aurora Theme
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Modern aurora-inspired starter theme</p>
+                    
+                  </li>
+                
+              </ul>
+            
+          </li>
+        
+          <li class="docs-sidebar__section">
+            <h2>
+              <span class="docs-sidebar__icon">⚡</span>
+              Advanced Features
+            </h2>
+            
+              <ul class="docs-sidebar__pages">
+                
+                  <li>
+                    <a href="/gengen/pagination/"
+                       class="docs-sidebar__link"
+                       >
+                      Pagination
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Automatic pagination for posts and content</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/plugins/"
+                       class="docs-sidebar__link"
+                       >
+                      Plugins
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Using and developing custom plugins</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/liquid/"
+                       class="docs-sidebar__link"
+                       >
+                      Liquid Templates
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Using Liquid templating language</p>
+                    
+                  </li>
+                
+              </ul>
+            
+          </li>
+        
+          <li class="docs-sidebar__section">
+            <h2>
+              <span class="docs-sidebar__icon">🚀</span>
+              Deployment
+            </h2>
+            
+              <ul class="docs-sidebar__pages">
+                
+                  <li>
+                    <a href="/gengen/build/"
+                       class="docs-sidebar__link"
+                       >
+                      Build Process
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Understanding the build process</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/deploy-github/"
+                       class="docs-sidebar__link"
+                       >
+                      GitHub Pages
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Deploy to GitHub Pages</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/deploy-netlify/"
+                       class="docs-sidebar__link"
+                       >
+                      Netlify
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Deploy to Netlify</p>
+                    
+                  </li>
+                
+              </ul>
+            
+          </li>
+        
+          <li class="docs-sidebar__section">
+            <h2>
+              <span class="docs-sidebar__icon">📚</span>
+              Reference
+            </h2>
+            
+              <ul class="docs-sidebar__pages">
+                
+                  <li>
+                    <a href="/gengen/cli/"
+                       class="docs-sidebar__link"
+                       >
+                      CLI Commands
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Command-line interface reference</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/api/"
+                       class="docs-sidebar__link"
+                       >
+                      API Reference
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Complete API documentation</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/troubleshooting/"
+                       class="docs-sidebar__link"
+                       >
+                      Troubleshooting
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Common issues and solutions</p>
+                    
+                  </li>
+                
+              </ul>
+            
+          </li>
+        
+      </ul>
+    
+  </div>
+</aside>
+
+
+        <article class="docs-article">
+          <header class="docs-article__header">
+  <div class="docs-article__meta">
+    
+    
+  </div>
+  <h1>Creating Pages</h1>
+  
+    <p class="docs-article__description">Learn how to create and structure pages in your GenGen site</p>
+  
+</header>
+
+          <div class="docs-article__body">
+            <h1 id="creating-pages-in-gengen">Creating Pages in GenGen</h1>
+<p>This guide covers everything you need to know about creating pages in GenGen, from basic setup to advanced configurations.</p>
+<h2 id="what-are-pages">What are Pages?</h2>
+<p>Pages in GenGen are static content files that form the structure of your website. Unlike posts, which are typically blog entries organized by date (from front matter or a <code>YYYY-MM-DD-</code> filename prefix), pages are standalone content like "About", "Contact", or "Services" pages.</p>
+<h2 id="basic-page-structure">Basic Page Structure</h2>
+<p>Every page in GenGen consists of two main parts:</p>
+<ol>
+<li><strong>Front Matter</strong> - YAML configuration at the top of the file</li>
+<li><strong>Content</strong> - The actual page content (Markdown, HTML, or Liquid)</li>
+</ol>
+<h3 id="example-basic-page">Example Basic Page</h3>
+<pre><code class="language-markdown">---
+layout: page
+---
+
+# About Our Company
+
+This is the content of the about page written in Markdown.
+</code></pre>
+<p><strong>Note</strong>: The title is automatically inferred from the filename. For a file named <code>about.md</code>, the title would be "About".</p>
+<h2 id="front-matter-configuration">Front Matter Configuration</h2>
+<p>Front matter is YAML configuration enclosed between triple dashes (<code>---</code>) at the beginning of your file. Here are the key properties you can configure:</p>
+<h3 id="required-properties">Required Properties</h3>
+<p>GenGen can work with minimal or even no front matter configuration. All properties are optional since GenGen provides sensible defaults.</p>
+<h3 id="optional-properties">Optional Properties</h3>
+<ul>
+<li><strong><code>title</code></strong>: The page title (used in <code><title></code> tags and navigation). If not provided, GenGen automatically infers the title from the filename</li>
+<li><strong><code>layout</code></strong>: Specifies which layout template to use (defaults to site configuration)</li>
+<li><strong><code>permalink</code></strong>: Custom URL structure for the page</li>
+<li><strong><code>description</code></strong>: Page description for SEO and meta tags</li>
+<li><strong><code>date</code></strong>: Publication date (useful for organizing pages)</li>
+<li><strong><code>published</code></strong>: Set to <code>false</code> to exclude from site generation</li>
+<li><strong><code>tags</code></strong>: Array of tags for categorization</li>
+<li><strong><code>categories</code></strong>: Array of categories for organization</li>
+</ul>
+<h3 id="example-with-all-properties">Example with All Properties</h3>
+<pre><code class="language-yaml">---
+title: Contact Us
+layout: page
+permalink: /contact/
+description: Get in touch with our team
+date: 2024-01-15
+published: true
+tags: [contact, support]
+categories: [business]
+---
+</code></pre>
+<h2 id="page-types-and-examples">Page Types and Examples</h2>
+<h3 id="1-homepage-indexhtmlindexmd">1. Homepage (index.html/index.md)</h3>
+<p>The homepage is typically named <code>index.html</code> or <code>index.md</code> and placed in your site root:</p>
+<pre><code class="language-markdown">---
+layout: home
+title: Welcome to My Site
+---
+
+# Welcome!
+
+This is the homepage of my website.
+</code></pre>
+<h3 id="2-about-page">2. About Page</h3>
+<pre><code class="language-markdown">---
+title: About
+layout: page
+permalink: /about/
+---
+
+# About Us
+
+Learn more about our company and mission.
+</code></pre>
+<p><strong>Result</strong>: Creates <code>public/about/index.html</code></p>
+<h3 id="3-contact-page">3. Contact Page</h3>
+<pre><code class="language-markdown">---
+title: Contact
+layout: page
+permalink: /contact/
+---
+
+# Get in Touch
+
+- Email: hello@example.com
+- Phone: (555) 123-4567
+</code></pre>
+<p><strong>Result</strong>: Creates <code>public/contact/index.html</code></p>
+<h3 id="4-custom-404-page">4. Custom 404 Page</h3>
+<pre><code class="language-html">---
+permalink: /404.html
+layout: default
+title: Page Not Found
+---
+
+<div class="error-page">
+  <h1>404 - Page Not Found</h1>
+  <p>The page you're looking for doesn't exist.</p>
+  <a href="/">Return Home</a>
+</div>
+</code></pre>
+<h2 id="permalink-configuration">Permalink Configuration</h2>
+<p>Permalinks determine the URL structure of your pages. GenGen supports several permalink patterns.</p>
+<h3 id="directory-structure">Directory Structure</h3>
+<p>GenGen creates directory structures when permalinks end with <code>/</code> or have no file extension:</p>
+<pre><code class="language-yaml">---
+title: About Us
+permalink: /about/
+---
+</code></pre>
+<p>This creates:</p>
+<ul>
+<li><strong>Directory</strong>: <code>public/about/</code></li>
+<li><strong>File</strong>: <code>public/about/index.html</code></li>
+</ul>
+<h3 id="built-in-permalink-structures">Built-in Permalink Structures</h3>
+<ul>
+<li><strong><code>none</code></strong>: Uses the file path as-is</li>
+<li><strong><code>date</code></strong>: For posts, uses <code>/year/month/day/title.html</code></li>
+<li><strong><code>pretty</code></strong>: Removes file extensions for clean URLs</li>
+</ul>
+<h3 id="custom-permalinks">Custom Permalinks</h3>
+<p>You can define custom permalink patterns using tokens:</p>
+<pre><code class="language-yaml">---
+title: My Page
+permalink: /custom/:title/
+---
+</code></pre>
+<p>Available tokens:</p>
+<ul>
+<li><code>:title</code> - Slugified page title</li>
+<li><code>:path</code> - Relative path from site root</li>
+<li><code>:basename</code> - Filename without extension</li>
+<li><code>:output_ext</code> - Output file extension (usually <code>.html</code>)</li>
+<li><code>:categories</code> - Page categories joined with <code>/</code></li>
+<li><code>:year</code>, <code>:month</code>, <code>:day</code> - Date components (for dated content)</li>
+</ul>
+<h3 id="literal-permalinks">Literal Permalinks</h3>
+<p>For exact URL control, use literal permalinks:</p>
+<pre><code class="language-yaml">---
+title: Special Page
+permalink: /exactly/this/path/
+---
+</code></pre>
+<p><strong>Permalink Behavior:</strong></p>
+<ul>
+<li><code>/path/</code> → Creates <code>path/index.html</code></li>
+<li><code>/path</code> → Creates <code>path/index.html</code></li>
+<li><code>/path.html</code> → Creates <code>path.html</code></li>
+</ul>
+<p>For comprehensive permalink documentation, see the <a href="permalinks.md">Permalinks Guide</a>.</p>
+<h3 id="aliases">Aliases</h3>
+<p>Create multiple URLs that point to the same page content:</p>
+<pre><code class="language-yaml">---
+title: About Us
+permalink: /about/
+aliases:
+  - /company-info.html
+  - /who-we-are.html
+  - /team.html
+---
+</code></pre>
+<p>This creates:</p>
+<ul>
+<li><strong>Main page</strong>: <code>public/about/index.html</code></li>
+<li><strong>Alias files</strong>: <code>public/company-info.html</code>, <code>public/who-we-are.html</code>, <code>public/team.html</code></li>
+</ul>
+<p>All URLs serve identical content, perfect for:</p>
+<ul>
+<li><strong>SEO preservation</strong> during site restructuring</li>
+<li><strong>Backward compatibility</strong> when changing URLs</li>
+<li><strong>Multiple access paths</strong> for the same content</li>
+</ul>
+<p>See the <a href="aliases.md">Aliases Documentation</a> for detailed examples and use cases.</p>
+<h2 id="layouts">Layouts</h2>
+<p>Layouts define the HTML structure that wraps your page content. GenGen looks for layouts in:</p>
+<ol>
+<li><code>_layouts/</code> directory</li>
+<li>Theme layouts (<code>_themes/[theme]/_layouts/</code>)</li>
+</ol>
+<h3 id="specifying-a-layout">Specifying a Layout</h3>
+<pre><code class="language-yaml">---
+layout: page
+---
+</code></pre>
+<h3 id="common-layout-types">Common Layout Types</h3>
+<ul>
+<li><strong><code>default</code></strong>: Basic page layout with header/footer</li>
+<li><strong><code>page</code></strong>: Standard page layout</li>
+<li><strong><code>post</code></strong>: Blog post layout (typically for posts)</li>
+<li><strong><code>home</code></strong>: Homepage layout</li>
+</ul>
+<h3 id="layout-inheritance">Layout Inheritance</h3>
+<p>Layouts can inherit from other layouts:</p>
+<pre><code class="language-html"><!-- _layouts/page.html -->
+---
+layout: default
+---
+
+<article class="page">
+  
+</article>
+</code></pre>
+<h2 id="content-formats">Content Formats</h2>
+<p>GenGen supports multiple content formats:</p>
+<h3 id="markdown-md-markdown">Markdown (.md, .markdown)</h3>
+<pre><code class="language-markdown">---
+title: Markdown Page
+---
+
+# Heading
+
+This is **bold** and *italic* text.
+
+- List item 1
+- List item 2
+</code></pre>
+<h3 id="html-html">HTML (.html)</h3>
+<pre><code class="language-html">---
+title: HTML Page
+---
+
+<h1>HTML Content</h1>
+<p>Direct HTML content.</p>
+</code></pre>
+<h3 id="liquid-templates">Liquid Templates</h3>
+<p>You can use Liquid templating in your content:</p>
+<pre><code class="language-markdown">---
+title: Dynamic Page
+---
+
+# Welcome, GenGen Documentation!
+
+Recent posts:
+
+</code></pre>
+<h2 id="file-organization">File Organization</h2>
+<h3 id="recommended-directory-structure">Recommended Directory Structure</h3>
+<pre><code>your-site/
+├── _layouts/          # Layout templates
+├── _includes/         # Reusable partials
+├── _themes/           # Theme files
+├── assets/            # CSS, JS, images
+├── about.md           # About page
+├── contact.md         # Contact page
+├── index.md           # Homepage
+└── config.yaml        # Site configuration
+</code></pre>
+<h3 id="page-placement">Page Placement</h3>
+<ul>
+<li><strong>Root level</strong>: For main site pages (about.md, contact.md)</li>
+<li><strong>Subdirectories</strong>: For organized content (services/web-design.md)</li>
+<li><strong>Special directories</strong>: Avoid <code>_posts/</code> for regular pages (reserved for blog posts). Posts can live in subdirectories under <code>_posts/</code> and do not require a date in the filename.</li>
+</ul>
+<h3 id="theme-pages">Theme Pages</h3>
+<p>Themes can ship pages via a <code>content/</code> directory. Any <strong>theme content file with
+YAML front matter</strong> is treated as a page and rendered into the final site output
+using its relative path inside the theme <code>content/</code> folder. If the site provides
+a file at the same relative path, the site file overrides the theme page.</p>
+<h3 id="generated-output-structure">Generated Output Structure</h3>
+<p>Your pages create organized directory structures:</p>
+<pre><code>public/
+├── about/
+│   └── index.html
+├── contact/
+│   └── index.html
+├── services/
+│   └── web-design/
+│       └── index.html
+└── index.html
+</code></pre>
+<h2 id="advanced-features">Advanced Features</h2>
+<h3 id="page-variables-in-liquid">Page Variables in Liquid</h3>
+<p>Access page properties in your content:</p>
+<pre><code class="language-liquid"><h1>Creating Pages</h1>
+<p>Published: January 07, 2026</p>
+<p>Tags: </p>
+</code></pre>
+<p><strong>Note</strong>: <code>page.title</code> will use the title from front matter if specified, otherwise it will use the title inferred from the filename.</p>
+<h3 id="site-variables">Site Variables</h3>
+<p>Access site-wide data:</p>
+<pre><code class="language-liquid"><p>Site: GenGen Documentation</p>
+<p>Total pages: 23</p>
+</code></pre>
+<h3 id="conditional-content">Conditional Content</h3>
+<pre><code class="language-liquid">
+<meta name="description" content="Learn how to create and structure pages in your GenGen site">
+
+</code></pre>
+<h2 id="best-practices">Best Practices</h2>
+<h3 id="1-consistent-front-matter">1. Consistent Front Matter</h3>
+<p>Use consistent front matter across your pages:</p>
+<pre><code class="language-yaml">---
+title: Page Title
+layout: page
+description: Page description
+date: 2024-01-15
+---
+</code></pre>
+<h3 id="2-seo-friendly-permalinks">2. SEO-Friendly Permalinks</h3>
+<p>Use descriptive, clean URLs:</p>
+<pre><code class="language-yaml"># Good
+permalink: /about-us/
+
+# Avoid
+permalink: /page1.html
+</code></pre>
+<h3 id="3-logical-file-organization">3. Logical File Organization</h3>
+<p>Organize pages in a logical directory structure:</p>
+<pre><code>├── about/
+│   ├── index.md       # /about/
+│   ├── team.md        # /about/team/
+│   └── history.md     # /about/history/
+├── services/
+│   ├── index.md       # /services/
+│   └── consulting.md  # /services/consulting/
+└── contact.md         # /contact/
+</code></pre>
+<h3 id="4-layout-hierarchy">4. Layout Hierarchy</h3>
+<p>Create a clear layout hierarchy:</p>
+<pre><code>_layouts/
+├── default.html       # Base layout
+├── page.html         # Inherits from default
+└── special.html      # For special pages
+</code></pre>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<h3 id="common-issues">Common Issues</h3>
+<ol>
+<li><strong>Page not generating</strong>: Check front matter syntax and file placement</li>
+<li><strong>Layout not found</strong>: Verify layout exists in <code>_layouts/</code> or theme</li>
+<li><strong>Permalink conflicts</strong>: Ensure unique permalinks across all pages</li>
+<li><strong>Missing content</strong>: Check for proper front matter delimiters (<code>---</code>)</li>
+</ol>
+<h3 id="debugging-tips">Debugging Tips</h3>
+<ol>
+<li>Check the generated <code>public/</code> directory for output files</li>
+<li>Verify front matter YAML syntax</li>
+<li>Ensure layout files exist and are properly structured</li>
+<li>Check GenGen build logs for error messages</li>
+</ol>
+<h2 id="examples">Examples</h2>
+<p>For more examples, check the <code>examples/</code> directory in the GenGen repository, which contains various site configurations and page types demonstrating different features and use cases.</p>
+
+          </div>
+          
+
+
+
+
+  
+    
+      
+        
+      
+    
+  
+    
+      
+        
+      
+    
+  
+    
+      
+        
+      
+    
+  
+    
+      
+        
+        
+        
+      
+    
+  
+    
+      
+    
+  
+
+  
+    
+  
+    
+  
+
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+  
+    
+  
+    
+  
+    
+  
+
+  
+    
+  
+    
+  
+    
+  
+
+  
+    
+  
+    
+  
+    
+  
+
+
+<nav class="docs-pagination" aria-label="Page navigation">
+  
+    <a class="docs-pagination__link docs-pagination__link--prev" href="/gengen/configuration/">
+      <span class="docs-pagination__label">Previous</span>
+      <span class="docs-pagination__title">Configuration</span>
+    </a>
+  
+
+  
+    <a class="docs-pagination__link docs-pagination__link--next" href="/gengen/collections/">
+      <span class="docs-pagination__label">Next</span>
+      <span class="docs-pagination__title">Collections</span>
+    </a>
+  
+</nav>
+
+        </article>
+
+        <aside class="docs-toc" aria-label="On this page">
+  
+    <div class="docs-toc__inner">
+      <h3 class="docs-toc__title">On this page</h3>
+      <div id="docs-toc-list" class="docs-toc__list">
+        <!-- Table of contents populated by docs.js -->
+      </div>
+    </div>
+  
+</aside>
+
+      </div>
+    </main>
+  
+
+  
+<footer class="docs-footer">
+  <div class="docs-footer__inner">
+    <div class="docs-footer__brand">
+      <p>© 2026 GenGen Documentation. Built with GenGen.</p>
+      
+        <p class="docs-footer__version">Version 1.0.0</p>
+      
+    </div>
+    
+    <nav class="docs-footer__nav" aria-label="Footer">
+      
+        <a href="https://github.com/gengen/gengen"
+           class="docs-footer__link"
+           target="_blank" rel="noopener">
+          GitHub
+        </a>
+      
+        <a href="https://github.com/gengen/gengen/issues"
+           class="docs-footer__link"
+           target="_blank" rel="noopener">
+          Issues
+        </a>
+      
+        <a href="https://github.com/gengen/gengen/discussions"
+           class="docs-footer__link"
+           target="_blank" rel="noopener">
+          Discussions
+        </a>
+      
+    </nav>
+    
+  </div>
+</footer>
+
+  <script src="/gengen/assets/js/docs.js"></script>
+
+</body>
+</html>

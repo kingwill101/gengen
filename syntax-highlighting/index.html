@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="description" content="Learn how to use GenGen's built-in syntax highlighting with the highlight tag">
+
+
+<title>
+  Syntax Highlighting · GenGen Documentation
+</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="/gengen/assets/css/main.css">
+
+
+
+
+
+</head>
+
+<body class="docs-body">
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  
+
+
+<header class="docs-header">
+  <div class="docs-header__inner">
+    <div class="docs-header__brand">
+      <a class="brand-link" href="/gengen/">
+        <span class="brand-logo">📘</span>
+        <span class="brand-text">
+          <span class="brand-title">GenGen Documentation</span>
+          
+            <span class="brand-subtitle">A powerful static site generator</span>
+          
+        </span>
+      </a>
+    </div>
+
+    
+    <nav class="docs-header__nav" aria-label="Primary">
+      
+        <a href="/gengen/"
+           class="nav-link">
+          Home
+        </a>
+      
+        <a href="/gengen/installation/"
+           class="nav-link">
+          Getting Started
+        </a>
+      
+        <a href="/gengen/configuration/"
+           class="nav-link">
+          Configuration
+        </a>
+      
+        <a href="/gengen/examples/"
+           class="nav-link">
+          Examples
+        </a>
+      
+    </nav>
+    
+
+    <div class="docs-header__actions">
+      <form class="docs-search" role="search">
+  <label for="docs-search-input" class="sr-only">Search documentation</label>
+  <input
+    id="docs-search-input"
+    name="q"
+    type="search"
+    placeholder="Search the docs..."
+    autocomplete="off"
+  >
+  <button type="submit" aria-label="Submit search">
+    🔍
+  </button>
+</form>
+
+      <button class="theme-toggle" type="button" aria-label="Toggle theme">
+        <span class="theme-toggle__icon">🌗</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+
+  
+    <main id="main-content" class="docs-main">
+      
+
+
+
+
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+  
+    
+  
+    
+  
+
+  
+    
+  
+    
+      
+      
+    
+  
+    
+  
+    
+  
+
+  
+    
+  
+    
+  
+    
+  
+
+  
+    
+  
+    
+  
+    
+  
+
+  
+    
+  
+    
+  
+    
+  
+
+
+<nav class="docs-breadcrumbs" aria-label="Breadcrumb">
+  <a href="/gengen/" class="docs-breadcrumbs__link">Home</a>
+  
+    <span class="docs-breadcrumbs__separator">/</span>
+    <span class="docs-breadcrumbs__crumb">Styling & Assets</span>
+  
+  
+    <span class="docs-breadcrumbs__separator">/</span>
+    <span class="docs-breadcrumbs__crumb docs-breadcrumbs__crumb--current">Syntax Highlighting</span>
+  
+</nav>
+
+
+      <div class="docs-layout">
+        <aside class="docs-sidebar" aria-label="Documentation navigation">
+  <div class="docs-sidebar__inner">
+    <div class="docs-sidebar__title">
+      <span class="docs-sidebar__label">Documentation</span>
+      <button class="docs-sidebar__toggle" type="button" aria-label="Toggle navigation">
+        ☰
+      </button>
+    </div>
+
+    
+    
+      <ul class="docs-sidebar__sections">
+        
+          <li class="docs-sidebar__section">
+            <h2>
+              <span class="docs-sidebar__icon">🚀</span>
+              Getting Started
+            </h2>
+            
+              <ul class="docs-sidebar__pages">
+                
+                  <li>
+                    <a href="/gengen/"
+                       class="docs-sidebar__link"
+                       >
+                      Overview
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Introduction to GenGen and quick start guide</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/installation/"
+                       class="docs-sidebar__link"
+                       >
+                      Installation
+                    </a>
+                    
+                      <p class="docs-sidebar__description">How to install and set up GenGen</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/configuration/"
+                       class="docs-sidebar__link"
+                       >
+                      Configuration
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Complete guide to configuring GenGen</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/pages/"
+                       class="docs-sidebar__link"
+                       >
+                      Pages & Content
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Creating and structuring pages and posts</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/collections/"
+                       class="docs-sidebar__link"
+                       >
+                      Collections
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Group structured content with collections</p>
+                    
+                  </li>
+                
+              </ul>
+            
+          </li>
+        
+          <li class="docs-sidebar__section">
+            <h2>
+              <span class="docs-sidebar__icon">🔗</span>
+              URL Structure
+            </h2>
+            
+              <ul class="docs-sidebar__pages">
+                
+                  <li>
+                    <a href="/gengen/permalinks/"
+                       class="docs-sidebar__link"
+                       >
+                      Permalinks
+                    </a>
+                    
+                      <p class="docs-sidebar__description">URL structure and permalink configuration</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/aliases/"
+                       class="docs-sidebar__link"
+                       >
+                      Aliases
+                    </a>
+                    
+                      <p class="docs-sidebar__description">URL redirects and content migration</p>
+                    
+                  </li>
+                
+              </ul>
+            
+          </li>
+        
+          <li class="docs-sidebar__section">
+            <h2>
+              <span class="docs-sidebar__icon">🎨</span>
+              Styling & Assets
+            </h2>
+            
+              <ul class="docs-sidebar__pages">
+                
+                  <li>
+                    <a href="/gengen/sass/"
+                       class="docs-sidebar__link"
+                       >
+                      Sass Processing
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Using Sass/SCSS with _sass directory structure</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/syntax-highlighting/"
+                       class="docs-sidebar__link is-active"
+                       >
+                      Syntax Highlighting
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Code highlighting with the highlight tag</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/assets/"
+                       class="docs-sidebar__link"
+                       >
+                      Assets Management
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Managing static assets and files</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/themes/aurora/"
+                       class="docs-sidebar__link"
+                       >
+                      Aurora Theme
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Modern aurora-inspired starter theme</p>
+                    
+                  </li>
+                
+              </ul>
+            
+          </li>
+        
+          <li class="docs-sidebar__section">
+            <h2>
+              <span class="docs-sidebar__icon">⚡</span>
+              Advanced Features
+            </h2>
+            
+              <ul class="docs-sidebar__pages">
+                
+                  <li>
+                    <a href="/gengen/pagination/"
+                       class="docs-sidebar__link"
+                       >
+                      Pagination
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Automatic pagination for posts and content</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/plugins/"
+                       class="docs-sidebar__link"
+                       >
+                      Plugins
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Using and developing custom plugins</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/liquid/"
+                       class="docs-sidebar__link"
+                       >
+                      Liquid Templates
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Using Liquid templating language</p>
+                    
+                  </li>
+                
+              </ul>
+            
+          </li>
+        
+          <li class="docs-sidebar__section">
+            <h2>
+              <span class="docs-sidebar__icon">🚀</span>
+              Deployment
+            </h2>
+            
+              <ul class="docs-sidebar__pages">
+                
+                  <li>
+                    <a href="/gengen/build/"
+                       class="docs-sidebar__link"
+                       >
+                      Build Process
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Understanding the build process</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/deploy-github/"
+                       class="docs-sidebar__link"
+                       >
+                      GitHub Pages
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Deploy to GitHub Pages</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/deploy-netlify/"
+                       class="docs-sidebar__link"
+                       >
+                      Netlify
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Deploy to Netlify</p>
+                    
+                  </li>
+                
+              </ul>
+            
+          </li>
+        
+          <li class="docs-sidebar__section">
+            <h2>
+              <span class="docs-sidebar__icon">📚</span>
+              Reference
+            </h2>
+            
+              <ul class="docs-sidebar__pages">
+                
+                  <li>
+                    <a href="/gengen/cli/"
+                       class="docs-sidebar__link"
+                       >
+                      CLI Commands
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Command-line interface reference</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/api/"
+                       class="docs-sidebar__link"
+                       >
+                      API Reference
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Complete API documentation</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/troubleshooting/"
+                       class="docs-sidebar__link"
+                       >
+                      Troubleshooting
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Common issues and solutions</p>
+                    
+                  </li>
+                
+              </ul>
+            
+          </li>
+        
+      </ul>
+    
+  </div>
+</aside>
+
+
+        <article class="docs-article">
+          <header class="docs-article__header">
+  <div class="docs-article__meta">
+    
+    
+  </div>
+  <h1>Syntax Highlighting</h1>
+  
+    <p class="docs-article__description">Learn how to use GenGen's built-in syntax highlighting with the highlight tag</p>
+  
+</header>
+
+          <div class="docs-article__body">
+            <h1 id="syntax-highlighting">Syntax Highlighting</h1>
+<p>GenGen includes built-in syntax highlighting powered by the <code>highlight</code> package. Use the `` Liquid tag to add beautiful code highlighting to your content.</p>
+<h2 id="basic-usage">Basic Usage</h2>
+<p>The highlight tag supports many programming languages:</p>
+<pre><code class="language-liquid">nullnull
+your code here
+
+</code></pre>
+<blockquote>
+<p>Tip: Liquid is rendered before Markdown. Use `` blocks for literal Liquid examples, or set <code>render_with_liquid: false</code> in front matter to disable Liquid processing for a page.</p>
+</blockquote>
+<h2 id="supported-languages">Supported Languages</h2>
+<h3 id="yaml-configuration">YAML Configuration</h3>
+<pre><code class="language-yaml"># GenGen configuration example
+title: "My GenGen Site"
+description: "A static site built with GenGen"
+
+# Build settings
+destination: public
+permalink: pretty
+
+# Content processing
+markdown_extensions:
+  - .md
+  - .markdown
+
+# Custom data
+site:
+  author: "Your Name"
+  email: "contact@example.com"
+</code></pre>
+<h3 id="dart-code">Dart Code</h3>
+<pre><code class="language-dart">import 'dart:io';
+
+class SiteGenerator {
+  final String sourceDir;
+  final String outputDir;
+  
+  SiteGenerator(this.sourceDir, this.outputDir);
+  
+  Future<void> build() async {
+    print('Building site from $sourceDir to $outputDir');
+    
+    // Process markdown files
+    await processMarkdownFiles();
+    
+    // Copy static assets
+    await copyAssets();
+    
+    print('Build completed successfully!');
+  }
+  
+  Future<void> processMarkdownFiles() async {
+    final sourceDirectory = Directory(sourceDir);
+    await for (final file in sourceDirectory.list(recursive: true)) {
+      if (file.path.endsWith('.md')) {
+        await processMarkdownFile(file as File);
+      }
+    }
+  }
+}
+</code></pre>
+<h3 id="javascript">JavaScript</h3>
+<pre><code class="language-javascript">// GenGen plugin example
+class CustomPlugin {
+  constructor(config) {
+    this.config = config;
+    this.name = 'custom-plugin';
+  }
+  
+  async process(site, pages) {
+    console.log(`Processing ${pages.length} pages with ${this.name}`);
+    
+    // Add custom data to each page
+    pages.forEach(page => {
+      page.data.customField = this.generateCustomData(page);
+    });
+    
+    return pages;
+  }
+  
+  generateCustomData(page) {
+    return {
+      wordCount: page.content.split(/\s+/).length,
+      readingTime: Math.ceil(page.content.split(/\s+/).length / 200),
+      lastModified: new Date().toISOString()
+    };
+  }
+}
+
+module.exports = CustomPlugin;
+</code></pre>
+<h3 id="html-templates">HTML Templates</h3>
+<pre><code class="language-html"><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Syntax Highlighting - GenGen Documentation</title>
+    <link rel="stylesheet" href="/assets/css/main.css">
+</head>
+<body>
+    <header class="site-header">
+        <nav class="main-nav">
+            <a href="/" class="site-title">GenGen Documentation</a>
+            <ul class="nav-links">
+                <li><a href="/about/">About</a></li>
+                <li><a href="/posts/">Posts</a></li>
+                <li><a href="/contact/">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <main class="content">
+        
+    </main>
+    
+    <footer class="site-footer">
+        <p>© 2026 GenGen Team</p>
+    </footer>
+</body>
+</html>
+</code></pre>
+<h3 id="cssscss-styles">CSS/SCSS Styles</h3>
+<pre><code class="language-scss">// Variables
+$primary-color: #2563eb;
+$text-color: #1e293b;
+$font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+
+// Mixins
+@mixin button-style($bg-color: $primary-color) {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  background-color: $bg-color;
+  color: white;
+  text-decoration: none;
+  border-radius: 0.375rem;
+  transition: background-color 0.2s ease;
+  
+  &:hover {
+    background-color: darken($bg-color, 10%);
+  }
+}
+
+// Base styles
+body {
+  font-family: $font-family;
+  color: $text-color;
+  line-height: 1.6;
+}
+
+.btn {
+  @include button-style();
+  
+  &.btn-secondary {
+    @include button-style(#64748b);
+  }
+}
+</code></pre>
+<h3 id="json-data">JSON Data</h3>
+<pre><code class="language-json">{
+  "site": {
+    "title": "GenGen Documentation",
+    "description": "Complete guide to using GenGen static site generator",
+    "version": "1.0.0",
+    "features": [
+      "Fast build times",
+      "Jekyll compatibility", 
+      "Plugin system",
+      "Sass support",
+      "Modern templating"
+    ]
+  },
+  "navigation": [
+    {
+      "title": "Getting Started",
+      "url": "/getting-started/",
+      "order": 1
+    },
+    {
+      "title": "Configuration", 
+      "url": "/configuration/",
+      "order": 2
+    },
+    {
+      "title": "Themes",
+      "url": "/themes/",
+      "order": 3
+    }
+  ]
+}
+</code></pre>
+<h3 id="shell-scripts">Shell Scripts</h3>
+<pre><code class="language-bash">#!/bin/bash
+
+# GenGen build script
+set -e
+
+echo "🚀 Building GenGen site..."
+
+# Clean previous build
+if [ -d "public" ]; then
+    echo "🧹 Cleaning previous build..."
+    rm -rf public
+fi
+
+# Install dependencies
+echo "📦 Installing dependencies..."
+dart pub get
+
+# Build the site
+echo "🔨 Building site..."
+dart run bin/main.dart build
+
+# Optimize images (if imagemagick is available)
+if command -v convert &> /dev/null; then
+    echo "🖼️  Optimizing images..."
+    find public -name "*.jpg" -o -name "*.png" | while read img; do
+        convert "$img" -quality 85 "$img"
+    done
+fi
+
+# Generate sitemap
+echo "🗺️  Generating sitemap..."
+find public -name "*.html" | sed 's|public/||' | sed 's|/index.html|/|' > public/sitemap.txt
+
+echo "✅ Build completed successfully!"
+echo "📁 Output directory: $(pwd)/public"
+</code></pre>
+<h3 id="python-scripts">Python Scripts</h3>
+<pre><code class="language-python">#!/usr/bin/env python3
+"""
+GenGen deployment script
+Builds and deploys a GenGen site to various hosting platforms
+"""
+
+import os
+import subprocess
+import argparse
+from pathlib import Path
+
+class GenGenDeployer:
+    def __init__(self, site_path: str):
+        self.site_path = Path(site_path)
+        self.public_dir = self.site_path / "public"
+    
+    def build_site(self) -> bool:
+        """Build the GenGen site"""
+        print("🔨 Building GenGen site...")
+        
+        try:
+            result = subprocess.run(
+                ["gengen", "build"], 
+                cwd=self.site_path,
+                check=True,
+                capture_output=True,
+                text=True
+            )
+            print("✅ Site built successfully!")
+            return True
+        except subprocess.CalledProcessError as e:
+            print(f"❌ Build failed: {e.stderr}")
+            return False
+    
+    def deploy_to_netlify(self, site_id: str) -> bool:
+        """Deploy to Netlify"""
+        print(f"🚀 Deploying to Netlify (site: {site_id})...")
+        
+        try:
+            subprocess.run([
+                "netlify", "deploy", 
+                "--prod", 
+                "--dir", str(self.public_dir),
+                "--site", site_id
+            ], check=True)
+            print("✅ Deployed to Netlify successfully!")
+            return True
+        except subprocess.CalledProcessError:
+            print("❌ Netlify deployment failed!")
+            return False
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Deploy GenGen site")
+    parser.add_argument("--site-path", default=".", help="Path to GenGen site")
+    parser.add_argument("--netlify-site-id", help="Netlify site ID")
+    
+    args = parser.parse_args()
+    
+    deployer = GenGenDeployer(args.site_path)
+    
+    if deployer.build_site():
+        if args.netlify_site_id:
+            deployer.deploy_to_netlify(args.netlify_site_id)
+</code></pre>
+<h2 id="advanced-features">Advanced Features</h2>
+<h3 id="no-language-specified">No Language Specified</h3>
+<p>When no language is specified, the highlight tag defaults to plain text:</p>
+<pre><code class="language-text">This is plain text without syntax highlighting.
+It's useful for showing output or simple text content.
+</code></pre>
+<h3 id="liquid-template-code">Liquid Template Code</h3>
+<p>To show Liquid template code itself, use the <code>liquid</code> language:</p>
+<pre><code class="language-liquid"><!-- Show current page title -->
+<h1>Syntax Highlighting</h1>
+
+<!-- Loop through posts -->
+
+
+<!-- Include partial -->
+<aside class="docs-sidebar" aria-label="Documentation navigation">
+  <div class="docs-sidebar__inner">
+    <div class="docs-sidebar__title">
+      <span class="docs-sidebar__label">Documentation</span>
+      <button class="docs-sidebar__toggle" type="button" aria-label="Toggle navigation">
+        ☰
+      </button>
+    </div>
+
+    
+    
+      <ul class="docs-sidebar__sections">
+        
+          <li class="docs-sidebar__section">
+            <h2>
+              <span class="docs-sidebar__icon">🚀</span>
+              Getting Started
+            </h2>
+            
+              <ul class="docs-sidebar__pages">
+                
+                  <li>
+                    <a href="/gengen/"
+                       class="docs-sidebar__link"
+                       >
+                      Overview
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Introduction to GenGen and quick start guide</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/installation/"
+                       class="docs-sidebar__link"
+                       >
+                      Installation
+                    </a>
+                    
+                      <p class="docs-sidebar__description">How to install and set up GenGen</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/configuration/"
+                       class="docs-sidebar__link"
+                       >
+                      Configuration
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Complete guide to configuring GenGen</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/pages/"
+                       class="docs-sidebar__link"
+                       >
+                      Pages & Content
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Creating and structuring pages and posts</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/collections/"
+                       class="docs-sidebar__link"
+                       >
+                      Collections
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Group structured content with collections</p>
+                    
+                  </li>
+                
+              </ul>
+            
+          </li>
+        
+          <li class="docs-sidebar__section">
+            <h2>
+              <span class="docs-sidebar__icon">🔗</span>
+              URL Structure
+            </h2>
+            
+              <ul class="docs-sidebar__pages">
+                
+                  <li>
+                    <a href="/gengen/permalinks/"
+                       class="docs-sidebar__link"
+                       >
+                      Permalinks
+                    </a>
+                    
+                      <p class="docs-sidebar__description">URL structure and permalink configuration</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/aliases/"
+                       class="docs-sidebar__link"
+                       >
+                      Aliases
+                    </a>
+                    
+                      <p class="docs-sidebar__description">URL redirects and content migration</p>
+                    
+                  </li>
+                
+              </ul>
+            
+          </li>
+        
+          <li class="docs-sidebar__section">
+            <h2>
+              <span class="docs-sidebar__icon">🎨</span>
+              Styling & Assets
+            </h2>
+            
+              <ul class="docs-sidebar__pages">
+                
+                  <li>
+                    <a href="/gengen/sass/"
+                       class="docs-sidebar__link"
+                       >
+                      Sass Processing
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Using Sass/SCSS with _sass directory structure</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/syntax-highlighting/"
+                       class="docs-sidebar__link is-active"
+                       >
+                      Syntax Highlighting
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Code highlighting with the highlight tag</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/assets/"
+                       class="docs-sidebar__link"
+                       >
+                      Assets Management
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Managing static assets and files</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/themes/aurora/"
+                       class="docs-sidebar__link"
+                       >
+                      Aurora Theme
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Modern aurora-inspired starter theme</p>
+                    
+                  </li>
+                
+              </ul>
+            
+          </li>
+        
+          <li class="docs-sidebar__section">
+            <h2>
+              <span class="docs-sidebar__icon">⚡</span>
+              Advanced Features
+            </h2>
+            
+              <ul class="docs-sidebar__pages">
+                
+                  <li>
+                    <a href="/gengen/pagination/"
+                       class="docs-sidebar__link"
+                       >
+                      Pagination
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Automatic pagination for posts and content</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/plugins/"
+                       class="docs-sidebar__link"
+                       >
+                      Plugins
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Using and developing custom plugins</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/liquid/"
+                       class="docs-sidebar__link"
+                       >
+                      Liquid Templates
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Using Liquid templating language</p>
+                    
+                  </li>
+                
+              </ul>
+            
+          </li>
+        
+          <li class="docs-sidebar__section">
+            <h2>
+              <span class="docs-sidebar__icon">🚀</span>
+              Deployment
+            </h2>
+            
+              <ul class="docs-sidebar__pages">
+                
+                  <li>
+                    <a href="/gengen/build/"
+                       class="docs-sidebar__link"
+                       >
+                      Build Process
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Understanding the build process</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/deploy-github/"
+                       class="docs-sidebar__link"
+                       >
+                      GitHub Pages
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Deploy to GitHub Pages</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/deploy-netlify/"
+                       class="docs-sidebar__link"
+                       >
+                      Netlify
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Deploy to Netlify</p>
+                    
+                  </li>
+                
+              </ul>
+            
+          </li>
+        
+          <li class="docs-sidebar__section">
+            <h2>
+              <span class="docs-sidebar__icon">📚</span>
+              Reference
+            </h2>
+            
+              <ul class="docs-sidebar__pages">
+                
+                  <li>
+                    <a href="/gengen/cli/"
+                       class="docs-sidebar__link"
+                       >
+                      CLI Commands
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Command-line interface reference</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/api/"
+                       class="docs-sidebar__link"
+                       >
+                      API Reference
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Complete API documentation</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/troubleshooting/"
+                       class="docs-sidebar__link"
+                       >
+                      Troubleshooting
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Common issues and solutions</p>
+                    
+                  </li>
+                
+              </ul>
+            
+          </li>
+        
+      </ul>
+    
+  </div>
+</aside>
+
+</code></pre>
+<h2 id="usage-tips">Usage Tips</h2>
+<ol>
+<li><strong>Choose the right language</strong> - Use specific language identifiers for better highlighting</li>
+<li><strong>Keep code readable</strong> - Don't make code blocks too long</li>
+<li><strong>Add context</strong> - Explain what the code does before or after the block</li>
+<li><strong>Use consistent indentation</strong> - Maintain proper formatting in your code blocks</li>
+</ol>
+<p>The highlight tag makes your documentation more readable and professional. Use it throughout your GenGen site to showcase code examples beautifully!</p>
+
+          </div>
+          
+
+
+
+
+  
+    
+      
+        
+      
+    
+  
+    
+      
+        
+      
+    
+  
+    
+      
+        
+      
+    
+  
+    
+      
+        
+      
+    
+  
+    
+      
+        
+      
+    
+  
+
+  
+    
+      
+        
+      
+    
+  
+    
+      
+        
+      
+    
+  
+
+  
+    
+      
+        
+      
+    
+  
+    
+      
+        
+        
+        
+      
+    
+  
+    
+      
+    
+  
+    
+  
+
+  
+    
+  
+    
+  
+    
+  
+
+  
+    
+  
+    
+  
+    
+  
+
+  
+    
+  
+    
+  
+    
+  
+
+
+<nav class="docs-pagination" aria-label="Page navigation">
+  
+    <a class="docs-pagination__link docs-pagination__link--prev" href="/gengen/sass/">
+      <span class="docs-pagination__label">Previous</span>
+      <span class="docs-pagination__title">Sass Processing</span>
+    </a>
+  
+
+  
+    <a class="docs-pagination__link docs-pagination__link--next" href="/gengen/assets/">
+      <span class="docs-pagination__label">Next</span>
+      <span class="docs-pagination__title">Assets Management</span>
+    </a>
+  
+</nav>
+
+        </article>
+
+        <aside class="docs-toc" aria-label="On this page">
+  
+    <div class="docs-toc__inner">
+      <h3 class="docs-toc__title">On this page</h3>
+      <div id="docs-toc-list" class="docs-toc__list">
+        <!-- Table of contents populated by docs.js -->
+      </div>
+    </div>
+  
+</aside>
+
+      </div>
+    </main>
+  
+
+  
+<footer class="docs-footer">
+  <div class="docs-footer__inner">
+    <div class="docs-footer__brand">
+      <p>© 2026 GenGen Documentation. Built with GenGen.</p>
+      
+        <p class="docs-footer__version">Version 1.0.0</p>
+      
+    </div>
+    
+    <nav class="docs-footer__nav" aria-label="Footer">
+      
+        <a href="https://github.com/gengen/gengen"
+           class="docs-footer__link"
+           target="_blank" rel="noopener">
+          GitHub
+        </a>
+      
+        <a href="https://github.com/gengen/gengen/issues"
+           class="docs-footer__link"
+           target="_blank" rel="noopener">
+          Issues
+        </a>
+      
+        <a href="https://github.com/gengen/gengen/discussions"
+           class="docs-footer__link"
+           target="_blank" rel="noopener">
+          Discussions
+        </a>
+      
+    </nav>
+    
+  </div>
+</footer>
+
+  <script src="/gengen/assets/js/docs.js"></script>
+
+</body>
+</html>

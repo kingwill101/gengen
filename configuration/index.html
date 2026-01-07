@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="description" content="Complete guide to configuring GenGen with all available options">
+
+
+<title>
+  Configuration · GenGen Documentation
+</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="/gengen/assets/css/main.css">
+
+
+
+
+
+</head>
+
+<body class="docs-body">
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  
+
+
+<header class="docs-header">
+  <div class="docs-header__inner">
+    <div class="docs-header__brand">
+      <a class="brand-link" href="/gengen/">
+        <span class="brand-logo">📘</span>
+        <span class="brand-text">
+          <span class="brand-title">GenGen Documentation</span>
+          
+            <span class="brand-subtitle">A powerful static site generator</span>
+          
+        </span>
+      </a>
+    </div>
+
+    
+    <nav class="docs-header__nav" aria-label="Primary">
+      
+        <a href="/gengen/"
+           class="nav-link">
+          Home
+        </a>
+      
+        <a href="/gengen/installation/"
+           class="nav-link">
+          Getting Started
+        </a>
+      
+        <a href="/gengen/configuration/"
+           class="nav-link is-active">
+          Configuration
+        </a>
+      
+        <a href="/gengen/examples/"
+           class="nav-link">
+          Examples
+        </a>
+      
+    </nav>
+    
+
+    <div class="docs-header__actions">
+      <form class="docs-search" role="search">
+  <label for="docs-search-input" class="sr-only">Search documentation</label>
+  <input
+    id="docs-search-input"
+    name="q"
+    type="search"
+    placeholder="Search the docs..."
+    autocomplete="off"
+  >
+  <button type="submit" aria-label="Submit search">
+    🔍
+  </button>
+</form>
+
+      <button class="theme-toggle" type="button" aria-label="Toggle theme">
+        <span class="theme-toggle__icon">🌗</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+
+  
+    <main id="main-content" class="docs-main">
+      
+
+
+
+
+  
+    
+  
+    
+  
+    
+      
+      
+    
+  
+    
+  
+    
+  
+
+  
+    
+  
+    
+  
+
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+  
+    
+  
+    
+  
+    
+  
+
+  
+    
+  
+    
+  
+    
+  
+
+  
+    
+  
+    
+  
+    
+  
+
+
+<nav class="docs-breadcrumbs" aria-label="Breadcrumb">
+  <a href="/gengen/" class="docs-breadcrumbs__link">Home</a>
+  
+    <span class="docs-breadcrumbs__separator">/</span>
+    <span class="docs-breadcrumbs__crumb">Getting Started</span>
+  
+  
+    <span class="docs-breadcrumbs__separator">/</span>
+    <span class="docs-breadcrumbs__crumb docs-breadcrumbs__crumb--current">Configuration</span>
+  
+</nav>
+
+
+      <div class="docs-layout">
+        <aside class="docs-sidebar" aria-label="Documentation navigation">
+  <div class="docs-sidebar__inner">
+    <div class="docs-sidebar__title">
+      <span class="docs-sidebar__label">Documentation</span>
+      <button class="docs-sidebar__toggle" type="button" aria-label="Toggle navigation">
+        ☰
+      </button>
+    </div>
+
+    
+    
+      <ul class="docs-sidebar__sections">
+        
+          <li class="docs-sidebar__section">
+            <h2>
+              <span class="docs-sidebar__icon">🚀</span>
+              Getting Started
+            </h2>
+            
+              <ul class="docs-sidebar__pages">
+                
+                  <li>
+                    <a href="/gengen/"
+                       class="docs-sidebar__link"
+                       >
+                      Overview
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Introduction to GenGen and quick start guide</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/installation/"
+                       class="docs-sidebar__link"
+                       >
+                      Installation
+                    </a>
+                    
+                      <p class="docs-sidebar__description">How to install and set up GenGen</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/configuration/"
+                       class="docs-sidebar__link is-active"
+                       >
+                      Configuration
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Complete guide to configuring GenGen</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/pages/"
+                       class="docs-sidebar__link"
+                       >
+                      Pages & Content
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Creating and structuring pages and posts</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/collections/"
+                       class="docs-sidebar__link"
+                       >
+                      Collections
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Group structured content with collections</p>
+                    
+                  </li>
+                
+              </ul>
+            
+          </li>
+        
+          <li class="docs-sidebar__section">
+            <h2>
+              <span class="docs-sidebar__icon">🔗</span>
+              URL Structure
+            </h2>
+            
+              <ul class="docs-sidebar__pages">
+                
+                  <li>
+                    <a href="/gengen/permalinks/"
+                       class="docs-sidebar__link"
+                       >
+                      Permalinks
+                    </a>
+                    
+                      <p class="docs-sidebar__description">URL structure and permalink configuration</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/aliases/"
+                       class="docs-sidebar__link"
+                       >
+                      Aliases
+                    </a>
+                    
+                      <p class="docs-sidebar__description">URL redirects and content migration</p>
+                    
+                  </li>
+                
+              </ul>
+            
+          </li>
+        
+          <li class="docs-sidebar__section">
+            <h2>
+              <span class="docs-sidebar__icon">🎨</span>
+              Styling & Assets
+            </h2>
+            
+              <ul class="docs-sidebar__pages">
+                
+                  <li>
+                    <a href="/gengen/sass/"
+                       class="docs-sidebar__link"
+                       >
+                      Sass Processing
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Using Sass/SCSS with _sass directory structure</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/syntax-highlighting/"
+                       class="docs-sidebar__link"
+                       >
+                      Syntax Highlighting
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Code highlighting with the highlight tag</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/assets/"
+                       class="docs-sidebar__link"
+                       >
+                      Assets Management
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Managing static assets and files</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/themes/aurora/"
+                       class="docs-sidebar__link"
+                       >
+                      Aurora Theme
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Modern aurora-inspired starter theme</p>
+                    
+                  </li>
+                
+              </ul>
+            
+          </li>
+        
+          <li class="docs-sidebar__section">
+            <h2>
+              <span class="docs-sidebar__icon">⚡</span>
+              Advanced Features
+            </h2>
+            
+              <ul class="docs-sidebar__pages">
+                
+                  <li>
+                    <a href="/gengen/pagination/"
+                       class="docs-sidebar__link"
+                       >
+                      Pagination
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Automatic pagination for posts and content</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/plugins/"
+                       class="docs-sidebar__link"
+                       >
+                      Plugins
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Using and developing custom plugins</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/liquid/"
+                       class="docs-sidebar__link"
+                       >
+                      Liquid Templates
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Using Liquid templating language</p>
+                    
+                  </li>
+                
+              </ul>
+            
+          </li>
+        
+          <li class="docs-sidebar__section">
+            <h2>
+              <span class="docs-sidebar__icon">🚀</span>
+              Deployment
+            </h2>
+            
+              <ul class="docs-sidebar__pages">
+                
+                  <li>
+                    <a href="/gengen/build/"
+                       class="docs-sidebar__link"
+                       >
+                      Build Process
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Understanding the build process</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/deploy-github/"
+                       class="docs-sidebar__link"
+                       >
+                      GitHub Pages
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Deploy to GitHub Pages</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/deploy-netlify/"
+                       class="docs-sidebar__link"
+                       >
+                      Netlify
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Deploy to Netlify</p>
+                    
+                  </li>
+                
+              </ul>
+            
+          </li>
+        
+          <li class="docs-sidebar__section">
+            <h2>
+              <span class="docs-sidebar__icon">📚</span>
+              Reference
+            </h2>
+            
+              <ul class="docs-sidebar__pages">
+                
+                  <li>
+                    <a href="/gengen/cli/"
+                       class="docs-sidebar__link"
+                       >
+                      CLI Commands
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Command-line interface reference</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/api/"
+                       class="docs-sidebar__link"
+                       >
+                      API Reference
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Complete API documentation</p>
+                    
+                  </li>
+                
+                  <li>
+                    <a href="/gengen/troubleshooting/"
+                       class="docs-sidebar__link"
+                       >
+                      Troubleshooting
+                    </a>
+                    
+                      <p class="docs-sidebar__description">Common issues and solutions</p>
+                    
+                  </li>
+                
+              </ul>
+            
+          </li>
+        
+      </ul>
+    
+  </div>
+</aside>
+
+
+        <article class="docs-article">
+          <header class="docs-article__header">
+  <div class="docs-article__meta">
+    
+    
+  </div>
+  <h1>Configuration</h1>
+  
+    <p class="docs-article__description">Complete guide to configuring GenGen with all available options</p>
+  
+</header>
+
+          <div class="docs-article__body">
+            <h1 id="gengen-configuration">GenGen Configuration</h1>
+<p>GenGen uses YAML configuration files to customize your site's behavior. This guide covers all available configuration options and their usage.</p>
+<h2 id="configuration-files">Configuration Files</h2>
+<p>GenGen looks for configuration files in your site's root directory:</p>
+<ul>
+<li><code>config.yaml</code> or <code>config.yml</code> - Main configuration file</li>
+<li><code>config.development.yaml</code> - Development-specific overrides</li>
+<li><code>config.production.yaml</code> - Production-specific overrides</li>
+</ul>
+<h3 id="file-format">File Format</h3>
+<p>Configuration files use YAML format:</p>
+<pre><code class="language-yaml"># Site Information
+title: "My GenGen Site"
+url: "https://example.com"
+
+# Build Settings
+destination: public
+theme: default
+
+# Content Processing
+permalink: date
+markdown_extensions:
+  - .md
+  - .markdown
+</code></pre>
+<h2 id="core-configuration-options">Core Configuration Options</h2>
+<h3 id="site-information">Site Information</h3>
+<p>Basic information about your site:</p>
+<pre><code class="language-yaml"># Site title (used in templates and metadata)
+title: "My GenGen Site"
+
+# Site URL (used for absolute URLs)
+url: "https://example.com"
+
+# Site description
+description: "A static site built with GenGen"
+
+# Site author
+author: "Your Name"
+
+# Additional site data (accessible as site.* in templates)
+site:
+  email: "contact@example.com"
+  social:
+    twitter: "@username"
+    github: "username"
+</code></pre>
+<h3 id="build-settings">Build Settings</h3>
+<p>Control how GenGen processes and outputs your site:</p>
+<pre><code class="language-yaml"># Source directory (default: current directory)
+source: "."
+
+# Output directory (default: "public")
+destination: "public"
+
+# Theme to use (default: "default")
+theme: "default"
+</code></pre>
+<h3 id="directory-structure">Directory Structure</h3>
+<p>Customize where GenGen looks for different types of content:</p>
+<pre><code class="language-yaml"># Posts directory (default: "_posts")
+post_dir: "_posts"
+
+# Drafts directory (default: "_drafts") 
+draft_dir: "_drafts"
+
+# Collections directory (default: "")
+# When set, collections, posts, and drafts are read from this directory.
+collections_dir: "collections"
+
+# Themes directory (default: "_themes")
+themes_dir: "_themes"
+
+# Layouts directory (default: "_layouts")
+layout_dir: "_layouts"
+
+# Plugins directory (default: "_plugins")
+plugin_dir: "_plugins"
+
+# Sass/SCSS directory (default: "_sass")
+sass_dir: "_sass"
+
+# Data files directory (default: "_data")
+data_dir: "_data"
+
+# Static assets directory (default: "assets")
+asset_dir: "assets"
+
+# Templates directory (default: "_templates")
+template_dir: "_templates"
+
+# Includes directory (default: "_includes")
+include_dir: "_includes"
+</code></pre>
+<h3 id="collections">Collections</h3>
+<p>Collections let you group content in underscore-prefixed folders like <code>_docs</code> or <code>_tutorials</code>.</p>
+<pre><code class="language-yaml">collections:
+  docs:
+    output: true
+    permalink: "/:collection/:path/"
+  tutorials:
+    output: false
+
+defaults:
+  - scope:
+      type: "docs"
+    values:
+      layout: "doc"
+</code></pre>
+<p><code>output: true</code> writes collection items to the destination. When <code>output</code> is <code>false</code>,
+items are still available in Liquid via <code>site.collections</code> and <code>site.<name></code>.</p>
+<p>Collections can also be declared as a list:</p>
+<pre><code class="language-yaml">collections:
+  - docs
+  - tutorials
+</code></pre>
+<h3 id="publish-controls">Publish Controls</h3>
+<pre><code class="language-yaml"># Include future-dated content in output
+future: false
+
+# Include items with published: false
+unpublished: false
+
+# Require front matter on extensionless posts
+strict_front_matter: false
+</code></pre>
+<h3 id="safe-mode-plugins">Safe Mode (Plugins)</h3>
+<p>Safe mode disables <strong>Lua plugins</strong> by default. This is useful for locked-down
+environments or shared builds.</p>
+<pre><code class="language-yaml"># Disable Lua plugins unless explicitly allowlisted
+safe: true
+
+# Allowlist Lua plugins that may run in safe mode
+safe_plugins:
+  - "trusted-plugin"
+  - "theme-banner"
+</code></pre>
+<p>You can also enable safe mode from the CLI:</p>
+<pre><code class="language-bash">gengen build --safe
+</code></pre>
+<h3 id="file-processing">File Processing</h3>
+<p>Control which files are processed and how:</p>
+<pre><code class="language-yaml"># Files to include in processing (glob patterns)
+include:
+  - "_posts/special/*.md"
+  - "hidden-file.txt"
+
+# Files to exclude from processing (glob patterns)
+exclude:
+  - "README.md"
+  - "config.*"
+  - "node_modules"
+  - ".git"
+
+# Markdown file extensions to process
+markdown_extensions:
+  - ".md"
+  - ".markdown"
+  - ".mdown"
+
+# Files to completely block from access
+block_list:
+  - "secret.txt"
+  - "private/*"
+</code></pre>
+<h2 id="permalink-configuration">Permalink Configuration</h2>
+<p>Control how URLs are generated for your content:</p>
+<h3 id="built-in-permalink-structures">Built-in Permalink Structures</h3>
+<pre><code class="language-yaml"># Date-based permalink (default)
+permalink: "date"
+# Generates: /posts/2024/01/15/post-title.html
+
+# Pretty URLs (directory structure)
+permalink: "pretty" 
+# Generates: /posts/2024/01/15/post-title/
+
+# Ordinal day of year
+permalink: "ordinal"
+# Generates: /posts/2024/015/post-title.html
+
+# Week-based
+permalink: "weekdate"
+# Generates: /posts/2024/W02/Sun/post-title.html
+
+# Categories and title only
+permalink: "none"
+# Generates: /posts/post-title.html
+</code></pre>
+<h3 id="custom-permalink-patterns">Custom Permalink Patterns</h3>
+<p>Create custom URL structures using tokens:</p>
+<pre><code class="language-yaml"># Custom pattern with date tokens
+permalink: "blog/:year/:month/:title/"
+
+# Simple blog structure
+permalink: "posts/:title/"
+
+# Category-based structure
+permalink: ":categories/:title.html"
+</code></pre>
+<h4 id="available-tokens">Available Tokens</h4>
+<ul>
+<li><code>:year</code> - 4-digit year (2024)</li>
+<li><code>:month</code> - 2-digit month (01-12)</li>
+<li><code>:day</code> - 2-digit day (01-31)</li>
+<li><code>:title</code> - Slugified post title</li>
+<li><code>:categories</code> - Post categories/tags joined with <code>/</code></li>
+<li><code>:basename</code> - Original filename without extension</li>
+<li><code>:output_ext</code> - Output file extension (.html)</li>
+</ul>
+<h3 id="literal-permalinks">Literal Permalinks</h3>
+<p>Use exact paths for specific pages:</p>
+<pre><code class="language-yaml"># In front matter
+permalink: "/about/"           # Creates /about/index.html
+permalink: "/contact.html"     # Creates /contact.html
+permalink: "custom-page"       # Creates /custom-page/index.html
+</code></pre>
+<h2 id="content-configuration">Content Configuration</h2>
+<h3 id="posts-and-pages">Posts and Pages</h3>
+<pre><code class="language-yaml"># Output directory for posts
+output:
+  posts_dir: "posts"
+
+# Date format for parsing post dates
+date_format: "yyyy-MM-dd HH:mm:ss"
+
+# Whether to publish draft posts
+publish_drafts: false
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li>Posts can live in subdirectories under <code>_posts/</code>.</li>
+<li>Filenames do <strong>not</strong> need a date prefix. Dates are read from front matter,
+or derived from a <code>YYYY-MM-DD-</code> filename prefix when present.</li>
+<li>If you use date-based permalinks without a date, GenGen falls back to the file
+modified time.</li>
+<li><code>_index.md</code> files in <code>_posts/</code> (or any content folder) are treated as
+directory-level front matter and are not rendered.</li>
+</ul>
+<h3 id="data-files">Data Files</h3>
+<p>Data files in <code>_data/</code> are automatically loaded and available in templates:</p>
+<p>GenGen also merges <code>_data</code> from the active theme and any plugins. Precedence is:
+<code>site _data</code> → <code>theme _data</code> → <code>plugin _data</code> (site overrides theme overrides plugin).</p>
+<pre><code class="language-yaml"># Custom data can be added directly to config
+data:
+  navigation:
+    - title: "Home"
+      url: "/"
+    - title: "About" 
+      url: "/about/"
+  
+  footer:
+    copyright: "© 2024 My Site"
+</code></pre>
+<h2 id="pagination-configuration">Pagination Configuration</h2>
+<p>Configure automatic pagination for posts:</p>
+<pre><code class="language-yaml">pagination:
+  # Enable pagination (default: true)
+  enabled: true
+  
+  # Number of items per page (default: 5)
+  items_per_page: 10
+  
+  # Collection to paginate (default: "posts")
+  collection: "posts"
+  
+  # URL pattern for pagination pages (default: "/page/:num/")
+  permalink: "/page/:num/"
+  
+  # Index page template (default: "index")
+  indexpage: "index"
+</code></pre>
+<h3 id="pagination-template-variables">Pagination Template Variables</h3>
+<p>In your templates, pagination data is available as:</p>
+<pre><code class="language-liquid"><!-- Current page items -->
+
+
+<!-- Pagination info -->
+<p>Page  of </p>
+
+<!-- Navigation -->
+
+
+
+</code></pre>
+<h2 id="theme-configuration">Theme Configuration</h2>
+<h3 id="using-themes">Using Themes</h3>
+<pre><code class="language-yaml"># Use a built-in or custom theme
+theme: "default"
+
+# Theme-specific settings can be added
+theme_config:
+  color_scheme: "dark"
+  show_sidebar: true
+</code></pre>
+<h3 id="theme-structure">Theme Structure</h3>
+<p>Themes are located in <code>_themes/theme-name/</code> and can contain:</p>
+<ul>
+<li><code>_layouts/</code> - Layout templates</li>
+<li><code>_includes/</code> - Partial templates</li>
+<li><code>_sass/</code> - Sass/SCSS stylesheets</li>
+<li><code>assets/</code> - Theme assets (CSS, JS, images)</li>
+<li><code>content/</code> - Theme pages (front matter files rendered into the site)</li>
+<li><code>config.yaml</code> - Theme-specific configuration</li>
+</ul>
+<p>Theme pages render to the same relative path inside the site output. If a site
+file exists at the same path, the site file wins and the theme page is ignored.</p>
+<h2 id="plugin-configuration">Plugin Configuration</h2>
+<p>GenGen uses a flexible plugin system that allows you to enable/disable plugins individually or by groups.</p>
+<h3 id="plugin-groups">Plugin Groups</h3>
+<p>Plugins are organized into logical groups for easier management:</p>
+<pre><code class="language-yaml">plugins:
+  # Enable plugin groups
+  enabled:
+    - core          # Essential plugins (Draft, Markdown, Liquid)
+    - seo           # SEO plugins (RSS, Sitemap)
+    - assets        # Asset processing (Sass, Tailwind)
+    - content       # Content enhancement (Pagination, Aliases)
+  
+  # Disable specific plugins
+  disabled:
+    - TailwindPlugin  # Disable Tailwind even if assets group is enabled
+  
+  # Define custom plugin groups
+  groups:
+    core:
+      - DraftPlugin
+      - MarkdownPlugin
+      - LiquidPlugin
+    seo:
+      - RssPlugin
+      - SitemapPlugin
+    assets:
+      - SassPlugin
+      - TailwindPlugin
+    content:
+      - PaginationPlugin
+      - AliasPlugin
+    
+    # Custom group example
+    blog:
+      - MarkdownPlugin
+      - LiquidPlugin
+      - RssPlugin
+      - PaginationPlugin
+</code></pre>
+<h3 id="individual-plugin-configuration">Individual Plugin Configuration</h3>
+<p>Each plugin can have its own configuration section:</p>
+<pre><code class="language-yaml"># RSS feed configuration
+rss:
+  path: feed.xml
+  limit: 20
+  full_content: false
+
+# Sitemap configuration
+sitemap:
+  path: sitemap.xml
+  include_posts: true
+  include_pages: true
+
+# Sass configuration
+sass:
+  style: compressed
+  source_map: false
+  load_paths: ["_sass"]
+
+# Tailwind configuration
+tailwind:
+  executable: "./tailwindcss"
+  input: "assets/css/tailwind.css"
+  output: "assets/css/styles.css"
+
+# Pagination configuration
+pagination:
+  enabled: true
+  per_page: 10
+  permalink: "/page/:num/"
+  title_suffix: " - Page :num"
+
+# Draft publishing
+publish_drafts: false
+</code></pre>
+<h3 id="plugin-management-commands">Plugin Management Commands</h3>
+<p>Use the command line to inspect your plugin configuration:</p>
+<pre><code class="language-bash"># Show plugin overview
+gengen plugins
+
+# Show all available plugins
+gengen plugins --available
+
+# Show only enabled plugins
+gengen plugins --enabled
+
+# Show plugin groups
+gengen plugins --groups
+</code></pre>
+<h3 id="configuration-examples">Configuration Examples</h3>
+<p><strong>Minimal setup (core only):</strong></p>
+<pre><code class="language-yaml">plugins:
+  enabled:
+    - core
+</code></pre>
+<p><strong>Blog setup:</strong></p>
+<pre><code class="language-yaml">plugins:
+  enabled:
+    - core
+    - seo
+    - content
+</code></pre>
+<p><strong>Full-featured site:</strong></p>
+<pre><code class="language-yaml">plugins:
+  enabled:
+    - core
+    - seo
+    - assets
+    - content
+</code></pre>
+<p><strong>Custom configuration:</strong></p>
+<pre><code class="language-yaml">plugins:
+  enabled:
+    - MarkdownPlugin
+    - LiquidPlugin
+    - SassPlugin
+    - RssPlugin
+  disabled: []
+</code></pre>
+<h2 id="environment-specific-configuration">Environment-Specific Configuration</h2>
+<h3 id="development-configuration">Development Configuration</h3>
+<p>Create <code>config.development.yaml</code> for development-specific settings:</p>
+<pre><code class="language-yaml"># Development overrides
+destination: "_site"
+show_drafts: true
+url: "http://localhost:4000"
+
+# Development-specific data
+site:
+  analytics_id: ""  # Disable analytics in development
+</code></pre>
+<h3 id="production-configuration">Production Configuration</h3>
+<p>Create <code>config.production.yaml</code> for production settings:</p>
+<pre><code class="language-yaml"># Production overrides
+destination: "dist"
+url: "https://mysite.com"
+
+# Minification and optimization
+sass:
+  style: compressed
+
+# Production-specific data
+site:
+  analytics_id: "GA-XXXXXXXX"
+</code></pre>
+<h2 id="configuration-precedence">Configuration Precedence</h2>
+<p>GenGen merges configuration in this order (later values override earlier ones):</p>
+<ol>
+<li>Built-in defaults</li>
+<li><code>config.yaml</code></li>
+<li>Environment-specific config (<code>config.development.yaml</code>)</li>
+<li>Command-line overrides</li>
+<li>Front matter (for individual files)</li>
+</ol>
+<h2 id="complete-example">Complete Example</h2>
+<p>Here's a comprehensive configuration example:</p>
+<pre><code class="language-yaml"># Site Information
+title: "My Blog"
+description: "A personal blog about web development"
+author: "Jane Developer"
+url: "https://myblog.com"
+
+# Custom site data
+site:
+  email: "jane@myblog.com"
+  social:
+    twitter: "@janedeveloper"
+    github: "janedeveloper"
+  navigation:
+    - title: "Home"
+      url: "/"
+    - title: "About"
+      url: "/about/"
+    - title: "Blog"
+      url: "/blog/"
+
+# Build Settings
+theme: "default"
+destination: "public"
+permalink: "pretty"
+
+# Content Processing
+markdown_extensions:
+  - ".md"
+  - ".markdown"
+
+exclude:
+  - "README.md"
+  - "package.json"
+  - "node_modules"
+  - ".git"
+
+include:
+  - "_posts/drafts/*.md"
+
+# Pagination
+pagination:
+  enabled: true
+  items_per_page: 8
+  permalink: "/page/:num/"
+
+# Output Configuration
+output:
+  posts_dir: "blog"
+
+# Date Format
+date_format: "yyyy-MM-dd"
+
+# Development Settings
+publish_drafts: false
+</code></pre>
+<h2 id="validation-and-debugging">Validation and Debugging</h2>
+<p>GenGen validates your configuration and will show warnings for:</p>
+<ul>
+<li>Invalid YAML syntax</li>
+<li>Unknown configuration options</li>
+<li>Incorrect data types (e.g., string instead of array)</li>
+<li>Missing required files or directories</li>
+</ul>
+<p>Use the <code>--verbose</code> flag when building to see detailed configuration information:</p>
+<pre><code class="language-bash">gengen build --verbose
+</code></pre>
+<h2 id="migration-from-jekyll">Migration from Jekyll</h2>
+<p>GenGen's configuration is largely compatible with Jekyll. Common differences:</p>
+<h3 id="jekyll--gengen-mappings">Jekyll → GenGen Mappings</h3>
+<table>
+<thead>
+<tr>
+<th>Jekyll</th>
+<th>GenGen</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>_config.yml</code></td>
+<td><code>config.yaml</code></td>
+<td>YAML extension preferred</td>
+</tr>
+<tr>
+<td><code>baseurl</code></td>
+<td>Use <code>url</code></td>
+<td>GenGen handles this automatically</td>
+</tr>
+<tr>
+<td><code>collections</code></td>
+<td>Supported</td>
+<td>Configure with <code>collections</code> + <code>_collection</code> folders</td>
+</tr>
+<tr>
+<td><code>gems</code></td>
+<td><code>plugins</code></td>
+<td>Different plugin system</td>
+</tr>
+<tr>
+<td><code>highlighter</code></td>
+<td>Built into markdown</td>
+<td>Automatic syntax highlighting</td>
+</tr>
+</tbody>
+</table>
+<h3 id="unsupported-jekyll-features">Unsupported Jekyll Features</h3>
+<ul>
+<li>Jekyll-specific plugins (implement as GenGen plugins)</li>
+<li>Some advanced Liquid filters (basic set supported)</li>
+</ul>
+<p>Most Jekyll sites can be migrated by renaming <code>_config.yml</code> to <code>config.yaml</code> and making minor adjustments to unsupported features.</p>
+
+          </div>
+          
+
+
+
+
+  
+    
+      
+        
+      
+    
+  
+    
+      
+        
+      
+    
+  
+    
+      
+        
+        
+        
+      
+    
+  
+    
+      
+    
+  
+    
+  
+
+  
+    
+  
+    
+  
+
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+  
+    
+  
+    
+  
+    
+  
+
+  
+    
+  
+    
+  
+    
+  
+
+  
+    
+  
+    
+  
+    
+  
+
+
+<nav class="docs-pagination" aria-label="Page navigation">
+  
+    <a class="docs-pagination__link docs-pagination__link--prev" href="/gengen/installation/">
+      <span class="docs-pagination__label">Previous</span>
+      <span class="docs-pagination__title">Installation</span>
+    </a>
+  
+
+  
+    <a class="docs-pagination__link docs-pagination__link--next" href="/gengen/pages/">
+      <span class="docs-pagination__label">Next</span>
+      <span class="docs-pagination__title">Pages & Content</span>
+    </a>
+  
+</nav>
+
+        </article>
+
+        <aside class="docs-toc" aria-label="On this page">
+  
+    <div class="docs-toc__inner">
+      <h3 class="docs-toc__title">On this page</h3>
+      <div id="docs-toc-list" class="docs-toc__list">
+        <!-- Table of contents populated by docs.js -->
+      </div>
+    </div>
+  
+</aside>
+
+      </div>
+    </main>
+  
+
+  
+<footer class="docs-footer">
+  <div class="docs-footer__inner">
+    <div class="docs-footer__brand">
+      <p>© 2026 GenGen Documentation. Built with GenGen.</p>
+      
+        <p class="docs-footer__version">Version 1.0.0</p>
+      
+    </div>
+    
+    <nav class="docs-footer__nav" aria-label="Footer">
+      
+        <a href="https://github.com/gengen/gengen"
+           class="docs-footer__link"
+           target="_blank" rel="noopener">
+          GitHub
+        </a>
+      
+        <a href="https://github.com/gengen/gengen/issues"
+           class="docs-footer__link"
+           target="_blank" rel="noopener">
+          Issues
+        </a>
+      
+        <a href="https://github.com/gengen/gengen/discussions"
+           class="docs-footer__link"
+           target="_blank" rel="noopener">
+          Discussions
+        </a>
+      
+    </nav>
+    
+  </div>
+</footer>
+
+  <script src="/gengen/assets/js/docs.js"></script>
+
+</body>
+</html>
