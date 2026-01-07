@@ -7,13 +7,13 @@
     <meta name="description" content="{{ page.description | default: site.description }}">
     
     <!-- Tailwind CSS will be compiled to this location -->
-    <link href="/assets/css/styles.css" rel="stylesheet">
+    <link href="{{ "assets/css/styles.css" | asset_url }}" rel="stylesheet">
 </head>
 <body class="bg-gray-50 min-h-screen">
     <nav class="bg-white shadow-sm border-b">
         <div class="container mx-auto px-4">
             <div class="flex justify-between items-center py-4">
-                <a href="/" class="text-2xl font-bold text-gray-800">{{ site.title }}</a>
+                <a href="{{ "/" | relative_url }}" class="text-2xl font-bold text-gray-800">{{ site.title }}</a>
                 <div class="text-sm text-gray-600">Powered by GenGen + Tailwind CSS</div>
             </div>
         </div>

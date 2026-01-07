@@ -8,7 +8,7 @@ module:
   imports:
     # GitHub repository with version constraint
     - path: github.com/kingwill101/gengen_content
-      version: ^1.0.0
+      version: ^1.3.0
 
     # Example: GitLab repository
     # - path: gitlab.com/org/gengen-theme-awesome
@@ -28,8 +28,8 @@ module:
   #   - path: github.com/kingwill101/gengen_content
   #     replacement: ../my-local-theme
 
-# Use theme from the imported module
-theme: gengen-theme-minimal
+# Use theme from the imported module (themes/minimal)
+theme: minimal
 
 # Standard site configuration
 plugins:

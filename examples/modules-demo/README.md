@@ -2,6 +2,20 @@
 
 This example demonstrates GenGen's Hugo-inspired module system for themes and plugins.
 
+## Quick Start
+
+```bash
+# 1. Fetch modules declared in config.yaml
+gengen mod get --source=examples/modules-demo
+
+# 2. Mount the theme (creates symlink to cached module)
+mkdir -p examples/modules-demo/_themes
+ln -s ~/.gengen/cache/modules/github.com/kingwill101/gengen_content/*/themes/minimal examples/modules-demo/_themes/minimal
+
+# 3. Build the site
+gengen build examples/modules-demo
+```
+
 ## Features Demonstrated
 
 - Importing themes from GitHub repositories

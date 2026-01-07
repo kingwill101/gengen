@@ -1,7 +1,7 @@
 <header>
-  <h1><a href="/">{{ site.title }}</a></h1>
+  <h1><a href="{{ "/" | relative_url }}">{{ site.title }}</a></h1>
   <nav>
-    <a href="/" {% if page.url == '/' %}class="active"{% endif %}>Home</a>
-    <a href="/about/" {% if page.url == '/about/' %}class="active"{% endif %}>About</a>
+    <a href="{{ "/" | relative_url }}" {% if page.url == '/' %}class="active"{% endif %}>Home</a>
+    <a href="{{ "/about/" | relative_url }}" {% if page.url == '/about/' %}class="active"{% endif %}>About</a>
   </nav>
 </header>

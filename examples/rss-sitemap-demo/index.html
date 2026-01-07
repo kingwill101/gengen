@@ -12,8 +12,8 @@ layout: default
 <p>When you build this site, GenGen automatically creates:</p>
 
 <ul>
-    <li><strong><a href="/feed.xml">RSS Feed</a></strong> - Subscribe to content updates</li>
-    <li><strong><a href="/sitemap.xml">XML Sitemap</a></strong> - Help search engines discover your content</li>
+    <li><strong><a href="{{ "/feed.xml" | relative_url }}">RSS Feed</a></strong> - Subscribe to content updates</li>
+    <li><strong><a href="{{ "/sitemap.xml" | relative_url }}">XML Sitemap</a></strong> - Help search engines discover your content</li>
 </ul>
 
 <h2>📝 Recent Posts</h2>
@@ -21,7 +21,7 @@ layout: default
 <div style="border-left: 4px solid #007acc; padding-left: 20px; margin: 20px 0;">
     {% for post in site.posts limit:10 %}
     <article style="margin-bottom: 20px;">
-        <h3><a href="{{ post.url }}">{{ post.title }}</a></h3>
+        <h3><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
         <p style="color: #666; font-size: 14px;">
             {{ post.date | date: "%B %d, %Y" }}
             {% if post.author %} by {{ post.author }}{% endif %}
@@ -29,7 +29,7 @@ layout: default
         {% if post.excerpt %}
         <p>{{ post.excerpt }}</p>
         {% endif %}
-        <p><a href="{{ post.url }}">Read more →</a></p>
+        <p><a href="{{ post.url | relative_url }}">Read more →</a></p>
     </article>
     {% endfor %}
 </div>
@@ -69,6 +69,6 @@ sitemap_changefreq: weekly
 
 <h2>📡 Subscribe</h2>
 
-<p>RSS readers can subscribe to this site's feed at: <strong><a href="/feed.xml">/feed.xml</a></strong></p>
+<p>RSS readers can subscribe to this site's feed at: <strong><a href="{{ "/feed.xml" | relative_url }}">/feed.xml</a></strong></p>
 
-<p>Search engines will discover your content through: <strong><a href="/sitemap.xml">/sitemap.xml</a></strong></p> 
+<p>Search engines will discover your content through: <strong><a href="{{ "/sitemap.xml" | relative_url }}">/sitemap.xml</a></strong></p>
