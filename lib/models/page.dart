@@ -24,12 +24,12 @@ class Page extends Base {
       from: site.config.source,
     );
     var normalized = relativePath.replaceAll(RegExp(r'\.*$'), '');
-    
+
     // Convert _posts to posts for URL generation
     if (normalized.startsWith('_posts')) {
       normalized = normalized.replaceFirst('_posts', 'posts');
     }
-    
+
     return normalized == '.' ? '' : normalized;
   }
 

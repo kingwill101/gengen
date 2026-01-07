@@ -41,24 +41,36 @@ void main() {
     test('relative_url returns path relative to destination', () {
       final filter = module.filters['relative_url'] as dynamic;
       final input = p.join(destDir.path, 'assets', 'main.css');
-      final result = filter(input, [], <String, dynamic>{});
+      final result = filter(input, const <dynamic>[], <String, dynamic>{});
       expect(result, 'assets/main.css');
     });
 
     test('absolute_url resolves against destination', () {
       final filter = module.filters['absolute_url'] as dynamic;
-      final result = filter('assets/main.css', [], <String, dynamic>{});
+      final result = filter(
+        'assets/main.css',
+        const <dynamic>[],
+        <String, dynamic>{},
+      );
       expect(result, p.join(destDir.path, 'assets', 'main.css'));
     });
 
     test('asset_url preserves absolute URLs and normalizes relative paths', () {
       final assetUrl = module.filters['asset_url'] as dynamic;
       expect(
-        assetUrl('https://example.com/logo.png', [], <String, dynamic>{}),
+        assetUrl(
+          'https://example.com/logo.png',
+          const <dynamic>[],
+          <String, dynamic>{},
+        ),
         'https://example.com/logo.png',
       );
 
-      final result = assetUrl('assets/logo.png', [], <String, dynamic>{});
+      final result = assetUrl(
+        'assets/logo.png',
+        const <dynamic>[],
+        <String, dynamic>{},
+      );
       expect(result, '/assets/logo.png');
     });
   });

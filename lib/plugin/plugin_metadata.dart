@@ -3,7 +3,7 @@ part 'plugin_metadata.freezed.dart';
 part 'plugin_metadata.g.dart';
 
 @freezed
-class PluginMetadata with _$PluginMetadata {
+abstract class PluginMetadata with _$PluginMetadata {
   const factory PluginMetadata({
     required String name,
     @Default("plugin:Plugin") String entrypoint,
@@ -23,7 +23,7 @@ class PluginMetadata with _$PluginMetadata {
 }
 
 @freezed
-class PluginAsset with _$PluginAsset {
+abstract class PluginAsset with _$PluginAsset {
   const factory PluginAsset({required String name, required String path}) =
       _PluginAsset;
 

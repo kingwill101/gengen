@@ -17,9 +17,7 @@ void main() {
     });
 
     test('parses absolute path import', () {
-      final import_ = ModuleImport.parse({
-        'path': '/home/user/themes/custom',
-      });
+      final import_ = ModuleImport.parse({'path': '/home/user/themes/custom'});
 
       expect(import_.type, ModuleType.local);
       expect(import_.name, 'custom');
@@ -36,9 +34,7 @@ void main() {
     });
 
     test('parses gitlab import', () {
-      final import_ = ModuleImport.parse({
-        'path': 'gitlab.com/org/theme',
-      });
+      final import_ = ModuleImport.parse({'path': 'gitlab.com/org/theme'});
 
       expect(import_.type, ModuleType.git);
       expect(import_.name, 'theme');
@@ -101,10 +97,7 @@ void main() {
 
       expect(manifest.imports.length, 1);
       expect(manifest.replacements.length, 1);
-      expect(
-        manifest.getReplacementFor('github.com/user/theme'),
-        '../my-fork',
-      );
+      expect(manifest.getReplacementFor('github.com/user/theme'), '../my-fork');
       expect(manifest.getReplacementFor('other/path'), null);
     });
 

@@ -141,8 +141,16 @@ class Theme with PathMixin {
       // Check multiple possible locations for the theme
       final possiblePaths = [
         p.join(modulePath, themeName), // Direct: module/themeName
-        p.join(modulePath, 'themes', themeName), // Standard: module/themes/themeName
-        p.join(modulePath, '_themes', themeName), // Jekyll-style: module/_themes/themeName
+        p.join(
+          modulePath,
+          'themes',
+          themeName,
+        ), // Standard: module/themes/themeName
+        p.join(
+          modulePath,
+          '_themes',
+          themeName,
+        ), // Jekyll-style: module/_themes/themeName
       ];
 
       for (final themePath in possiblePaths) {
@@ -153,13 +161,16 @@ class Theme with PathMixin {
             return themePath;
           }
           // Also check for theme without config (layouts/includes exist)
-          final hasLayouts =
-              fs.directory(p.join(themePath, '_layouts')).existsSync();
-          final hasIncludes =
-              fs.directory(p.join(themePath, '_includes')).existsSync();
+          final hasLayouts = fs
+              .directory(p.join(themePath, '_layouts'))
+              .existsSync();
+          final hasIncludes = fs
+              .directory(p.join(themePath, '_includes'))
+              .existsSync();
           if (hasLayouts || hasIncludes) {
             log.fine(
-                'Found theme "$themeName" in module ${import_.path} (no config)');
+              'Found theme "$themeName" in module ${import_.path} (no config)',
+            );
             return themePath;
           }
         }

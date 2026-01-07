@@ -4,22 +4,14 @@ class ModuleImport {
   final String? version;
   final ModuleType type;
 
-  const ModuleImport({
-    required this.path,
-    this.version,
-    required this.type,
-  });
+  const ModuleImport({required this.path, this.version, required this.type});
 
   factory ModuleImport.parse(Map<String, dynamic> data) {
     final path = data['path'] as String? ?? '';
     final version = data['version'] as String?;
     final type = ModuleType.fromPath(path);
 
-    return ModuleImport(
-      path: path,
-      version: version,
-      type: type,
-    );
+    return ModuleImport(path: path, version: version, type: type);
   }
 
   /// The module name extracted from the path
@@ -36,13 +28,14 @@ class ModuleImport {
   }
 
   Map<String, dynamic> toJson() => {
-        'path': path,
-        if (version != null) 'version': version,
-        'type': type.name,
-      };
+    'path': path,
+    if (version != null) 'version': version,
+    'type': type.name,
+  };
 
   @override
-  String toString() => 'ModuleImport($path${version != null ? '@$version' : ''})';
+  String toString() =>
+      'ModuleImport($path${version != null ? '@$version' : ''})';
 }
 
 /// Represents a module replacement for local development
@@ -50,10 +43,7 @@ class ModuleReplacement {
   final String path;
   final String local;
 
-  const ModuleReplacement({
-    required this.path,
-    required this.local,
-  });
+  const ModuleReplacement({required this.path, required this.local});
 
   factory ModuleReplacement.parse(Map<String, dynamic> data) {
     return ModuleReplacement(
@@ -62,10 +52,7 @@ class ModuleReplacement {
     );
   }
 
-  Map<String, dynamic> toJson() => {
-        'path': path,
-        'local': local,
-      };
+  Map<String, dynamic> toJson() => {'path': path, 'local': local};
 }
 
 /// The type of module source

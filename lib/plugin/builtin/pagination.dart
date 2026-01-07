@@ -359,7 +359,8 @@ class PaginationPlugin extends BasePlugin {
       postsIndexPage = pagesInPosts.firstWhereOrNull(
         (page) =>
             page.isIndex &&
-            (page.source.contains('_posts/') || page.source.contains('_posts\\')),
+            (page.source.contains('_posts/') ||
+                page.source.contains('_posts\\')),
       );
     }
 
@@ -389,7 +390,9 @@ class PaginationPlugin extends BasePlugin {
     // Use posts index page as primary if available and we're paginating posts
     if (postsIndexPage != null && collection == 'posts') {
       indexPage = postsIndexPage;
-      logger.info('(${metadata.name}) Using _posts/index as pagination template');
+      logger.info(
+        '(${metadata.name}) Using _posts/index as pagination template',
+      );
     }
 
     // At this point we must have an index page

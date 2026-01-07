@@ -42,7 +42,7 @@ void main() {
       final url = 'http://${server.address.host}:${server.port}/json';
 
       final filter = module.filters['get_json'] as dynamic;
-      final result = await filter(url, [], <String, dynamic>{});
+      final result = await filter(url, const <dynamic>[], <String, dynamic>{});
 
       expect(result, isA<Map<String, dynamic>>());
       expect(result['name'], 'GenGen');
@@ -55,7 +55,7 @@ void main() {
       final url = 'http://${server.address.host}:${server.port}/html';
 
       final filter = module.filters['social_graph'] as dynamic;
-      final result = await filter(url, [], <String, dynamic>{});
+      final result = await filter(url, const <dynamic>[], <String, dynamic>{});
 
       expect(result['title'], 'GenGen');
 
@@ -64,7 +64,7 @@ void main() {
 
     test('markdownify converts markdown to HTML', () {
       final filter = module.filters['markdownify'] as dynamic;
-      final result = filter('# Hello', [], <String, dynamic>{});
+      final result = filter('# Hello', const <dynamic>[], <String, dynamic>{});
       expect(result, contains('<h1'));
     });
   });

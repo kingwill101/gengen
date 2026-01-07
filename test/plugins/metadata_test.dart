@@ -11,9 +11,7 @@ void main() {
       getIt.registerLazySingleton<FileSystem>(() => LocalFileSystem());
     }
     initLog();
-    Site.init(
-      overrides: {'source': 'examples/basic', 'destination': 'build'},
-    );
+    Site.init(overrides: {'source': 'examples/basic', 'destination': 'build'});
     site.read();
   });
 

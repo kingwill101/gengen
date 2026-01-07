@@ -45,40 +45,40 @@ String _strftimeToDateFormat(String strftimeFormat) {
   };
 
   var result = strftimeFormat;
-  
+
   // Sort by length descending to handle longer patterns first (e.g., '%-m' before '%m')
   final sortedKeys = strftimeToIntl.keys.toList()
     ..sort((a, b) => b.length.compareTo(a.length));
-  
+
   for (final key in sortedKeys) {
     result = result.replaceAll(key, strftimeToIntl[key]!);
   }
-  
+
   return result;
 }
 
 /// Parses a date value from various formats
 DateTime? _parseInputDate(dynamic value) {
   if (value == null) return null;
-  
+
   if (value is DateTime) {
     return value;
   }
-  
+
   if (value == 'now' || value == 'today') {
     return DateTime.now();
   }
-  
+
   if (value is num) {
     return DateTime.fromMillisecondsSinceEpoch(value.toInt() * 1000);
   }
-  
+
   if (value is String) {
     // Try parsing as Unix timestamp
     if (RegExp(r'^\d+$').hasMatch(value)) {
       return DateTime.fromMillisecondsSinceEpoch(int.parse(value) * 1000);
     }
-    
+
     // Try standard DateTime parse
     try {
       return DateTime.parse(value);
@@ -92,7 +92,7 @@ DateTime? _parseInputDate(dynamic value) {
         'MMMM d, yyyy',
         'MMM d, yyyy',
       ];
-      
+
       for (final fmt in formats) {
         try {
           return DateFormat(fmt).parse(value);
@@ -102,27 +102,31 @@ DateTime? _parseInputDate(dynamic value) {
       }
     }
   }
-  
+
   return null;
 }
 
 /// Date filter function that supports both strftime and DateFormat patterns.
 /// Can be registered directly with FilterRegistry.register for priority.
-dynamic dateFilter(dynamic input, List<dynamic> args, Map<String, dynamic> namedArgs) {
+dynamic dateFilter(
+  dynamic input,
+  List<dynamic> args,
+  Map<String, dynamic> namedArgs,
+) {
   final date = _parseInputDate(input);
   if (date == null) {
     log.warning('dateFilter: could not parse date from input: $input');
     return input?.toString() ?? '';
   }
-  
+
   // Default format if none provided
   String format = args.isNotEmpty ? args[0].toString() : 'yyyy-MM-dd';
-  
+
   // Convert strftime format to DateFormat if it contains % specifiers
   if (format.contains('%')) {
     format = _strftimeToDateFormat(format);
   }
-  
+
   try {
     return DateFormat(format).format(date);
   } catch (e) {

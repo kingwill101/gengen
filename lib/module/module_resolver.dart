@@ -133,7 +133,8 @@ class ModuleResolver {
 
   /// Update specific modules or all if none specified
   Future<List<ResolvedModule>> update([List<String>? modulePaths]) async {
-    final toUpdate = modulePaths ?? manifest.imports.map((i) => i.path).toList();
+    final toUpdate =
+        modulePaths ?? manifest.imports.map((i) => i.path).toList();
     final resolved = <ResolvedModule>[];
 
     for (final path in toUpdate) {
@@ -180,10 +181,7 @@ class ModuleResolver {
       // Find the import
       final import_ = manifest.imports.firstWhere(
         (i) => i.path == path,
-        orElse: () => ModuleImport(
-          path: path,
-          type: ModuleType.fromPath(path),
-        ),
+        orElse: () => ModuleImport(path: path, type: ModuleType.fromPath(path)),
       );
 
       // Resolve without using lockfile
@@ -199,7 +197,9 @@ class ModuleResolver {
             log.warning('Module not found: $path');
             allValid = false;
           } else if (locked.sha != null && resolved.sha != locked.sha) {
-            log.warning('SHA mismatch for $path: expected ${locked.sha}, got ${resolved.sha}');
+            log.warning(
+              'SHA mismatch for $path: expected ${locked.sha}, got ${resolved.sha}',
+            );
             allValid = false;
           }
           break;

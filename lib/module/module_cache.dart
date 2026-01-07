@@ -9,7 +9,7 @@ class ModuleCache {
   final String cacheRoot;
 
   ModuleCache({String? cacheRoot})
-      : cacheRoot = cacheRoot ?? _defaultCacheRoot();
+    : cacheRoot = cacheRoot ?? _defaultCacheRoot();
 
   static String _defaultCacheRoot() {
     final home = _getHomeDirectory();
@@ -18,7 +18,8 @@ class ModuleCache {
 
   static String _getHomeDirectory() {
     // Try environment variables at runtime
-    final home = io.Platform.environment['HOME'] ??
+    final home =
+        io.Platform.environment['HOME'] ??
         io.Platform.environment['USERPROFILE'];
 
     if (home != null && home.isNotEmpty) {

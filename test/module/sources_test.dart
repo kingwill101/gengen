@@ -99,9 +99,7 @@ void main() {
 
   group('ModuleImport parsing', () {
     test('extracts name from github path', () {
-      final import_ = ModuleImport.parse({
-        'path': 'github.com/user/my-theme',
-      });
+      final import_ = ModuleImport.parse({'path': 'github.com/user/my-theme'});
       expect(import_.name, 'my-theme');
     });
 
@@ -113,16 +111,12 @@ void main() {
     });
 
     test('extracts name from pub package', () {
-      final import_ = ModuleImport.parse({
-        'path': 'pub:gengen_theme_aurora',
-      });
+      final import_ = ModuleImport.parse({'path': 'pub:gengen_theme_aurora'});
       expect(import_.name, 'gengen_theme_aurora');
     });
 
     test('extracts name from local path', () {
-      final import_ = ModuleImport.parse({
-        'path': '../my-local-theme',
-      });
+      final import_ = ModuleImport.parse({'path': '../my-local-theme'});
       expect(import_.name, 'my-local-theme');
     });
 
@@ -135,9 +129,7 @@ void main() {
     });
 
     test('handles missing version', () {
-      final import_ = ModuleImport.parse({
-        'path': 'github.com/user/theme',
-      });
+      final import_ = ModuleImport.parse({'path': 'github.com/user/theme'});
       expect(import_.version, isNull);
     });
   });

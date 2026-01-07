@@ -1,4 +1,3 @@
-import 'package:file/file.dart';
 import 'package:file/memory.dart';
 import 'package:gengen/fs.dart';
 import 'package:gengen/module/module_import.dart';
@@ -8,7 +7,7 @@ import 'package:path/path.dart' as p;
 import 'package:test/test.dart';
 import 'package:yaml/yaml.dart';
 
-/// Helper to recursively convert YAML to Map<String, dynamic>
+/// Helper to recursively convert YAML to `Map<String, dynamic>`
 Map<String, dynamic> _convertYamlToMap(YamlMap yaml) {
   final result = <String, dynamic>{};
   for (final entry in yaml.entries) {
@@ -114,8 +113,12 @@ theme: default
             {'path': 'github.com/user/theme', 'version': '^1.0.0'},
           ],
         });
+        expect(manifest.imports, hasLength(1));
+        expect(manifest.hasImports, isTrue);
 
-        final lockfile = ModuleLockfile(lockfilePath: p.join(siteRoot, 'gengen.lock'));
+        final lockfile = ModuleLockfile(
+          lockfilePath: p.join(siteRoot, 'gengen.lock'),
+        );
         expect(lockfile.hasPackage('github.com/user/theme'), isFalse);
 
         var needsFetch = false;
@@ -135,12 +138,17 @@ theme: default
           ],
         });
 
-        final lockfile = ModuleLockfile(lockfilePath: p.join(siteRoot, 'gengen.lock'));
-        lockfile.setPackage('github.com/user/theme', LockedModule(
-          path: 'github.com/user/theme',
-          version: '^1.0.0',
-          resolved: '$cacheDir/github.com/user/theme/v1.2.0',
-        ));
+        final lockfile = ModuleLockfile(
+          lockfilePath: p.join(siteRoot, 'gengen.lock'),
+        );
+        lockfile.setPackage(
+          'github.com/user/theme',
+          LockedModule(
+            path: 'github.com/user/theme',
+            version: '^1.0.0',
+            resolved: '$cacheDir/github.com/user/theme/v1.2.0',
+          ),
+        );
 
         expect(lockfile.hasPackage('github.com/user/theme'), isTrue);
 
@@ -174,12 +182,17 @@ theme: default
         final cachePath = '$cacheDir/github.com/user/theme/v1.2.0';
         memFs.directory(cachePath).createSync(recursive: true);
 
-        final lockfile = ModuleLockfile(lockfilePath: p.join(siteRoot, 'gengen.lock'));
-        lockfile.setPackage('github.com/user/theme', LockedModule(
-          path: 'github.com/user/theme',
-          version: '^1.0.0',
-          resolved: cachePath,
-        ));
+        final lockfile = ModuleLockfile(
+          lockfilePath: p.join(siteRoot, 'gengen.lock'),
+        );
+        lockfile.setPackage(
+          'github.com/user/theme',
+          LockedModule(
+            path: 'github.com/user/theme',
+            version: '^1.0.0',
+            resolved: cachePath,
+          ),
+        );
 
         var needsFetch = false;
         for (final import_ in manifest.imports) {
@@ -211,17 +224,25 @@ theme: default
         memFs.directory(cache1).createSync(recursive: true);
         memFs.directory(cache2).createSync(recursive: true);
 
-        final lockfile = ModuleLockfile(lockfilePath: p.join(siteRoot, 'gengen.lock'));
-        lockfile.setPackage('github.com/user/theme1', LockedModule(
-          path: 'github.com/user/theme1',
-          version: '^1.0.0',
-          resolved: cache1,
-        ));
-        lockfile.setPackage('github.com/user/theme2', LockedModule(
-          path: 'github.com/user/theme2',
-          version: '^2.0.0',
-          resolved: cache2,
-        ));
+        final lockfile = ModuleLockfile(
+          lockfilePath: p.join(siteRoot, 'gengen.lock'),
+        );
+        lockfile.setPackage(
+          'github.com/user/theme1',
+          LockedModule(
+            path: 'github.com/user/theme1',
+            version: '^1.0.0',
+            resolved: cache1,
+          ),
+        );
+        lockfile.setPackage(
+          'github.com/user/theme2',
+          LockedModule(
+            path: 'github.com/user/theme2',
+            version: '^2.0.0',
+            resolved: cache2,
+          ),
+        );
         // Note: plugin not in lockfile
 
         var needsFetch = false;
@@ -249,8 +270,7 @@ theme: default
 ''');
 
         expect(memFs.directory(themePath).existsSync(), isTrue);
-        expect(
-            memFs.directory('$themePath/_layouts').existsSync(), isTrue);
+        expect(memFs.directory('$themePath/_layouts').existsSync(), isTrue);
       });
 
       test('finds theme at module/_themes/themeName', () {
@@ -269,9 +289,7 @@ theme: default
 
         memFs.directory(modulePath).createSync(recursive: true);
         memFs.directory('$modulePath/_layouts').createSync(recursive: true);
-        memFs
-            .file('$modulePath/_layouts/default.html')
-            .writeAsStringSync('');
+        memFs.file('$modulePath/_layouts/default.html').writeAsStringSync('');
         memFs.file('$modulePath/config.yaml').writeAsStringSync('''
 name: minimal
 version: 1.0.0
@@ -334,9 +352,7 @@ version: 1.0.0
       });
 
       test('identifies local modules correctly', () {
-        final relativeImport = ModuleImport.parse({
-          'path': '../my-theme',
-        });
+        final relativeImport = ModuleImport.parse({'path': '../my-theme'});
         expect(relativeImport.type, ModuleType.local);
 
         final absoluteImport = ModuleImport.parse({
@@ -344,9 +360,7 @@ version: 1.0.0
         });
         expect(absoluteImport.type, ModuleType.local);
 
-        final dotImport = ModuleImport.parse({
-          'path': './themes/local',
-        });
+        final dotImport = ModuleImport.parse({'path': './themes/local'});
         expect(dotImport.type, ModuleType.local);
       });
 
@@ -365,11 +379,14 @@ version: 1.0.0
         final lockfilePath = p.join(siteRoot, 'gengen.lock');
 
         final lockfile = ModuleLockfile(lockfilePath: lockfilePath);
-        lockfile.setPackage('github.com/user/theme', LockedModule(
-          path: 'github.com/user/theme',
-          version: '^1.0.0',
-          resolved: '$cacheDir/github.com/user/theme/v1.2.3',
-        ));
+        lockfile.setPackage(
+          'github.com/user/theme',
+          LockedModule(
+            path: 'github.com/user/theme',
+            version: '^1.0.0',
+            resolved: '$cacheDir/github.com/user/theme/v1.2.3',
+          ),
+        );
 
         // Save lockfile
         lockfile.save();
@@ -385,17 +402,25 @@ version: 1.0.0
       });
 
       test('lockfile handles multiple packages', () {
-        final lockfile = ModuleLockfile(lockfilePath: p.join(siteRoot, 'gengen.lock'));
-        lockfile.setPackage('github.com/user/theme1', LockedModule(
-          path: 'github.com/user/theme1',
-          version: '^1.0.0',
-          resolved: '$cacheDir/github.com/user/theme1/v1.0.0',
-        ));
-        lockfile.setPackage('github.com/user/theme2', LockedModule(
-          path: 'github.com/user/theme2',
-          version: '^2.0.0',
-          resolved: '$cacheDir/github.com/user/theme2/v2.5.0',
-        ));
+        final lockfile = ModuleLockfile(
+          lockfilePath: p.join(siteRoot, 'gengen.lock'),
+        );
+        lockfile.setPackage(
+          'github.com/user/theme1',
+          LockedModule(
+            path: 'github.com/user/theme1',
+            version: '^1.0.0',
+            resolved: '$cacheDir/github.com/user/theme1/v1.0.0',
+          ),
+        );
+        lockfile.setPackage(
+          'github.com/user/theme2',
+          LockedModule(
+            path: 'github.com/user/theme2',
+            version: '^2.0.0',
+            resolved: '$cacheDir/github.com/user/theme2/v2.5.0',
+          ),
+        );
 
         expect(lockfile.packages.length, 2);
         expect(lockfile.hasPackage('github.com/user/theme1'), isTrue);
@@ -420,18 +445,26 @@ version: 1.0.0
             {'path': 'github.com/user/theme', 'version': '^1.0.0'},
           ],
         });
+        expect(manifest.imports, hasLength(1));
 
         // Empty lockfile = needs fetch
-        final emptyLockfile = ModuleLockfile(lockfilePath: p.join(siteRoot, 'gengen.lock'));
+        final emptyLockfile = ModuleLockfile(
+          lockfilePath: p.join(siteRoot, 'gengen.lock'),
+        );
         expect(emptyLockfile.hasPackage('github.com/user/theme'), isFalse);
 
         // With lockfile but no cache = needs fetch
-        final lockfileNoCacheDir = ModuleLockfile(lockfilePath: p.join(siteRoot, 'gengen.lock'));
-        lockfileNoCacheDir.setPackage('github.com/user/theme', LockedModule(
-          path: 'github.com/user/theme',
-          version: '^1.0.0',
-          resolved: '$cacheDir/github.com/user/theme/v1.0.0',
-        ));
+        final lockfileNoCacheDir = ModuleLockfile(
+          lockfilePath: p.join(siteRoot, 'gengen.lock'),
+        );
+        lockfileNoCacheDir.setPackage(
+          'github.com/user/theme',
+          LockedModule(
+            path: 'github.com/user/theme',
+            version: '^1.0.0',
+            resolved: '$cacheDir/github.com/user/theme/v1.0.0',
+          ),
+        );
         expect(
           memFs
               .directory('$cacheDir/github.com/user/theme/v1.0.0')

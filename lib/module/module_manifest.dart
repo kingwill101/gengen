@@ -5,10 +5,7 @@ class ModuleManifest {
   final List<ModuleImport> imports;
   final List<ModuleReplacement> replacements;
 
-  const ModuleManifest({
-    this.imports = const [],
-    this.replacements = const [],
-  });
+  const ModuleManifest({this.imports = const [], this.replacements = const []});
 
   factory ModuleManifest.parse(Map<String, dynamic>? moduleSection) {
     if (moduleSection == null) {
@@ -29,10 +26,7 @@ class ModuleManifest {
         .map(ModuleReplacement.parse)
         .toList();
 
-    return ModuleManifest(
-      imports: imports,
-      replacements: replacements,
-    );
+    return ModuleManifest(imports: imports, replacements: replacements);
   }
 
   /// Check if a module path has a replacement defined
@@ -52,7 +46,7 @@ class ModuleManifest {
   bool get isEmpty => imports.isEmpty && replacements.isEmpty;
 
   Map<String, dynamic> toJson() => {
-        'imports': imports.map((i) => i.toJson()).toList(),
-        'replacements': replacements.map((r) => r.toJson()).toList(),
-      };
+    'imports': imports.map((i) => i.toJson()).toList(),
+    'replacements': replacements.map((r) => r.toJson()).toList(),
+  };
 }

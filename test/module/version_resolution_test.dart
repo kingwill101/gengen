@@ -5,7 +5,10 @@ import 'package:test/test.dart';
 void main() {
   group('Version selection from cache', () {
     /// Simulates the logic in GitModuleSource._findMatchingCachedVersion
-    String? findMatchingVersion(List<String> cachedVersions, String constraint) {
+    String? findMatchingVersion(
+      List<String> cachedVersions,
+      String constraint,
+    ) {
       if (cachedVersions.isEmpty) return null;
 
       try {
@@ -16,7 +19,9 @@ void main() {
 
         for (final cached in sorted) {
           // Try to parse the cached version
-          final cleanVersion = cached.startsWith('v') ? cached.substring(1) : cached;
+          final cleanVersion = cached.startsWith('v')
+              ? cached.substring(1)
+              : cached;
           final parsed = Version.tryParse(cleanVersion);
           if (parsed != null && versionConstraint.allows(parsed)) {
             return cached;
@@ -82,7 +87,6 @@ void main() {
 
     test('prerelease versions are considered', () {
       final versions = ['v1.0.0-alpha', 'v1.0.0-beta', 'v1.0.0'];
-      final c = VersionConstraint.parse('^1.0.0');
 
       // Stable 1.0.0 should be selected over prereleases
       // But note: prereleases of 1.0.0 are < 1.0.0, so ^1.0.0 doesn't include them
@@ -103,7 +107,10 @@ void main() {
   });
 
   group('Edge cases', () {
-    String? findMatchingVersion(List<String> cachedVersions, String constraint) {
+    String? findMatchingVersion(
+      List<String> cachedVersions,
+      String constraint,
+    ) {
       if (cachedVersions.isEmpty) return null;
 
       try {
@@ -111,7 +118,9 @@ void main() {
         final sorted = cachedVersions.toList()..sort((a, b) => b.compareTo(a));
 
         for (final cached in sorted) {
-          final cleanVersion = cached.startsWith('v') ? cached.substring(1) : cached;
+          final cleanVersion = cached.startsWith('v')
+              ? cached.substring(1)
+              : cached;
           final parsed = Version.tryParse(cleanVersion);
           if (parsed != null && versionConstraint.allows(parsed)) {
             return cached;

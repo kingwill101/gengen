@@ -53,7 +53,9 @@ abstract class ModSubCommand extends Command<void> {
       if (fs.file(configPath).existsSync()) {
         final config = readConfigFile(configPath) as Map<String, dynamic>?;
         if (config != null && config.containsKey('module')) {
-          return ModuleManifest.parse(config['module'] as Map<String, dynamic>?);
+          return ModuleManifest.parse(
+            config['module'] as Map<String, dynamic>?,
+          );
         }
       }
     }
@@ -108,7 +110,8 @@ class ModUpdateCommand extends ModSubCommand {
   String get name => 'update';
 
   @override
-  String get description => 'Update modules to latest versions matching constraints';
+  String get description =>
+      'Update modules to latest versions matching constraints';
 
   ModUpdateCommand() {
     argParser.addFlag(

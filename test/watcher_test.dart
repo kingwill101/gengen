@@ -95,7 +95,7 @@ void main() {
       await siteWatcher.start();
 
       // Give watcher time to initialize
-      await Future.delayed(const Duration(milliseconds: 100));
+      await Future<void>.delayed(const Duration(milliseconds: 100));
 
       // Create a new file
       File(p.join(tempDir.path, 'new_file.txt')).writeAsStringSync('content');
@@ -132,7 +132,7 @@ void main() {
       );
 
       await siteWatcher.start();
-      await Future.delayed(const Duration(milliseconds: 100));
+      await Future<void>.delayed(const Duration(milliseconds: 100));
 
       // Modify the file
       file.writeAsStringSync('modified');
@@ -168,7 +168,7 @@ void main() {
       );
 
       await siteWatcher.start();
-      await Future.delayed(const Duration(milliseconds: 100));
+      await Future<void>.delayed(const Duration(milliseconds: 100));
 
       // Delete the file
       file.deleteSync();
@@ -205,11 +205,11 @@ void main() {
       );
 
       await siteWatcher.start();
-      await Future.delayed(const Duration(milliseconds: 100));
+      await Future<void>.delayed(const Duration(milliseconds: 100));
 
       // Create files in both directories
       File(p.join(subDir1.path, 'file1.txt')).writeAsStringSync('content1');
-      await Future.delayed(const Duration(milliseconds: 100));
+      await Future<void>.delayed(const Duration(milliseconds: 100));
       File(p.join(subDir2.path, 'file2.txt')).writeAsStringSync('content2');
 
       await completer.future.timeout(
@@ -233,7 +233,7 @@ void main() {
 
       // Create a file after stopping - should not trigger event
       File(p.join(tempDir.path, 'after_stop.txt')).writeAsStringSync('ignored');
-      await Future.delayed(const Duration(milliseconds: 200));
+      await Future<void>.delayed(const Duration(milliseconds: 200));
 
       expect(receivedEvents, isEmpty);
     });
@@ -263,7 +263,7 @@ void main() {
       );
 
       await siteWatcher.start();
-      await Future.delayed(const Duration(milliseconds: 100));
+      await Future<void>.delayed(const Duration(milliseconds: 100));
 
       File(p.join(tempDir.path, 'test.txt')).writeAsStringSync('test');
 

@@ -27,9 +27,7 @@ class SiteWatcher {
     await stop(); // Clear any existing watchers
 
     // Set up debounced event handler
-    _eventController.stream
-        .debounceTime(debounce)
-        .listen(onEvent);
+    _eventController.stream.debounceTime(debounce).listen(onEvent);
 
     for (final dir in directories) {
       // Use dart:io directly for existence check since watcher package uses it

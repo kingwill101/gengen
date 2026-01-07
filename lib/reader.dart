@@ -65,17 +65,17 @@ class Reader {
 
   Future<void> readPosts() async {
     Site.instance.posts = PostReader().readPosts(Site.instance.postPath);
-    
+
     // Also read index pages from _posts directory and add them to pages
     _readPostIndexPages();
   }
-  
+
   void _readPostIndexPages() {
     final postDir = Site.instance.inSourceDir(Site.instance.postPath);
     final directory = fs.directory(postDir);
-    
+
     if (!directory.existsSync()) return;
-    
+
     // Look for index.html or index.md in _posts
     for (final ext in ['.html', '.md', '.markdown']) {
       final indexPath = join(postDir, 'index$ext');

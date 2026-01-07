@@ -237,14 +237,8 @@ void main() {
           VersionConstraint.parse('branch:main').toString(),
           'branch:main',
         );
-        expect(
-          VersionConstraint.parse('tag:v1.0.0').toString(),
-          'tag:v1.0.0',
-        );
-        expect(
-          VersionConstraint.parse('commit:abc').toString(),
-          'commit:abc',
-        );
+        expect(VersionConstraint.parse('tag:v1.0.0').toString(), 'tag:v1.0.0');
+        expect(VersionConstraint.parse('commit:abc').toString(), 'commit:abc');
       });
     });
   });
@@ -266,12 +260,13 @@ void main() {
       final constraint = VersionConstraint.parse('^1.0.0');
       final available = ['0.9.0', '1.0.0', '1.0.1', '1.1.0', '2.0.0'];
 
-      final matching = available
-          .map((v) => Version.tryParse(v))
-          .whereType<Version>()
-          .where((v) => constraint.allows(v))
-          .toList()
-        ..sort((a, b) => b.compareTo(a)); // Sort descending
+      final matching =
+          available
+              .map((v) => Version.tryParse(v))
+              .whereType<Version>()
+              .where((v) => constraint.allows(v))
+              .toList()
+            ..sort((a, b) => b.compareTo(a)); // Sort descending
 
       expect(matching.first.toString(), '1.1.0');
     });
@@ -280,11 +275,16 @@ void main() {
       final constraint = VersionConstraint.parse('^1.0.0');
       final available = ['v0.9.0', 'v1.0.0', 'v1.0.1', 'v1.1.0', 'v2.0.0'];
 
-      final matching = available.map((v) {
-        final clean = v.startsWith('v') ? v.substring(1) : v;
-        return Version.tryParse(clean);
-      }).whereType<Version>().where((v) => constraint.allows(v)).toList()
-        ..sort((a, b) => b.compareTo(a));
+      final matching =
+          available
+              .map((v) {
+                final clean = v.startsWith('v') ? v.substring(1) : v;
+                return Version.tryParse(clean);
+              })
+              .whereType<Version>()
+              .where((v) => constraint.allows(v))
+              .toList()
+            ..sort((a, b) => b.compareTo(a));
 
       expect(matching.first.toString(), '1.1.0');
     });
@@ -319,17 +319,11 @@ void main() {
   group('Error handling', () {
     group('Version.parse errors', () {
       test('throws VersionException for empty string', () {
-        expect(
-          () => Version.parse(''),
-          throwsA(isA<VersionException>()),
-        );
+        expect(() => Version.parse(''), throwsA(isA<VersionException>()));
       });
 
       test('throws VersionException for whitespace only', () {
-        expect(
-          () => Version.parse('   '),
-          throwsA(isA<VersionException>()),
-        );
+        expect(() => Version.parse('   '), throwsA(isA<VersionException>()));
       });
 
       test('throws VersionException for invalid format', () {
@@ -340,10 +334,7 @@ void main() {
       });
 
       test('throws VersionException for incomplete version', () {
-        expect(
-          () => Version.parse('1.2'),
-          throwsA(isA<VersionException>()),
-        );
+        expect(() => Version.parse('1.2'), throwsA(isA<VersionException>()));
       });
 
       test('exception contains version string', () {

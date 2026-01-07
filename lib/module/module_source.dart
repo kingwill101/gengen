@@ -31,12 +31,7 @@ class ResolvedModule {
 }
 
 /// Indicates the source type of a resolved module
-enum ModuleSource {
-  local,
-  gitCache,
-  pubCache,
-  replacement,
-}
+enum ModuleSource { local, gitCache, pubCache, replacement }
 
 /// Base class for module source handlers
 abstract class ModuleSourceHandler {

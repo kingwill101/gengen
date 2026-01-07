@@ -86,9 +86,14 @@ class GitModuleSource implements ModuleSourceHandler {
     }
 
     // For semver constraints, check if any cached version satisfies
-    if (version.startsWith('^') || version.contains(' ') || version.startsWith('>=')) {
+    if (version.startsWith('^') ||
+        version.contains(' ') ||
+        version.startsWith('>=')) {
       final cachedVersions = cache.getCachedVersions(import_.path);
-      final matchingCached = _findMatchingCachedVersion(cachedVersions, version);
+      final matchingCached = _findMatchingCachedVersion(
+        cachedVersions,
+        version,
+      );
       if (matchingCached != null) {
         final cachePath = cache.getModulePath(import_.path, matchingCached);
         return ResolvedModule(
@@ -105,19 +110,23 @@ class GitModuleSource implements ModuleSourceHandler {
   }
 
   /// Find a cached version that satisfies the constraint
-  String? _findMatchingCachedVersion(List<String> cachedVersions, String constraint) {
+  String? _findMatchingCachedVersion(
+    List<String> cachedVersions,
+    String constraint,
+  ) {
     if (cachedVersions.isEmpty) return null;
 
     try {
       final versionConstraint = VersionConstraint.parse(constraint);
 
       // Sort versions descending to get latest first
-      final sorted = cachedVersions.toList()
-        ..sort((a, b) => b.compareTo(a));
+      final sorted = cachedVersions.toList()..sort((a, b) => b.compareTo(a));
 
       for (final cached in sorted) {
         // Try to parse the cached version
-        final cleanVersion = cached.startsWith('v') ? cached.substring(1) : cached;
+        final cleanVersion = cached.startsWith('v')
+            ? cached.substring(1)
+            : cached;
         final parsed = Version.tryParse(cleanVersion);
         if (parsed != null && versionConstraint.allows(parsed)) {
           return cached;
@@ -180,19 +189,17 @@ class GitModuleSource implements ModuleSourceHandler {
         }
 
         // Checkout specific commit
-        await io.Process.run(
-          'git',
-          ['checkout', gitRef],
-          workingDirectory: cacheDir.path,
-        );
+        await io.Process.run('git', [
+          'checkout',
+          gitRef,
+        ], workingDirectory: cacheDir.path);
       }
 
       // Get current commit SHA
-      final shaResult = await io.Process.run(
-        'git',
-        ['rev-parse', 'HEAD'],
-        workingDirectory: cacheDir.path,
-      );
+      final shaResult = await io.Process.run('git', [
+        'rev-parse',
+        'HEAD',
+      ], workingDirectory: cacheDir.path);
       final sha = shaResult.stdout.toString().trim();
 
       return ResolvedModule(
@@ -258,11 +265,12 @@ class GitModuleSource implements ModuleSourceHandler {
   String? _findMatchingVersion(List<String> tags, String constraint) {
     // Simple implementation - find best matching version
     // TODO: Use proper semver constraint matching
-    final versions = tags
-        .map((t) => t.startsWith('v') ? t : 'v$t')
-        .where((t) => RegExp(r'^v?\d+\.\d+\.\d+').hasMatch(t))
-        .toList()
-      ..sort((a, b) => b.compareTo(a)); // Sort descending
+    final versions =
+        tags
+            .map((t) => t.startsWith('v') ? t : 'v$t')
+            .where((t) => RegExp(r'^v?\d+\.\d+\.\d+').hasMatch(t))
+            .toList()
+          ..sort((a, b) => b.compareTo(a)); // Sort descending
 
     return versions.isNotEmpty ? versions.first : null;
   }
@@ -312,7 +320,8 @@ class PubModuleSource implements ModuleSourceHandler {
       final tempDir = fs.systemTempDirectory.createTempSync('gengen_mod_');
 
       try {
-        final pubspec = '''
+        final pubspec =
+            '''
 name: gengen_module_fetch
 environment:
   sdk: '>=3.0.0 <4.0.0'
@@ -320,13 +329,14 @@ dependencies:
   $packageName: ${version == 'latest' ? 'any' : version}
 ''';
 
-        fs.file(p.join(tempDir.path, 'pubspec.yaml')).writeAsStringSync(pubspec);
+        fs
+            .file(p.join(tempDir.path, 'pubspec.yaml'))
+            .writeAsStringSync(pubspec);
 
-        final result = await io.Process.run(
-          'dart',
-          ['pub', 'get'],
-          workingDirectory: tempDir.path,
-        );
+        final result = await io.Process.run('dart', [
+          'pub',
+          'get',
+        ], workingDirectory: tempDir.path);
 
         if (result.exitCode != 0) {
           return null;
@@ -364,7 +374,8 @@ dependencies:
 
   String? _getPubCachePath(String packageName, String? version) {
     // Check common pub cache locations
-    final home = io.Platform.environment['HOME'] ??
+    final home =
+        io.Platform.environment['HOME'] ??
         io.Platform.environment['USERPROFILE'] ??
         '';
 
@@ -401,8 +412,10 @@ dependencies:
     if (!lockFile.existsSync()) return null;
 
     final content = lockFile.readAsStringSync();
-    final match = RegExp('$packageName:\\s+.*?version:\\s+"([^"]+)"', dotAll: true)
-        .firstMatch(content);
+    final match = RegExp(
+      '$packageName:\\s+.*?version:\\s+"([^"]+)"',
+      dotAll: true,
+    ).firstMatch(content);
 
     return match?.group(1);
   }

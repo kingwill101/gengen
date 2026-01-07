@@ -155,8 +155,9 @@ class Build extends AbstractCommand {
       return; // No modules declared
     }
 
-    final manifest =
-        ModuleManifest.parse(configData['module'] as Map<String, dynamic>?);
+    final manifest = ModuleManifest.parse(
+      configData['module'] as Map<String, dynamic>?,
+    );
     if (!manifest.hasImports) {
       return;
     }

@@ -88,8 +88,9 @@ class Serve extends AbstractCommand {
       return;
     }
 
-    final manifest =
-        ModuleManifest.parse(configData['module'] as Map<String, dynamic>?);
+    final manifest = ModuleManifest.parse(
+      configData['module'] as Map<String, dynamic>?,
+    );
     if (!manifest.hasImports) {
       return;
     }

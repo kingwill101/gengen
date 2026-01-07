@@ -32,11 +32,11 @@ class LockedModule {
   }
 
   Map<String, dynamic> toJson() => {
-        'version': version,
-        'resolved': resolved,
-        if (sha != null) 'sha': sha,
-        if (lockedAt != null) 'locked_at': lockedAt!.toIso8601String(),
-      };
+    'version': version,
+    'resolved': resolved,
+    if (sha != null) 'sha': sha,
+    if (lockedAt != null) 'locked_at': lockedAt!.toIso8601String(),
+  };
 
   /// Parse version as semver if possible
   Version? get parsedVersion => Version.tryParse(version);
@@ -80,10 +80,7 @@ class ModuleLockfile {
         }
       }
 
-      return ModuleLockfile(
-        lockfilePath: lockfilePath,
-        packages: packages,
-      );
+      return ModuleLockfile(lockfilePath: lockfilePath, packages: packages);
     } catch (_) {
       return ModuleLockfile(lockfilePath: lockfilePath);
     }
@@ -133,7 +130,9 @@ class ModuleLockfile {
         buffer.writeln('    sha: "${module.sha}"');
       }
       if (module.lockedAt != null) {
-        buffer.writeln('    locked_at: "${module.lockedAt!.toIso8601String()}"');
+        buffer.writeln(
+          '    locked_at: "${module.lockedAt!.toIso8601String()}"',
+        );
       }
     }
 
