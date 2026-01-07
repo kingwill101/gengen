@@ -20,7 +20,7 @@
           {% if site.data.docs.navigation.quick_nav %}
             <div class="home-hero__actions">
               {% for action in site.data.docs.navigation.quick_nav %}
-                <a class="button button--primary" href="{{ action.url }}">
+                <a class="button button--primary" href="{{ action.url | relative_url }}">
                   {{ action.icon }} {{ action.title }}
                 </a>
               {% endfor %}

@@ -10,7 +10,7 @@
     {% if site.data.docs.navigation.footer_nav %}
     <nav class="docs-footer__nav" aria-label="Footer">
       {% for item in site.data.docs.navigation.footer_nav %}
-        <a href="{{ item.url }}"
+        <a href="{{ item.url | relative_url }}"
            class="docs-footer__link"
            {% if item.external %}target="_blank" rel="noopener"{% endif %}>
           {{ item.title }}

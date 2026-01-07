@@ -20,7 +20,7 @@
 
 <nav class="docs-pagination" aria-label="Page navigation">
   {% if previous %}
-    <a class="docs-pagination__link docs-pagination__link--prev" href="{{ previous.url }}">
+    <a class="docs-pagination__link docs-pagination__link--prev" href="{{ previous.url | relative_url }}">
       <span class="docs-pagination__label">Previous</span>
       <span class="docs-pagination__title">{{ previous.title }}</span>
     </a>
@@ -29,7 +29,7 @@
   {% endif %}
 
   {% if next %}
-    <a class="docs-pagination__link docs-pagination__link--next" href="{{ next.url }}">
+    <a class="docs-pagination__link docs-pagination__link--next" href="{{ next.url | relative_url }}">
       <span class="docs-pagination__label">Next</span>
       <span class="docs-pagination__title">{{ next.title }}</span>
     </a>

@@ -4,7 +4,8 @@
 title: "GenGen Documentation"
 description: "Complete documentation for GenGen static site generator"
 author: "GenGen Team"
-url: "https://gengen.dev"
+url: "https://kingwill101.github.io"
+baseurl: "/gengen"
 
 # Build Settings
 theme: "docs-platform"

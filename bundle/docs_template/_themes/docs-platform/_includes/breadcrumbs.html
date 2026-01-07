@@ -12,7 +12,7 @@
 {% endfor %}
 
 <nav class="docs-breadcrumbs" aria-label="Breadcrumb">
-  <a href="/" class="docs-breadcrumbs__link">Home</a>
+  <a href="{{ '/' | relative_url }}" class="docs-breadcrumbs__link">Home</a>
   {% if section_title %}
     <span class="docs-breadcrumbs__separator">/</span>
     <span class="docs-breadcrumbs__crumb">{{ section_title }}</span>

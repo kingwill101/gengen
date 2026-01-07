@@ -25,7 +25,12 @@ void main() {
 
       Site.resetInstance();
       Site.init(
-        overrides: {'source': tempDir.path, 'destination': destDir.path},
+        overrides: {
+          'source': tempDir.path,
+          'destination': destDir.path,
+          'url': 'https://example.com',
+          'baseurl': '/gengen',
+        },
       );
 
       module = UrlModule()..register();
@@ -42,7 +47,20 @@ void main() {
       final filter = module.filters['relative_url'] as dynamic;
       final input = p.join(destDir.path, 'assets', 'main.css');
       final result = filter(input, const <dynamic>[], <String, dynamic>{});
-      expect(result, 'assets/main.css');
+      expect(result, '/gengen/assets/main.css');
+    });
+
+    test('relative_url preserves external URLs and anchors', () {
+      final filter = module.filters['relative_url'] as dynamic;
+      final external = filter(
+        'https://example.com/logo.png',
+        const <dynamic>[],
+        <String, dynamic>{},
+      );
+      expect(external, 'https://example.com/logo.png');
+
+      final anchor = filter('#quick-start', const <dynamic>[], <String, dynamic>{});
+      expect(anchor, '#quick-start');
     });
 
     test('absolute_url resolves against destination', () {
@@ -52,7 +70,7 @@ void main() {
         const <dynamic>[],
         <String, dynamic>{},
       );
-      expect(result, p.join(destDir.path, 'assets', 'main.css'));
+      expect(result, 'https://example.com/gengen/assets/main.css');
     });
 
     test('asset_url preserves absolute URLs and normalizes relative paths', () {
@@ -71,7 +89,7 @@ void main() {
         const <dynamic>[],
         <String, dynamic>{},
       );
-      expect(result, '/assets/logo.png');
+      expect(result, '/gengen/assets/logo.png');
     });
   });
 }
